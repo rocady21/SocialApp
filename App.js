@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import LoginRouter from './routes/LoginRouter';
+import AppRouter from './routes/AppRouter';
 
 export default function App() {
+  const token = ""
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    token !== ""? <AppRouter/> : <LoginRouter/>
+    );
 }
 
 const styles = StyleSheet.create({
