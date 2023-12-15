@@ -1,10 +1,17 @@
 import { View,Text,StyleSheet,Button } from "react-native"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 const Login = ({navigation})=> {
 
+    const {mostrarMensaje,message} = useUserSlice()
+    
+    console.log(message);
+
+    
+
 
     const onPressLearnMore = () => {
-        navigation.push("Register")
+        mostrarMensaje()
     }
     
     return (
