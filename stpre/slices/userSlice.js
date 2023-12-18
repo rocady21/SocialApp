@@ -6,9 +6,9 @@ const userSlice = createSlice({
     message: "XD"
   },
   reducers: {
-      setMessage: (state,{payload})=> {
-        state.message = payload
-      }
+    setMessage: (state,{payload})=> {
+      state.message = payload
+    }
 }
 })
 
