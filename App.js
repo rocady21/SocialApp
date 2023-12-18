@@ -14,6 +14,7 @@ export default function App() {
     setItemStorage("token","323423234tgrmgrmms3112kfm4mmn6n30230s")
   },[])
   const token = ""
+  console.log("A");
   return (
     <Provider store={store}>
       {token !== ""? <AppRouter/> : <LoginRouter/>}
