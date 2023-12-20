@@ -13,7 +13,7 @@ const Login = ({navigation})=> {
     const storage = getStorage("token")
 
 
-    const {mostrarMensaje,message} = useUserSlice()
+    const {mostrarMensaje,message,LoginUser} = useUserSlice()
     const [stateForm,setStateForm] = useState({
         email:"",
         password:""
@@ -22,7 +22,6 @@ const Login = ({navigation})=> {
 
 
     const ShowOrHidePassword = ()=> {
-        SuccessToastify("Login correcto")
         setShowPassword(!ShowPassword)
     }
     const onChangeText = (text,key)=> {
@@ -38,7 +37,11 @@ const Login = ({navigation})=> {
     
     
     const SignIn = ()=> {
-
+        console.log("A");
+        if(stateForm.email !== "" && stateForm.password !== "") {
+            console.log("A");
+            LoginUser(stateForm)
+        }
     }
 
     
