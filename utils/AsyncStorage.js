@@ -3,20 +3,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 const getStorage = async (key)=> {
     try {
         const value = await AsyncStorage.getItem(key)
-        if(value !== null) {
-            console.log(value)
-            return value
-        }
+        console.log("XDA");
+        console.log(value);
+        return value
     } catch (error) {
         console.log(error);
+        return "no-token"
     }
 }
 
 const setItemStorage = async (key,value)=> {
     try {
-        const valueF = typeof value == "object"? JSON.stringify(value) : value
-        const data = await AsyncStorage.setItem(key,JSON.stringify(valueF))
-
+        const data = await AsyncStorage.setItem(key,JSON.stringify(value))
+        console.log(data);
     } catch (error) {
         console.log(error);
     }
@@ -24,8 +23,9 @@ const setItemStorage = async (key,value)=> {
 
 
 const removeValueStorage = async (key) => {
+    console.log(key);
     try {
-      await AsyncStorage.removeItem('key')
+      await AsyncStorage.removeItem(key)
     } catch(e) {
       // remove error
       console.log(e);
@@ -35,9 +35,20 @@ const removeValueStorage = async (key) => {
   }
 
 
+  const ClearStorage = async()=> {
+    try {
+        await AsyncStorage.clear()
+      } catch(e) {
+        // clear error
+        console.log(error);
+      }
+  }
+  
+
 export {
     getStorage,
     setItemStorage,
-    removeValueStorage
+    removeValueStorage,
+    ClearStorage
     
 }

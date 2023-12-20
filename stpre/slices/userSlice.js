@@ -5,7 +5,7 @@ const userSlice = createSlice({
   initialState: {
     message: "XD",
     user: {},
-    token : "",
+    userStatus:"no-user",
     messageError:""
   },
   reducers: {
@@ -14,13 +14,18 @@ const userSlice = createSlice({
     },
     addNewUser: (state,{payload})=> {
       state.user = payload.user,
-      state.token = payload.token
+      state.userStatus ="user"
     },
     credentialsError:(state,{paylaod})=> {
       state.messageError = payload
+    },
+    onExistUser:(state,{payload})=> {
+      state.user = {},
+      state.userStatus = "no-user"
+
     }
   }
 })
 
-export const { setMessage,credentialsError,addNewUser } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onExistUser } = userSlice.actions
 export default userSlice

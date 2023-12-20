@@ -10,8 +10,6 @@ import { SuccessToastify } from "../../utils/Toastify"
 
 const Login = ({navigation})=> {
 
-    const storage = getStorage("token")
-
 
     const {mostrarMensaje,message,LoginUser} = useUserSlice()
     const [stateForm,setStateForm] = useState({
