@@ -18,9 +18,8 @@ export const useUserSlice = ()=> {
     }
 
     const LoginUser = async(datos)=> {
-        console.log(datos);
         try {
-            const {data} = await axios.post("http://eded-2800-a4-13f0-1800-25b8-7fc1-aa5b-f47e.ngrok-free.app/api/login",{
+            const {data} = await axios.post("https://5d6c-2800-a4-13f3-bb00-6817-640c-9770-1e8a.ngrok-free.app/api/login",{
                 correo:datos.email,
                 contraseña:datos.password
             })
@@ -31,7 +30,6 @@ export const useUserSlice = ()=> {
                 SuccessToastify("Login correcto!")
             }
 
-            console.log(data);
             
         } catch (error) {
             if(error.response.status === 401) {
@@ -44,11 +42,25 @@ export const useUserSlice = ()=> {
 
     }
 
-    const validToken = (tk)=> {
+    const validToken = async (tk)=> {
+        console.log(tk);
+        console.log("tkk aut");
+        // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
+            const {data} = await axios.get("https://5d6c-2800-a4-13f3-bb00-6817-640c-9770-1e8a.ngrok-free.app/api/validToken",{
+                headers: { "Authorization": `Bearer ${tk}` }
+            })
+            console.log("esta es la info by token");
+            console.log(data);
             // aqui validaremos el token si es valido pasara a la app y sino no 
         } catch (error) {
             console.log(error);
+            if(error.response.status == 401) {
+                console.log("no autorizado");
+                Dispach(onExistUser())
+            }
+
+            // cerrar session
         }
     }
 

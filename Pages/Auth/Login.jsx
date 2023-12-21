@@ -23,8 +23,7 @@ const Login = ({navigation})=> {
         setShowPassword(!ShowPassword)
     }
     const onChangeText = (text,key)=> {
-        console.log(text);
-        console.log("xd");
+
         setStateForm(
             {
                 ...stateForm,
@@ -35,9 +34,7 @@ const Login = ({navigation})=> {
     
     
     const SignIn = ()=> {
-        console.log("A");
         if(stateForm.email !== "" && stateForm.password !== "") {
-            console.log("A");
             LoginUser(stateForm)
         }
     }
@@ -66,7 +63,7 @@ const Login = ({navigation})=> {
                     <View style={styles.padrePassword}>
                         <TextInput  
                             editable
-                            secureTextEntry={ShowPassword == true? false : true}
+                            secureTextEntry={ShowPassword == true? true : true}
                             onChangeText={text => onChangeText(text,"password")}
                             value={stateForm.password}
                             style={styles.inputPassword} 
@@ -78,7 +75,7 @@ const Login = ({navigation})=> {
                         role="button"
                         onPress={ShowOrHidePassword}
                         >{
-                            ShowPassword === true? <Icon name="eye" size={20}/> :  <Icon name="eye-off" size={20}/>
+                            ShowPassword === false? <Icon name="eye" size={20}/> :  <Icon name="eye-off" size={20}/>
                         }</Text>
 
                     </View>
