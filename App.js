@@ -1,15 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import LoginRouter from './routes/LoginRouter';
-import AppRouter from './routes/AppRouter';
+import { StyleSheet, Text, View } from 'react-native'
 import { Provider } from 'react-redux';
 import { store } from './stpre/store';
+import ValidRouter from './validRouter';
+import { useUserSlice } from './hooks/useUserSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStorage } from './utils/AsyncStorage';
+import { useEffect } from 'react';
 
 export default function App() {
-  const token = ""
+
+
+
+
   return (
     <Provider store={store}>
-      {token !== ""? <AppRouter/> : <LoginRouter/>}
+       <ValidRouter/>
     </Provider>
     );
 }
