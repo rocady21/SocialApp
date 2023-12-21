@@ -63,7 +63,7 @@ const Login = ({navigation})=> {
                     <View style={styles.padrePassword}>
                         <TextInput  
                             editable
-                            secureTextEntry={ShowPassword == true? true : true}
+                            secureTextEntry={ShowPassword == true? false : true}
                             onChangeText={text => onChangeText(text,"password")}
                             value={stateForm.password}
                             style={styles.inputPassword} 

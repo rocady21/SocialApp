@@ -1,4 +1,4 @@
-import { View,Text,Button } from "react-native"
+import { View,Text,Button,StyleSheet } from "react-native"
 import { removeValueStorage } from "../../utils/AsyncStorage"
 import { useUserSlice } from "../../hooks/useUserSlice"
 
@@ -11,7 +11,7 @@ const Home = ({navigation})=> {
         existUser()
     }
     return (
-        <View>
+        <View style={styles.home}>
             <Text>Pagina de Home</Text>
             <Button
             title="Salir"
@@ -20,5 +20,11 @@ const Home = ({navigation})=> {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    home:{
+        flex:1
+    }
+})
 
 export default Home
