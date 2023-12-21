@@ -1,22 +1,20 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import LoginRouter from './routes/LoginRouter';
-import AppRouter from './routes/AppRouter';
+import { StyleSheet, Text, View } from 'react-native'
 import { Provider } from 'react-redux';
 import { store } from './stpre/store';
+import ValidRouter from './validRouter';
+import { useUserSlice } from './hooks/useUserSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getStorage } from './utils/AsyncStorage';
 import { useEffect } from 'react';
-import { setItemStorage } from './utils/AsyncStorage';
 
 export default function App() {
-  
-  
-  useEffect(()=>{
-    setItemStorage("token","323423234tgrmgrmms3112kfm4mmn6n30230s")
-  },[])
-  const token = ""
+
+
+
+
   return (
     <Provider store={store}>
-      {token !== ""? <AppRouter/> : <LoginRouter/>}
+       <ValidRouter/>
     </Provider>
     );
 }
