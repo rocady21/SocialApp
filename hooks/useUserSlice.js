@@ -19,7 +19,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post("https://5d6c-2800-a4-13f3-bb00-6817-640c-9770-1e8a.ngrok-free.app/api/login",{
+            const {data} = await axios.post(process.env.BACKEND_URL + "/api/login",{
                 correo:datos.email,
                 contraseña:datos.password
             })
@@ -43,11 +43,10 @@ export const useUserSlice = ()=> {
     }
 
     const validToken = async (tk)=> {
-        console.log(tk);
-        console.log("tkk aut");
+
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get("https://5d6c-2800-a4-13f3-bb00-6817-640c-9770-1e8a.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get(process.env.BACKEND_URL + "/api/validToken",{
                 headers: { "Authorization": `Bearer ${tk}` }
             })
             console.log("esta es la info by token");
