@@ -4,6 +4,8 @@ import { useUserSlice } from "../../hooks/useUserSlice"
 
 const Home = ({navigation})=> {
 
+    console.log("XD");
+
     const {existUser} = useUserSlice()
 
     const salir = ()=> {
