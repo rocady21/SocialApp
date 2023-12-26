@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 const userSlice = createSlice({
-  name: "message",
+  name: "userSlice",
   initialState: {
     message: "XD",
     user: {},
@@ -13,10 +13,10 @@ const userSlice = createSlice({
       state.message = payload
     },
     addNewUser: (state,{payload})=> {
-      state.user = payload.user,
+      state.user = payload,
       state.userStatus ="user"
     },
-    credentialsError:(state,{paylaod})=> {
+    credentialsError:(state,{payload})=> {
       state.messageError = payload
     },
     onExistUser:(state,{payload})=> {

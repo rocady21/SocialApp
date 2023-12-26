@@ -1,10 +1,21 @@
-import { View,StyleSheet,Text } from "react-native"
+import { View,StyleSheet,Text,Button } from "react-native"
+import { useMessageSlice } from "../../hooks/useMessagesSlice"
+import { useEffect } from "react"
 
 
  const Profile = ()=> {
+
+
+
+    const {SeleccionarChat} = useMessageSlice()
+
     return (
         <View style={styles.padre}>
             <Text>Pagina de Profile</Text>
+            <Button
+            title="Chat"
+            onPress={()=> SeleccionarChat(false)}
+            />     
         </View>
     )
 }

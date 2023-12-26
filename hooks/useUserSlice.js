@@ -1,6 +1,6 @@
 
 import {useDispatch,useSelector} from "react-redux"
-import { setMessage,credentialsError,addNewUser,onExistUser} from "../stpre/slices/userSlice"
+import { setMessage,credentialsError,addNewUser,onExistUser} from "../store/slices/userSlice"
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { setItemStorage } from "../utils/AsyncStorage"
@@ -19,7 +19,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(process.env.BACKEND_URL + "/api/login",{
+            const {data} = await axios.post("https://3307-2800-a4-1332-4500-c99f-7e2f-897e-4cad.ngrok-free.app/api/login",{
                 correo:datos.email,
                 contraseña:datos.password
             })
@@ -46,11 +46,10 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get(process.env.BACKEND_URL + "/api/validToken",{
+            const {data} = await axios.get("https://3307-2800-a4-1332-4500-c99f-7e2f-897e-4cad.ngrok-free.app/api/validToken",{
                 headers: { "Authorization": `Bearer ${tk}` }
             })
-            console.log("esta es la info by token");
-            console.log(data);
+
             // aqui validaremos el token si es valido pasara a la app y sino no 
         } catch (error) {
             console.log(error);

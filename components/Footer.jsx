@@ -31,8 +31,8 @@ const Footer = ()=> {
                 <Icon name="search-outline" size={35}/>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=> navigatePage("Messages")} style={StyleSheet.flatten([styles.buttonStyles,{
-                opacity: selected == "Messages"? 1 : 0.2
+            <TouchableOpacity onPress={()=> navigatePage("Chats")} style={StyleSheet.flatten([styles.buttonStyles,{
+                opacity: selected == "Chats"? 1 : 0.2
             }])}>
                 <IconM name="message-circle" size={35}/>
             </TouchableOpacity>
@@ -54,7 +54,7 @@ const Footer = ()=> {
 
 const styles = StyleSheet.create({
     footer: {
-        flex:0.1,
+        height:50,
         width:"100%",
         display:"flex",
         flexDirection:"row",
