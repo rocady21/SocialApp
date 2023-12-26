@@ -14,6 +14,8 @@ export default  function ValidRouter() {
   const {userStatus} = useSelector((state) => state.user)
   const [token,setToken ] = useState("")
  
+
+  console.log("AAAAAAAAAAAAAA");
   useEffect(()=> {
     obtenerToken()
   },[])
@@ -28,7 +30,6 @@ export default  function ValidRouter() {
   const obtenerToken = async ()=> {
     const tk = await getStorage("token")
 
-    setToken(tk)
   }
   
 

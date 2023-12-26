@@ -3,7 +3,7 @@ import {useDispatch,useSelector} from "react-redux"
 import { setMessage,credentialsError,addNewUser,onExistUser} from "../stpre/slices/userSlice"
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
-import { setItemStorage } from "../utils/AsyncStorage"
+import { removeValueStorage, setItemStorage } from "../utils/AsyncStorage"
 
 
 export const useUserSlice = ()=> {
@@ -19,7 +19,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(process.env.BACKEND_URL + "/api/login",{
+            const {data} = await axios.post("https://a031-2800-a4-13ad-5d00-988e-5400-1bdc-b681.ngrok-free.app/api/login",{
                 correo:datos.email,
                 contraseña:datos.password
             })
@@ -46,7 +46,7 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get(process.env.BACKEND_URL + "/api/validToken",{
+            const {data} = await axios.get("https://a031-2800-a4-13ad-5d00-988e-5400-1bdc-b681.ngrok-free.app/api/validToken",{
                 headers: { "Authorization": `Bearer ${tk}` }
             })
             console.log("esta es la info by token");
@@ -56,7 +56,7 @@ export const useUserSlice = ()=> {
             console.log(error);
             if(error.response.status == 401) {
                 console.log("no autorizado");
-                Dispach(onExistUser())
+                existUser()
             }
 
             // cerrar session
@@ -65,6 +65,7 @@ export const useUserSlice = ()=> {
 
     const existUser = ()=> {
         try {
+            removeValueStorage("token")
             Dispach(onExistUser())
         } catch (error) {
             console.log(error);

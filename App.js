@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 export default function App() {
 
 
-
+  console.log("A");
 
   return (
     <Provider store={store}>

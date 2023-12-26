@@ -11,6 +11,7 @@ import Questions from '../Pages/App/Questions';
 const Stack = createNativeStackNavigator();
 
 export default function AppRouter() {
+  console.log("A");
   return (
     <View style={styles.padre}>
     <NavigationContainer >

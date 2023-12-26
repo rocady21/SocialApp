@@ -28,6 +28,7 @@ const setItemStorage = async (key,value)=> {
 const removeValueStorage = async (key) => {
     try {
       await AsyncStorage.removeItem(key)
+      
     } catch(e) {
       // remove error
       console.log(e);
