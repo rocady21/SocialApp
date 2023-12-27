@@ -7,6 +7,7 @@ const Black_button = ({ title, onPress }) => {
       onPress={onPress}
       style={styles.button}
     >
+      
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );

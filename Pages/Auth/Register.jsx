@@ -1,17 +1,52 @@
 import React, { useState } from 'react';
-import { Button, ScrollView, TextInput, Touchable } from 'react-native'
-import { View, Text, TouchableNativeFeedbackBase, TouchableWithoutFeedback, Alert, TouchableOpacity, SafeAreaView } from "react-native"
+
+import { View, Text, TouchableOpacity, SafeAreaView, Image, Button, ScrollView, TextInput, Pressable } from "react-native"
 import temasA from '../Thems/temas'
 import { Ionicons } from '@expo/vector-icons';
-import Black_button from '../Thems/button.js/black_button';
-// import CheckBox from '@react-native-community/checkbox';
+import Black_button from './Componentes/black_button';
 import CheckBox from 'react-native-check-box'
+import { useNavigation } from '@react-navigation/native';
+import Inputs from './Componentes/Input';
+import InputPassword from './Componentes/InputPassword';
+
 
 
 
 const Register = () => {
-  const [ispasswordShown, setIspasswordShown] = useState(false);
+
+
   const [isChecked, setIsChecked] = useState(false)
+
+  const navigation = useNavigation();
+
+  const [errorName, setErrorName] = useState("");
+  const [errorLastName, setErrorLastName] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
+  const [errorConfirm, setErrorConfirm] = useState("");
+
+  const RegisterUser = () => {
+    if (!validateData) {
+      return;
+
+    }
+
+    console.log("Validado")
+
+  }
+
+  const validateData = () => {
+
+    setErrorName("")
+    setErrorLastName("")
+    setErrorEmail("")
+    setErrorPassword("")
+    setErrorConfirm("")
+    let isValid = true
+  }
+
+
+
   return (
 
     <SafeAreaView style={{ flex: 1, backgroundColor: temasA.fonts.grey50 }}>
@@ -39,199 +74,20 @@ const Register = () => {
           </View>
 
           {/*Inicio - input Name */}
-          <View style={{ marginBottom: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: temasA.fontWheights.normal,
-                marginBottom: 8
-              }}>Name</Text>
-
-            </View>
-
-            <View style={{
-              width: '100%',
-              height: 48,
-              borderColor: temasA.colors.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22
-
-            }}>
-              <TextInput
-                placeholder='Enter your name'
-                placeholderTextColor={temasA.colors.black}
-                keyboardType='name'
-                style={{
-                  width: '100%'
-                }}
-              >
-
-              </TextInput>
-            </View>
-
-          </View>
+          <Inputs title={'Name'} />
 
           {/*Inicio - input Apellido */}
-
-          <View style={{ marginBottom: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: temasA.fontWheights.normal,
-                marginBottom: 8
-              }}>Last name</Text>
-            </View>
-
-            <View style={{
-              width: '100%',
-              height: 48,
-              borderColor: temasA.colors.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22
-
-            }}>
-              <TextInput
-                placeholder='Enter your last name'
-                placeholderTextColor={temasA.colors.black}
-                keyboardType='lastname'
-                style={{
-                  width: '100%'
-                }}
-              >
-
-              </TextInput>
-            </View>
-          </View>
-
+          <Inputs title={'Last name'} />
 
           {/*Inicio - input Edad */}
-
-          <View style={{ marginBottom: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: temasA.fontWheights.normal,
-                marginBottom: 8
-              }}>Age</Text>
-            </View>
-
-            <View style={{
-              width: '100%',
-              height: 48,
-              borderColor: temasA.colors.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22
-
-            }}>
-              <TextInput
-                placeholder='Enter your age '
-                placeholderTextColor={temasA.colors.black}
-                keyboardType='age'
-                style={{
-                  width: '100%'
-                }}
-              >
-
-              </TextInput>
-            </View>
-          </View>
+          <Inputs title={'Age'} />
 
           {/*Inicio - input correo */}
+          <Inputs title={'Email address'} />
 
-          <View style={{ marginBottom: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: temasA.fontWheights.normal,
-                marginBottom: 8
-              }}>Email address</Text>
-            </View>
-
-            <View style={{
-              width: '100%',
-              height: 48,
-              borderColor: temasA.colors.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22
-
-            }}>
-              <TextInput
-                placeholder='Enter your email address '
-                placeholderTextColor={temasA.colors.black}
-                keyboardType='email-address'
-                style={{
-                  width: '100%'
-                }}
-              >
-
-              </TextInput>
-            </View>
-          </View>
           {/*Inicio - input contraseña */}
 
-          <View style={{ marginBottom: 15 }}>
-            <View style={{ marginBottom: 10 }}>
-              <Text style={{
-                fontSize: 16,
-                fontWeight: temasA.fontWheights.normal,
-                marginBottom: 8
-              }}>Password</Text>
-            </View>
-
-            <View style={{
-              width: '100%',
-              height: 48,
-              borderColor: temasA.colors.black,
-              borderWidth: 1,
-              borderRadius: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingLeft: 22
-
-            }}>
-              <TextInput
-                placeholder='Enter your password '
-                placeholderTextColor={temasA.colors.black}
-                secureTextEntry={ispasswordShown}
-                style={{
-                  width: '100%'
-                }}
-              />
-
-              <TouchableOpacity
-                onPress={() => setIspasswordShown(!ispasswordShown)}
-
-                style={{
-                  position: 'absolute',
-                  right: 12
-                }}
-              >
-
-                {
-                  ispasswordShown == true ? (
-                    <Ionicons name="eye-off" size={24} color={temasA.colors.black} />
-
-                  ) : (
-                    <Ionicons name="eye" size={24} color={temasA.colors.black} />
-
-                  )
-
-                }
-              </TouchableOpacity>
-            </View>
-          </View>
+          <InputPassword title={"Password"} />
 
 
           <View style={{
@@ -253,19 +109,139 @@ const Register = () => {
               uncheckedCheckBoxColor='black'
             />
 
-            <Text style={{color: isChecked? 'green' : 'black' }}> I aggree to the terms and conditions</Text>
+            <Text style={{ color: isChecked ? 'green' : 'black' }}> I aggree to the terms and conditions</Text>
 
           </View>
 
 
+          <Black_button title={"Register"} onPress={RegisterUser()} />
 
 
-          <Black_button title={"Register"} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 20
+            }}>
+            <View style={{
+              flex: 1,
+              height: 1,
+              backgroundColor: '#b5b5b5',
+              marginHorizontal: 10
+            }}
+            />
+            <Text style={{ fontSize: 14 }}>Or Singup with</Text>
+            <View
+              style={{
+                flex: 1,
+                height: 1,
+                backgroundColor: '#b5b5b5',
+                marginHorizontal: 10
+              }}
+            />
+
+          </View>
+
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'center'
+          }}>
+
+
+
+
+            <TouchableOpacity
+              onPress={() => console.log("Pressed")}
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                height: 52,
+                borderWidth: 1,
+                borderColor: '#b5b5b5',
+                marginRight: 4,
+                borderRadius: 10
+              }}
+            >
+
+              <Image
+                source={require("../../assets/facebook.png")}
+                style={{
+                  height: 36,
+                  width: 36,
+                  marginRight: 8,
+                  resizeMode: 'contain'
+
+                }}
+              // resizeMode='contain'
+              />
+
+              <Text>Facebook</Text>
+
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => console.log("Pressed")}
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+                height: 52,
+                borderWidth: 1,
+                borderColor: '#b5b5b5',
+                marginRight: 4,
+                borderRadius: 10
+              }}
+            >
+
+              <Image
+                source={require("../../assets/google.png")}
+                style={{
+                  height: 36,
+                  width: 36,
+                  marginRight: 8,
+                  resizeMode: 'contain'
+
+                }}
+              // resizeMode='contain'
+              />
+
+              <Text>Google</Text>
+
+            </TouchableOpacity>
+
+          </View>
+
+          <View style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginVertical: 22
+          }}>
+
+            <Text style={{ fontSize: 16, color: temasA.colors.black }}> Already have an account</Text>
+            <Pressable
+              onPress={() => navigation.navigate('Login')}
+            >
+              <Text style={{
+                fontSize: 16,
+                color: temasA.colors.textPrimary,
+                fontWeight: temasA.fontWheights.bold,
+                marginLeft: 6
+
+              }}
+              >
+                Login</Text>
+
+            </Pressable>
+
+          </View>
 
         </View>
       </ScrollView>
 
-    </SafeAreaView>
+    </SafeAreaView >
 
 
   )
