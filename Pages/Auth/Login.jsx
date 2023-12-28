@@ -27,6 +27,17 @@ const Login = ({ navigation }) => {
         )
     }
 
+    const IrARegistro = ()=> {
+        navigation.navigate("Register")
+    }
+    
+    
+    const SignIn = ()=> {
+        if(stateForm.email !== "" && stateForm.password !== "") {
+            LoginUser(stateForm)
+        }
+    }
+
 
     const onPressLearnMore = () => {
         navigation.navigate("Register")
@@ -61,6 +72,25 @@ const Login = ({ navigation }) => {
                         style={styles.inputs}
                     />    
                 </View>
+
+                <Text style={styles.createAccount}>No tienes una cuenta? <Text style={styles.createAccountColor}>
+                    <TouchableOpacity onPress={IrARegistro}>
+                    <Text>Crear Una</Text>
+                    </TouchableOpacity></Text></Text>
+
+                <TouchableOpacity style={styles.button} onPress={SignIn}>
+                    <Text style={{color:"white",fontWeight:"bold",fontSize:16}}>Iniciar Sesión</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity style={styles.button2} onPress={SignIn}>
+                    <Image
+                        style={styles.image}
+                        source={{
+                            uri:"https://assets.stickpng.com/images/5847f9cbcef1014c0b5e48c8.png"
+                        }}
+                    />
+                    <Text style={{color:"black",fontWeight:"bold",fontSize:16}}>Iniciar Sesión con Google</Text>
+                </TouchableOpacity>
             </View>
  
         </View>
