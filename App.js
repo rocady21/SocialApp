@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { Provider } from 'react-redux';
-import { store } from './stpre/store';
+import { store } from './store/store';
 import ValidRouter from './validRouter';
 import { useUserSlice } from './hooks/useUserSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';

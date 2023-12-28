@@ -1,6 +1,7 @@
 import { View,Text,Button,StyleSheet } from "react-native"
 import { removeValueStorage } from "../../utils/AsyncStorage"
 import { useUserSlice } from "../../hooks/useUserSlice"
+import { useMessageSlice } from "../../hooks/useMessagesSlice"
 
 const Home = ({navigation})=> {
 
@@ -18,7 +19,8 @@ const Home = ({navigation})=> {
             <Button
             title="Salir"
             onPress={salir}
-            />           
+            />      
+        
         </View>
     )
 }

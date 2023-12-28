@@ -1,11 +1,10 @@
-import { useState } from "react"
-import { View,StyleSheet,Text,Image,ScrollView,TouchableOpacity } from "react-native"
-import CardPost from "../../components/CardPost"
-import Icon from "react-native-vector-icons/Ionicons"
+
+import { View,StyleSheet,Text,Button } from "react-native"
+import { useMessageSlice } from "../../hooks/useMessagesSlice"
+import { useEffect } from "react"
 
 
  const Profile = ()=> {
-
 
     const [isFollower,setIsFollower] = useState()
     const [is_me,setIs_me] = useState(true)

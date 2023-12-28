@@ -1,7 +1,10 @@
+import { useEffect } from "react";
 import { View,StyleSheet,Text } from "react-native"
 
 
- const Questions = ()=> {
+ const Questions = ({navigation})=> {
+
+    
     return (
         <View style={styles.padre}>
             <Text>Pagina de QUestions</Text>

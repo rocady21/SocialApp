@@ -7,7 +7,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "proxy":"http://127.0.0.1:5000"
+    "proxy": "http://127.0.0.1:5000"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.21.0",
