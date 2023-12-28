@@ -31,32 +31,15 @@ const Login = ({ navigation }) => {
             }
         )
     }
-<<<<<<< HEAD
-
-    const IrARegistro = ()=> {
-        navigation.navigate("Register")
-    }
-=======
->>>>>>> 41a893fb0341966f92b909777ec766dc88cf1d23
     
     
     const SignIn = ()=> {
         if(stateForm.email !== "" && stateForm.password !== "") {
             LoginUser(stateForm)
         }
-<<<<<<< HEAD
-    }
-
-
-    const onPressLearnMore = () => {
-        navigation.navigate("Register")
-    }
-    //saas
-=======
     }
 
     
->>>>>>> 41a893fb0341966f92b909777ec766dc88cf1d23
     return (
         <View style={styles.container}>
             <ToastManager />
@@ -99,14 +82,7 @@ const Login = ({ navigation }) => {
   
                 </View>
 
-<<<<<<< HEAD
-                <Text style={styles.createAccount}>No tienes una cuenta? <Text style={styles.createAccountColor}>
-                    <TouchableOpacity onPress={IrARegistro}>
-                    <Text>Crear Una</Text>
-                    </TouchableOpacity></Text></Text>
-=======
                 <Text style={styles.createAccount}>No tienes una cuenta? <Text style={styles.createAccountColor}>Crear Una</Text></Text>
->>>>>>> 41a893fb0341966f92b909777ec766dc88cf1d23
 
                 <TouchableOpacity style={styles.button} onPress={SignIn}>
                     <Text style={{color:"white",fontWeight:"bold",fontSize:16}}>Iniciar Sesión</Text>
