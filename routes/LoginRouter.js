@@ -8,6 +8,7 @@ import Register from '../Pages/Auth/Register';
 const Stack = createNativeStackNavigator();
 
 export default function LoginRouter() {
+
   return (
     <NavigationContainer >
       <Stack.Navigator screenOptions={{

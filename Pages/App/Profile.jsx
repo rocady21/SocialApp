@@ -1,10 +1,16 @@
 
+<<<<<<< HEAD
 import { View,StyleSheet,Text,Button, ScrollView, Image, TouchableOpacity} from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect, useState } from "react"
 import Icon from "react-native-vector-icons/Ionicons"
 import CardPost from "../../components/CardPost"
 
+=======
+import { View,StyleSheet,Text,Button } from "react-native"
+import { useMessageSlice } from "../../hooks/useMessagesSlice"
+import { useEffect } from "react"
+>>>>>>> 41a893fb0341966f92b909777ec766dc88cf1d23
 
 
  const Profile = ()=> {
