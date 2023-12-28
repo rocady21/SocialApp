@@ -24,11 +24,14 @@ const ChatSlice = createSlice({
         },
         onSelectedChat:(state,{payload})=> {
             state.selectedChat = payload
+        },
+        onLoadChats:(state,{payload})=> {
+            state.messages = payload
         }
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onLoadChats} = ChatSlice.actions
 
 export default ChatSlice

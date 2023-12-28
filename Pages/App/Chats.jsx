@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
-import MessagesCard from "../../components/MessagesCard"
+import ChatCard from "../../components/ChatCard"
 
  const Chats = ({route})=> {
 
@@ -21,11 +21,6 @@ import MessagesCard from "../../components/MessagesCard"
         SeleccionarChat(false)
         LoadContactsMessage(user.id)
     },[])
-
-
-
-    console.log("ASDXDD");
-
 
     
     return (
@@ -53,8 +48,8 @@ import MessagesCard from "../../components/MessagesCard"
         </View>
         <ScrollView style={styles.body}>
             {
-            contactsChat[0]? contactsChat.map((contact)=> {
-                return <MessagesCard data={contact}/>
+            contactsChat[0]? contactsChat.map((contact,index)=> {
+                return <ChatCard data={contact} key={index}/>
             }) : <Text>Cargando...</Text>
             }
 

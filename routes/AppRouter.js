@@ -21,7 +21,6 @@ export default function AppRouter() {
 
   const {selectedChat} = useMessageSlice()
 
-  console.log("Mondongo");
   return (
     <View style={styles.padre}>
     <NavigationContainer >
