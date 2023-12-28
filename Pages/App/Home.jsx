@@ -5,6 +5,8 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 
 const Home = ({navigation})=> {
 
+    console.log("XD");
+
     const {existUser} = useUserSlice()
 
     const salir = ()=> {
