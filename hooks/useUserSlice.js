@@ -3,7 +3,7 @@ import {useDispatch,useSelector} from "react-redux"
 import { setMessage,credentialsError,addNewUser,onExistUser} from "../store/slices/userSlice"
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
-import { ClearStorage, setItemStorage } from "../utils/AsyncStorage"
+import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
 
 
 export const useUserSlice = ()=> {
@@ -20,6 +20,7 @@ export const useUserSlice = ()=> {
     const LoginUser = async(datos)=> {
         try {
             const {data} = await axios.post("https://67ce-2800-a4-1334-ce00-b047-f20c-6674-8f41.ngrok-free.app/api/login",{
+
                 correo:datos.email,
                 contraseña:datos.password
             })
@@ -47,6 +48,7 @@ export const useUserSlice = ()=> {
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
             const {data} = await axios.get("https://67ce-2800-a4-1334-ce00-b047-f20c-6674-8f41.ngrok-free.app/api/validToken",{
+
                 headers: { "Authorization": `Bearer ${tk}` }
             })
             if (data.isLogged == true) {
@@ -60,7 +62,7 @@ export const useUserSlice = ()=> {
             console.log(error);
             if(error.response.status == 401) {
                 console.log("no autorizado");
-                Dispach(onExistUser())
+                existUser()
             }
 
             // cerrar session
@@ -70,6 +72,9 @@ export const useUserSlice = ()=> {
     const existUser = ()=> {
         try {
             ClearStorage()
+
+            removeValueStorage("token")
+
             Dispach(onExistUser())
         } catch (error) {
             console.log(error);
