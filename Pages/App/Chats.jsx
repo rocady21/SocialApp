@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
     body:{
         flex:0.8,
         width:"100%",
-        maxHeight:"80%"
+        maxHeight:"80%",
+        display:"flex",
     },
     top:{
         display:"flex",

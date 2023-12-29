@@ -1,23 +1,33 @@
 import { useNavigation } from "@react-navigation/native"
-import { useEffect, useState } from "react";
-import { View,Text,Button,StyleSheet,ScrollView,TextInput,TouchableOpacity,Image,SafeAreaView } from "react-native"
+import { useEffect, useRef, useState } from "react";
+import { View,Text,Button,StyleSheet,ScrollView,TextInput,TouchableOpacity,Image,SafeAreaView,ActivityIndicator } from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice";
 import Icon from "react-native-vector-icons/FontAwesome"
 import Arrow from "react-native-vector-icons/SimpleLineIcons"
 import More from "react-native-vector-icons/Feather"
 import MessageCard from "../../components/MessageCard";
+import { useUserSlice } from "../../hooks/useUserSlice";
 
 const MessagesPage = ({navigation,route,infoUserSelected})=> {
 
 
-    const {SeleccionarChat,loadMessageFromUser,messages,sendMessage} = useMessageSlice()
-    const [message,setMessage] = useState("")
-    const {id,nombre_user,photo} = route.params
+    const ScrollViewRef = useRef()
+    const {user} = useUserSlice()
+    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages} = useMessageSlice()
+    const [mensaje,setMensaje] = useState(``)
+    const {id,nombre_user,photo,id_user_chat} = route.params
+
+    useEffect(() => {
+      // Desplazar hacia abajo al inicio y cada vez que el contenido cambie
+      ScrollViewRef.current.scrollToEnd({ animated: true });
+    }, []); // Se ejecuta al montar el componente
 
     useEffect(() => {
       // con este evento al desmontarse el componente volvera a mostrarse el navbar
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
           SeleccionarChat(false)
+          // tambien cada vez que se desmonte el componente, borraremos los chat
+          ClearMessages()
         });
         return unsubscribe;
       }, [navigation]);
@@ -25,11 +35,14 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
     useEffect(()=> {
       loadMessageFromUser(id)
     },[])
-      
 
-    const actualizarMensaje = (text)=> {
-      setMessage(text)
+    const enviarMensaje = ()=> {
+      if(mensaje !== "") {
+        SendMessage(mensaje,user.id,id_user_chat,)
+        setMensaje("")
+      }
     }
+    
     
 
     const goBack = ()=> {
@@ -53,12 +66,19 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
             </View>
             <More name="more-vertical" size={20} color={"white"}/>
           </View>
-          <ScrollView style={styles.Messages}>
-
+          <ScrollView 
+            style={styles.Messages}
+            ref={ScrollViewRef}
+            contentContainerStyle={styles.contentContainer}
+            onContentSizeChange={() => {
+              ScrollViewRef.current.scrollToEnd({ animated: true });
+            }}
+          >
+           
             {
               messages[0]? messages.map((msg,index)=> {
                 return <MessageCard key={index} is_me={msg.is_me} message={msg.mensaje} />
-            }) : <Text>No hay chats</Text>
+            }) : <ActivityIndicator style={styles} size="small" color="black" />
             }
 
 
@@ -67,12 +87,13 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
           </ScrollView>
           <View style={styles.sendMessage}>
             <TextInput
-              value={message}
-              onChange={(text)=>actualizarMensaje(text)}
+              value={mensaje}
+              onChangeText={(text)=> setMensaje(text)}
               style={styles.textInput}
               placeholder="Mensaje..."
+              onSubmitEditing={enviarMensaje}
             />
-            <TouchableOpacity style={styles.bottonEnviar} >
+            <TouchableOpacity style={styles.bottonEnviar} onPress={enviarMensaje} >
               <Icon size={20} name="send-o" color={"white"} />
             </TouchableOpacity>
             
@@ -100,23 +121,21 @@ const styles = StyleSheet.create({
     flexDirection:"row",
     alignItems:"center",
     justifyContent:"space-between",
-    elevation:100
+    elevation:20
   },
   name:{
     textAlign:"center",
     fontSize:18,
     color:"white"
   },
-  Messages:{
+  Messages: {
     flexGrow: 1,
-    width:"100%",
-
+    width: "100%",
     backgroundColor: "#F1F1F1",
     marginTop: 100,
     paddingHorizontal: 25,
     paddingVertical: 10,
-    display:"flex",
-    flexDirection:"column-reverse",
+
   },
   sendMessage:{
     width:"80%",
@@ -160,7 +179,11 @@ const styles = StyleSheet.create({
     backgroundColor:"white",
     borderRadius:50,
     marginRight:10
-  }
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-end',
+  },
   
 })
 

@@ -4,7 +4,7 @@ import { setMessage,credentialsError,addNewUser,onExistUser} from "../store/slic
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
-
+import { BACKEND_URL} from '@env';
 
 export const useUserSlice = ()=> {
 
@@ -19,7 +19,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post("https://67ce-2800-a4-1334-ce00-b047-f20c-6674-8f41.ngrok-free.app/api/login",{
+            const {data} = await axios.post(BACKEND_URL + "/api/login",{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -47,7 +47,7 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get("https://67ce-2800-a4-1334-ce00-b047-f20c-6674-8f41.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get(BACKEND_URL + "/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -74,6 +74,7 @@ export const useUserSlice = ()=> {
             ClearStorage()
 
             removeValueStorage("token")
+            
 
             Dispach(onExistUser())
         } catch (error) {

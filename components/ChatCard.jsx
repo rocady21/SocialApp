@@ -41,13 +41,14 @@ const ChatCard = ({ data }) => {
 
 const styles = StyleSheet.create({
     padre: {
-        marginVertical: 15,
+        marginVertical: 0,
         width: "100%",
-        padding: 25,
+        padding: 15,
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around"
+        justifyContent: "space-around",
+
     },
     foto: {
         height: "100%",

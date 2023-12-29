@@ -15,7 +15,7 @@ export default  function ValidRouter() {
   const [token,setToken ] = useState("")
  
 
-  console.log("AAAAAAAAAAAAAA");
+  
   useEffect(()=> {
     obtenerToken()
   },[])
