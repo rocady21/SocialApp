@@ -27,8 +27,8 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
     },[])
       
 
-    const actualizarMensaje = (txt)=> {
-      setMessage(txt)
+    const actualizarMensaje = (text)=> {
+      setMessage(text)
     }
     
 
