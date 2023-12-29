@@ -1,7 +1,12 @@
 
-import { View,StyleSheet,Text,Button } from "react-native"
+import { View,StyleSheet,Text,Button,ScrollView,Image,TouchableOpacity} from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
+import { useState } from "react"
+import Icon from "react-native-vector-icons/Ionicons"
+import CardPost from "../../components/CardPost"
+
+
 
 
  const Profile = ()=> {

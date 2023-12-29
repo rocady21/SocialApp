@@ -1,11 +1,12 @@
 import { View,Text,Button,StyleSheet } from "react-native"
-import { removeValueStorage } from "../../utils/AsyncStorage"
+import { getStorage, removeValueStorage } from "../../utils/AsyncStorage"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
+import { useEffect } from "react"
+import { useNavigation } from "@react-navigation/native"
 
-const Home = ({navigation})=> {
-
-    console.log("XD");
+const Home = ({})=> {
+    
 
     const {existUser} = useUserSlice()
 
