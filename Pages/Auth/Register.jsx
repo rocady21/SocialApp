@@ -4,10 +4,11 @@ import { View, Text, TouchableOpacity, SafeAreaView, Image, Button, ScrollView, 
 import temasA from '../Thems/temas'
 import { Ionicons } from '@expo/vector-icons';
 import Black_button from './Componentes/black_button';
-import CheckBox from 'react-native-check-box'
+import CheckBox from 'react-native-check-box'; // Verifica que la ruta sea correcta
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
+
 
 
 
