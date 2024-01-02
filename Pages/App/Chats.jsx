@@ -5,7 +5,8 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
 import ChatCard from "../../components/ChatCard"
-
+import { useFocusEffect } from "@react-navigation/native"
+import React from "react"
  const Chats = ({route})=> {
 
     const {name} = route
@@ -16,11 +17,20 @@ import ChatCard from "../../components/ChatCard"
 
 
     
+    // este useEffect es de react-navigation y sirve para detectar cuando estas o sales de una pantalla
+    useFocusEffect(
+        React.useCallback(() => {
+          // Lógica específica cuando la pantalla Home se enfoca
+          console.log('La pantalla Home se enfocó');
+          SeleccionarChat(false)
+          LoadContactsMessage(user.id)
+          return () => {
+            console.log('La pantalla Home se desenfocó');
+          };
+        }, [])
+      );
 
-    useEffect(()=> {
-        SeleccionarChat(false)
-        LoadContactsMessage(user.id)
-    },[])
+
 
     
     return (

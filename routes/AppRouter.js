@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator();
 
 
 
-
+console.log("router");
 
 export default function AppRouter() {
 

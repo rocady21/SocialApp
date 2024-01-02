@@ -7,7 +7,7 @@ import Arrow from "react-native-vector-icons/SimpleLineIcons"
 import More from "react-native-vector-icons/Feather"
 import MessageCard from "../../components/MessageCard";
 import { useUserSlice } from "../../hooks/useUserSlice";
-
+import { io } from "socket.io-client";
 const MessagesPage = ({navigation,route,infoUserSelected})=> {
 
 
@@ -15,15 +15,33 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
     const {user} = useUserSlice()
     const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages} = useMessageSlice()
     const [mensaje,setMensaje] = useState(``)
-    const {id,nombre_user,photo,id_user_chat} = route.params
+    const {id,nombre_user,photo,id_user_chat,user_from,user_to} = route.params
 
+    console.log(user_from,user_to);
     useEffect(() => {
-      // Desplazar hacia abajo al inicio y cada vez que el contenido cambie
+
       ScrollViewRef.current.scrollToEnd({ animated: true });
+      const socket = io("https://0931-2800-a4-13d5-2600-9ca4-6385-bc7f-80b7.ngrok-free.app", {
+        transports: ["websocket"],
+        cors: {
+          origin: "*",
+        },
+      });
+
+      socket.on('mensaje_servidor', (data) => {
+        console.log('Mensaje del servidor:', data.mensaje);
+      });
+      socket.on("chat_" + user_from + "_and_" + user_to,(data)=> {
+        console.log(data);
+      })
+
+      return ()=> {
+        socket.disconnect()
+      }
+      
     }, []); // Se ejecuta al montar el componente
 
     useEffect(() => {
-      // con este evento al desmontarse el componente volvera a mostrarse el navbar
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
           SeleccionarChat(false)
           // tambien cada vez que se desmonte el componente, borraremos los chat

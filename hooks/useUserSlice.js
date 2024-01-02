@@ -6,6 +6,8 @@ import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
 import { BACKEND_URL} from '@env';
 
+
+console.log(BACKEND_URL);
 export const useUserSlice = ()=> {
 
     const {message,user,messageError,userStatus} = useSelector((state)=> state.user)
@@ -19,7 +21,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(BACKEND_URL + "/api/login",{
+            const {data} = await axios.post(`https://0931-2800-a4-13d5-2600-9ca4-6385-bc7f-80b7.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -47,7 +49,7 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get(BACKEND_URL + "/api/validToken",{
+            const {data} = await axios.get("https://0931-2800-a4-13d5-2600-9ca4-6385-bc7f-80b7.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })

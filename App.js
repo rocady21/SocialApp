@@ -2,16 +2,15 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import ValidRouter from './validRouter';
-import { useUserSlice } from './hooks/useUserSlice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getStorage } from './utils/AsyncStorage';
-import { useEffect } from 'react';
+import {useState } from 'react';
+
+
 
 export default function App() {
+  const [socket, setSocket] = useState(null);
 
 
-  console.log("AGUA");
-
+  
   return (
     <Provider store={store}>
        <ValidRouter/>
@@ -27,3 +26,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+
