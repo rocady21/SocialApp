@@ -10,6 +10,9 @@ import Questions from '../Pages/App/Questions';
 import { useMessageSlice } from '../hooks/useMessagesSlice';
 import Chats from '../Pages/App/Chats';
 import MessagesPage from '../Pages/App/MessagesPage';
+import { getStorage } from '../utils/AsyncStorage';
+import { useUserSlice } from '../hooks/useUserSlice';
+import { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +31,7 @@ export default function AppRouter() {
     <NavigationContainer >
         <Stack.Navigator screenOptions={{
         headerShown:false
-      }} initialRouteName='Profile'>
+      }} initialRouteName='Home'>
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Chats" component={Chats} />
             <Stack.Screen name="Profile" component={Profile} />

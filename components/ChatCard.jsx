@@ -3,14 +3,14 @@ import { useUserSlice } from "../hooks/useUserSlice"
 import { useNavigation } from "@react-navigation/native"
 import { useMessageSlice } from "../hooks/useMessagesSlice"
 
-const MessagesCard = ({ data }) => {
+const ChatCard = ({ data }) => {
     const {user} = useUserSlice()
 
     const navigate = useNavigation()
     const {SeleccionarChat} = useMessageSlice()
     const ShowChat = ()=> {
         SeleccionarChat(true)  
-        navigate.navigate("Messages")
+        navigate.navigate("Messages",data)
     }
     
     return (
@@ -27,7 +27,7 @@ const MessagesCard = ({ data }) => {
                 <Text style={styles.title}>{data.nombre_user}</Text>
                 <Text numberOfLines={1} style={styles.text}> 
                 {
-                    data.id_user_last_message === user.id && "Yo"  
+                    data.id_user_last_message === user.id && "Yo:" + " "  
                 }
                 {data.last_message}</Text>
             </TouchableOpacity>
@@ -41,13 +41,14 @@ const MessagesCard = ({ data }) => {
 
 const styles = StyleSheet.create({
     padre: {
-        marginVertical: 15,
+        marginVertical: 0,
         width: "100%",
-        padding: 25,
+        padding: 15,
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-around"
+        justifyContent: "space-around",
+
     },
     foto: {
         height: "100%",
@@ -80,4 +81,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default MessagesCard
+export default ChatCard

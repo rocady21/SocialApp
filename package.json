@@ -23,7 +23,7 @@
     "react": "18.2.0",
     "react-icons": "^4.12.0",
     "react-native": "0.72.6",
-    "react-native-check-box": "^2.1.7",
+    "react-native-linear-gradient": "^2.8.3",
     "react-native-vector-icons": "^10.0.3",
     "react-redux": "^9.0.4",
     "toastify-react-native": "^4.0.0",
@@ -31,16 +31,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-redux": "^7.1.33",
-    "babel-eslint": "^10.1.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-config-standard-jsx": "^11.0.0",
-    "eslint-config-standard-react": "^13.0.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-react": "^7.33.2"
+    "react-native-dotenv": "^3.4.9"
   },
   "private": true
 }
