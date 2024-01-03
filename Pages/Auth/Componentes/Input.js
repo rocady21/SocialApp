@@ -2,8 +2,9 @@ import React from 'react';
 import { Text, View, TextInput } from 'react-native';
 import temasA from '../../Thems/temas';
 import { Ionicons } from '@expo/vector-icons';
+import {Button, Icon, Input} from 'react-native-elements'
 
-const Inputs = ({ title, placeholders }) => {
+const Inputs = ({ title, placeholders, mensajeError }) => {
     return (
         <View style={{ marginBottom: 25 }}>
             <View style={{ marginBottom: 2 }}>
@@ -18,26 +19,28 @@ const Inputs = ({ title, placeholders }) => {
 
             <View style={{
                 width: '100%',
-                height: 40,
+                height: 60,
                 borderColor: temasA.colors.black,
-                borderBottomWidth: 2,
+                // borderBottomWidth: 2,
                 borderColor: temasA.colors.textoOpacity,
                 borderRadius: 10,
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingLeft: 22
+                paddingLeft: 6
 
             }}>
-                <TextInput
+                <Input
                     placeholder={placeholders}
                     placeholderTextColor={temasA.colors.black}
                     keyboardType={title}
+                    errorMessage={mensajeError}
+                    // defaultValue={mensajeError}
                     style={{
                         width: '100%'
                     }}
                 >
 
-                </TextInput>
+                </Input>
             </View>
 
         </View>

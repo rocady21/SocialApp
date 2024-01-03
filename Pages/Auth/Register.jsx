@@ -8,6 +8,7 @@ import CheckBox from 'react-native-check-box';
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
+import {validateEmail} from '../Utils/helpers'
 
 
 
@@ -22,12 +23,13 @@ const Register = () => {
 
   const [errorName, setErrorName] = useState("");
   const [errorLastName, setErrorLastName] = useState("");
+  const [errorAge, setErrorAge] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [errorConfirm, setErrorConfirm] = useState("");
 
-  const RegisterUser = () => {
-    if (!validateData) {
+  const registerUser = () => {
+    if (!validateData()) {
       return;
 
     }
@@ -40,10 +42,17 @@ const Register = () => {
 
     setErrorName("")
     setErrorLastName("")
+    setErrorAge("")
     setErrorEmail("")
     setErrorPassword("")
-    setErrorConfirm("")
+    // setErrorConfirm("")
     let isValid = true
+
+    if (!validateEmail()) {
+      setErrorName("debes colocar un nombre.")
+      isValid = false
+    }
+    return isValid
   }
 
 
@@ -73,50 +82,50 @@ const Register = () => {
               Connect with your friend today!
             </Text>
           </View>
+          <View>
+            {/*Inicio - input Name */}
+            <Inputs title={'Name'} mensajeError={errorName} />
 
-          {/*Inicio - input Name */}
-          <Inputs title={'Name'} />
+            {/*Inicio - input Apellido */}
+            <Inputs title={'Last name'} mensajeError={errorLastName} />
 
-          {/*Inicio - input Apellido */}
-          <Inputs title={'Last name'} />
+            {/*Inicio - input Edad */}
+            <Inputs title={'Age'} mensajeError={errorAge} />
 
-          {/*Inicio - input Edad */}
-          <Inputs title={'Age'} />
+            {/*Inicio - input correo */}
+            <Inputs title={'Email address'} mensajeError={errorEmail} />
 
-          {/*Inicio - input correo */}
-          <Inputs title={'Email address'} />
+            {/*Inicio - input contraseña */}
 
-          {/*Inicio - input contraseña */}
-
-          <InputPassword title={"Password"} />
-
-
-          <View style={{
-            flexDirection: 'row',
-            marginVertical: 6
-          }}>
+            <InputPassword title={"Password"} mensajeError={errorPassword} />
 
 
-            <CheckBox
-              isChecked={isChecked}
-              onClick={() => setIsChecked(!isChecked)}
-              // rightText='pepe'
-              // rightTextStyle={{
-              //   color: temasA.colors.black, 
-              //   fontSize: 16,
-              //   fontWeight: 'bold'
-              // }}
-              checkedCheckBoxColor='green'
-              uncheckedCheckBoxColor='black'
-            />
+            <View style={{
+              flexDirection: 'row',
+              marginVertical: 6
+            }}>
 
-            <Text style={{ color: isChecked ? 'green' : 'black' }}> I aggree to the terms and conditions</Text>
 
+              <CheckBox
+                isChecked={isChecked}
+                onClick={() => setIsChecked(!isChecked)}
+                // rightText='pepe'
+                // rightTextStyle={{
+                //   color: temasA.colors.black, 
+                //   fontSize: 16,
+                //   fontWeight: 'bold'
+                // }}
+                checkedCheckBoxColor='green'
+                uncheckedCheckBoxColor='black'
+              />
+
+              <Text style={{ color: isChecked ? 'green' : 'black' }}> I aggree to the terms and conditions</Text>
+
+            </View>
+
+
+            <Black_button title={"Register"} onPress={registerUser} />
           </View>
-
-
-          <Black_button title={"Register"} onPress={RegisterUser()} />
-
 
           <View
             style={{
