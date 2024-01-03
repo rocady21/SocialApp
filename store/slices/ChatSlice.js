@@ -30,11 +30,34 @@ const ChatSlice = createSlice({
         },
         onClearMessages:(state)=> {
             state.messages = []
-        }
+        },
+        onAddMessageRealTIme:(state,{payload})=> {
+
+            console.log("state");
+            console.log(payload);
+            const {newMessage,id_me,socket} = payload
+                if (newMessage.usuario === id_me) {
+                    newMessage["is_me"] = true
+                    console.log("soy yo");
+                } else {
+                    newMessage["is_me"] = false
+                    console.log("no soy yo");
+                }
+            
+            // aqui verifico si el mensaje del socekt es mio o no, asi no lo agarro si es que lo es
+            // solo traeria los menasjes del usuario que este en el mismo socket que el mio
+            if(socket === "socket" && newMessage.usuario === id_me ) {
+                return
+            }
+            else {
+                state.messages = [...state.messages,newMessage]
+            }
+
+        } 
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme} = ChatSlice.actions
 
 export default ChatSlice

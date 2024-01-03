@@ -10,15 +10,8 @@ import Questions from '../Pages/App/Questions';
 import { useMessageSlice } from '../hooks/useMessagesSlice';
 import Chats from '../Pages/App/Chats';
 import MessagesPage from '../Pages/App/MessagesPage';
-import { getStorage } from '../utils/AsyncStorage';
-import { useUserSlice } from '../hooks/useUserSlice';
-import { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
-
-
-
-console.log("router");
 
 export default function AppRouter() {
 
