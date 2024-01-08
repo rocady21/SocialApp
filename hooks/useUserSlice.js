@@ -20,7 +20,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://c1ea-2800-a4-1302-7f00-f54f-8d6b-5964-6ab6.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://0fbd-2800-a4-13bc-500-8de5-807e-414a-c2db.ngrok-free.app /api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -48,7 +48,7 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get("https://c1ea-2800-a4-1302-7f00-f54f-8d6b-5964-6ab6.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get("https://0fbd-2800-a4-13bc-500-8de5-807e-414a-c2db.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -73,10 +73,7 @@ export const useUserSlice = ()=> {
     const existUser = ()=> {
         try {
             ClearStorage()
-
             removeValueStorage("token")
-            
-
             Dispach(onExistUser())
         } catch (error) {
             console.log(error);

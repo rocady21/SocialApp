@@ -17,6 +17,10 @@ const Profile = () => {
     const [stateModal, setStateModal] = useState(false)
 
 
+    useEffect(()=> {
+        // aqui cargare los posts del usuario 
+        console.log("El seba es el mejor progamador");
+    },[])
     
 
     return (
