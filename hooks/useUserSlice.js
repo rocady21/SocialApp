@@ -6,6 +6,8 @@ import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
 import { BACKEND_URL} from '@env';
 
+
+console.log(BACKEND_URL);
 export const useUserSlice = ()=> {
 
     const {message,user,messageError,userStatus} = useSelector((state)=> state.user)
@@ -13,13 +15,12 @@ export const useUserSlice = ()=> {
     const Dispach = useDispatch()
     
     const mostrarMensaje = ()=> {
-
         Dispach(setMessage("Hola"))
     }
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(BACKEND_URL + "/api/login",{
+            const {data} = await axios.post(`https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -47,7 +48,7 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get(BACKEND_URL + "/api/validToken",{
+            const {data} = await axios.get("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -72,15 +73,13 @@ export const useUserSlice = ()=> {
     const existUser = ()=> {
         try {
             ClearStorage()
-
             removeValueStorage("token")
-            
-
             Dispach(onExistUser())
         } catch (error) {
             console.log(error);
         }
     }
+
     
     return {
         message,
@@ -90,7 +89,7 @@ export const useUserSlice = ()=> {
         mostrarMensaje,
         LoginUser,
         existUser,
-        validToken
+        validToken,
     }
 }
 

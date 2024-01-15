@@ -10,15 +10,9 @@ import Questions from '../Pages/App/Questions';
 import { useMessageSlice } from '../hooks/useMessagesSlice';
 import Chats from '../Pages/App/Chats';
 import MessagesPage from '../Pages/App/MessagesPage';
-import { getStorage } from '../utils/AsyncStorage';
-import { useUserSlice } from '../hooks/useUserSlice';
-import { useEffect } from 'react';
+import CardPost from '../components/CardPost';
 
 const Stack = createNativeStackNavigator();
-
-
-
-
 
 export default function AppRouter() {
 
@@ -38,6 +32,8 @@ export default function AppRouter() {
             <Stack.Screen name="Search" component={Search} />
             <Stack.Screen name="Questions" component={Questions} />
             <Stack.Screen name="Messages" component={MessagesPage} />
+            <Stack.Screen name="Info_Post" component={CardPost} />
+            
 
         </Stack.Navigator>
       {

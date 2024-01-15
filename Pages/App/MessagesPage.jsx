@@ -7,23 +7,43 @@ import Arrow from "react-native-vector-icons/SimpleLineIcons"
 import More from "react-native-vector-icons/Feather"
 import MessageCard from "../../components/MessageCard";
 import { useUserSlice } from "../../hooks/useUserSlice";
-
+import { io } from "socket.io-client";
 const MessagesPage = ({navigation,route,infoUserSelected})=> {
 
 
     const ScrollViewRef = useRef()
     const {user} = useUserSlice()
-    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages} = useMessageSlice()
+    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages,onAddMessageRealTImeSocekt} = useMessageSlice()
     const [mensaje,setMensaje] = useState(``)
-    const {id,nombre_user,photo,id_user_chat} = route.params
+    const {id,nombre_user,photo,id_user_chat,user_from,user_to} = route.params
+
 
     useEffect(() => {
-      // Desplazar hacia abajo al inicio y cada vez que el contenido cambie
+      loadMessageFromUser(id)
       ScrollViewRef.current.scrollToEnd({ animated: true });
+      const socket = io("https://7f0b-2800-a4-130a-3600-9437-e26a-1cf1-f0d6.ngrok-free.app", {
+        transports: ["websocket"],
+        cors: {
+          origin: "*",
+        },
+      });
+
+      socket.on('mensaje_servidor', (data) => {
+        console.log('Mensaje del servidor:', data.mensaje);
+      });
+      socket.on("chat_" + user_from + "_and_" + user_to,(data)=> {
+        console.log("socekt");
+        console.log(data);
+        onAddMessageRealTImeSocekt(data.mensaje)
+      })
+
+      return ()=> {
+        socket.disconnect()
+      }
+      
     }, []); // Se ejecuta al montar el componente
 
     useEffect(() => {
-      // con este evento al desmontarse el componente volvera a mostrarse el navbar
         const unsubscribe = navigation.addListener('beforeRemove', (e) => {
           SeleccionarChat(false)
           // tambien cada vez que se desmonte el componente, borraremos los chat
@@ -32,9 +52,7 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
         return unsubscribe;
       }, [navigation]);
 
-    useEffect(()=> {
-      loadMessageFromUser(id)
-    },[])
+
 
     const enviarMensaje = ()=> {
       if(mensaje !== "") {

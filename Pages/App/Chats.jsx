@@ -1,26 +1,41 @@
 import { View,StyleSheet,Text,TextInput,TouchableOpacity,KeyboardAvoidingView, Platform, ScrollView } from "react-native"
 import { useUserSlice } from "../../hooks/useUserSlice"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
 import ChatCard from "../../components/ChatCard"
+import { useFocusEffect } from "@react-navigation/native"
+import React from "react"
+import { SvgXml } from "react-native-svg"
+import icon_error from "../../icons/icon_error"
+
+
 
  const Chats = ({route})=> {
 
     const {name} = route
     const {user} = useUserSlice()
     const {LoadContactsMessage,SeleccionarChat} = useMessageSlice()
-    const {contactsChat} = useMessageSlice()
+    const {contactsChat,stateChats} = useMessageSlice()
     const [SearchMessageContact,setSearchMessageContact] = useState("")
-
-
     
 
-    useEffect(()=> {
-        SeleccionarChat(false)
-        LoadContactsMessage(user.id)
-    },[])
+    
+    // este useEffect es de react-navigation y sirve para detectar cuando estas o sales de una pantalla
+    useFocusEffect(
+        useCallback(() => {
+          // Lógica específica cuando la pantalla Home se enfoca
+          console.log('La pantalla de chats se enfocó');
+          SeleccionarChat(false)
+          LoadContactsMessage(user.id)
+          return () => {
+            console.log('La pantalla de chats se desenfocó');
+          };
+        }, [])
+      );
+
+
 
     
     return (
@@ -48,9 +63,19 @@ import ChatCard from "../../components/ChatCard"
         </View>
         <ScrollView style={styles.body}>
             {
-            contactsChat[0]? contactsChat.map((contact,index)=> {
+            stateChats === "chats"? contactsChat.map((contact,index)=> {
                 return <ChatCard data={contact} key={index}/>
-            }) : <Text>Cargando...</Text>
+            }) : stateChats === "no-chats"? 
+            <View style={styles.error}>
+                <SvgXml
+                    height={250}
+                    width={250}
+                    xml={icon_error}  
+                />
+                <Text style={styles.textE}>No tienes ningun chat aun.</Text>
+
+            </View>
+         : <Text>Cargando...</Text>
             }
 
         </ScrollView>
@@ -61,7 +86,8 @@ import ChatCard from "../../components/ChatCard"
 
 const styles = StyleSheet.create({
     padre:{
-        flex:1
+        flex:1,
+        width:"100%"
     },
     header:{
         height:200,
@@ -76,7 +102,11 @@ const styles = StyleSheet.create({
         flex:0.8,
         width:"100%",
         maxHeight:"80%",
+        height:"80%",
         display:"flex",
+
+        
+        
     },
     top:{
         display:"flex",
@@ -105,7 +135,18 @@ const styles = StyleSheet.create({
     inputSearch:{
         width:"85%",
         
+    },
+    error:{
+        alignItems:"center",
+        marginTop:50,
+        width:"100%",
+        height:"100%",
+    },
+    textE:{
+        fontSize:20,
+        marginTop:5
     }
+
 
 })
 

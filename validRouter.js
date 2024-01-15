@@ -13,11 +13,11 @@ export default  function ValidRouter() {
   const {validToken} = useUserSlice()
   const {userStatus} = useSelector((state) => state.user)
   const [token,setToken ] = useState("")
- 
 
   
   useEffect(()=> {
     obtenerToken()
+
   },[])
 
 
@@ -29,6 +29,7 @@ export default  function ValidRouter() {
 
   const obtenerToken = async ()=> {
     const tk = await getStorage("token")
+    setToken(tk)
 
   }
   
