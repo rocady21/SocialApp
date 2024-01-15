@@ -19,5 +19,5 @@ const PostSlice = createSlice({
     }
 })
 
-export const {} = PostSlice.actions
+export const {onLoadPostUser,onClearPostUsers} = PostSlice.actions
 export default PostSlice

@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme } from "../store/slices/ChatSlice"
+import { onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme, onLoadingChats, onNoChats } from "../store/slices/ChatSlice"
 import { getStorage } from "../utils/AsyncStorage"
 import {BACKEND_URL} from "@env"
 import { useUserSlice } from "./useUserSlice"
@@ -9,15 +9,20 @@ import { useUserSlice } from "./useUserSlice"
 export const useMessageSlice = ()=> {
 
     const Dispach = useDispatch()
-    const {contactsChat,messages,selectedChat} = useSelector((state)=> state.chat)
+    const {contactsChat,messages,selectedChat,stateChats} = useSelector((state)=> state.chat)
     const {user} = useUserSlice()
     
     const LoadContactsMessage = async(userID) => {
         try {
-            const {data} = await axios.get("https://0fbd-2800-a4-13bc-500-8de5-807e-414a-c2db.ngrok-free.app/api/chats/" + userID)
-                       
+            Dispach(onLoadingChats())
+            const {data} = await axios.get("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/chats/" + userID)
+            console.log(data);
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
+            } else if(data.ok === false) {
+                console.log("no hay");
+                // este caso es cuando no tiene ningun chat
+                Dispach(onNoChats())
             }
         } catch (error) {
             console.log(error);
@@ -32,7 +37,7 @@ export const useMessageSlice = ()=> {
     const loadMessageFromUser = async(id_chat)=> {
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.get("https://0fbd-2800-a4-13bc-500-8de5-807e-414a-c2db.ngrok-free.app/api/messages/" + id_chat,{
+            const {data} = await axios.get("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/messages/" + id_chat,{
                 headers: { "Authorization": `Bearer ${tk}` }
             })
             Dispach(onLoadChats(data.messages))
@@ -49,7 +54,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://0fbd-2800-a4-13bc-500-8de5-807e-414a-c2db.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,
@@ -79,6 +84,7 @@ export const useMessageSlice = ()=> {
         contactsChat,
         messages,
         selectedChat,
+        stateChats,
         LoadContactsMessage,
         SeleccionarChat,
         loadMessageFromUser,

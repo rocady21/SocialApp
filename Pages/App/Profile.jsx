@@ -4,22 +4,28 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
 import Icon from "react-native-vector-icons/Ionicons"
-import CardPost from "../../components/CardPost"
+
 import ModalAddPost from "../../components/ModalAddPost"
+import { usePosterSlice } from "../../hooks/usePostSlice"
+import { useUserSlice } from "../../hooks/useUserSlice"
+import CardPostPreview from "../../components/CardPostPreview"
 
 
 
 
 const Profile = () => {
 
+    // hooks
     const [isFollower, setIsFollower] = useState()
     const [is_me, setIs_me] = useState(true)
     const [stateModal, setStateModal] = useState(false)
 
+    const {LoadPostsUser,postsUser} = usePosterSlice()
+    const {user} = useUserSlice()
 
     useEffect(()=> {
         // aqui cargare los posts del usuario 
-        console.log("El seba es el mejor progamador");
+        LoadPostsUser(user.id)
     },[])
     
 
@@ -96,8 +102,12 @@ const Profile = () => {
 
                     <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex" }} >
                         <View style={styles.posts}>
-                            <CardPost />
-                            <CardPost />
+                            {
+                                postsUser[0]? postsUser.map((post)=> {
+                                    return <CardPostPreview key={post.id} data={post} />
+                                }) : <Text>Cargando...</Text>
+                            }
+                            
 
                         </View>
                     </ScrollView>
