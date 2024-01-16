@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text, View, TextInput } from 'react-native';
+import {Text, View } from 'react-native';
 import temasA from '../../Thems/temas';
-import { Ionicons } from '@expo/vector-icons';
-import {Button, Icon, Input} from 'react-native-elements'
+import {Input} from 'react-native-elements'
 
-const Inputs = ({ title, placeholders, mensajeError }) => {
+
+const Inputs = ({ title, placeholders, mensajeError, onChange, typetext, fromdata }) => {
     return (
         <View style={{ marginBottom: 25 }}>
             <View style={{ marginBottom: 2 }}>
@@ -34,7 +34,9 @@ const Inputs = ({ title, placeholders, mensajeError }) => {
                     placeholderTextColor={temasA.colors.black}
                     keyboardType={title}
                     errorMessage={mensajeError}
-                    // defaultValue={mensajeError}
+                    password={true}
+                    onChange={(e) =>onChange(e, typetext)}
+                    defaultValue={fromdata}
                     style={{
                         width: '100%'
                     }}

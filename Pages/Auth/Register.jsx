@@ -8,7 +8,10 @@ import CheckBox from 'react-native-check-box';
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
-import {validateEmail} from '../Utils/helpers'
+import { validateEmail } from '../Utils/helpers'
+import { size } from 'lodash'
+import { onChange } from 'react-native';
+
 
 
 
@@ -17,24 +20,41 @@ import {validateEmail} from '../Utils/helpers'
 const Register = () => {
 
 
+  const [formData, setFormData] = useState(defaultFormValues())
+
   const [isChecked, setIsChecked] = useState(false)
-
   const navigation = useNavigation();
-
   const [errorName, setErrorName] = useState("");
   const [errorLastName, setErrorLastName] = useState("");
   const [errorAge, setErrorAge] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
-  const [errorConfirm, setErrorConfirm] = useState("");
+
+
+  const onChange = (e, type) => {
+    setFormData({ ...formData, [type]: e.nativeEvent.text })
+  }
+
+
+
+
 
   const registerUser = () => {
     if (!validateData()) {
+    console.log("prueba formdata => ", formData)
+
       return;
 
-    }
 
-    console.log("Validado")
+
+    }else{
+
+      console.log("Validado")
+      // console.log("prueba fomdata => ", formData)
+    }
+   
+
+
 
   }
 
@@ -45,11 +65,33 @@ const Register = () => {
     setErrorAge("")
     setErrorEmail("")
     setErrorPassword("")
-    // setErrorConfirm("")
     let isValid = true
 
     if (!validateEmail()) {
-      setErrorName("debes colocar un nombre.")
+      setErrorEmail("debes colocar un email.")
+      isValid = false
+    }
+
+    if (formData.name == "") {
+      setErrorName("ingrese un nombre valido")
+      isValid = false
+    }
+    if (formData.lastname == "") {
+      setErrorLastName("ingrese un apellido valido")
+      isValid = false
+    }
+
+    if (formData.age == "") {
+      setErrorAge("ingrese una edad valida")
+  
+      isValid = false
+    }
+
+    
+
+    if (size(formData.password) < 6) {
+      setErrorPassword("la contrasela debe de tener un minimo de 6 caracteres.")
+      console.log(formData.password)
       isValid = false
     }
     return isValid
@@ -84,20 +126,20 @@ const Register = () => {
           </View>
           <View>
             {/*Inicio - input Name */}
-            <Inputs title={'Name'} mensajeError={errorName} />
+            <Inputs title={'Name'} mensajeError={errorName} onChange={onChange} typetext={"name"} fromdata={formData.name} />
 
             {/*Inicio - input Apellido */}
-            <Inputs title={'Last name'} mensajeError={errorLastName} />
+            <Inputs title={'Last name'} mensajeError={errorLastName} onChange={onChange}  typetext={"lastname"} fromdata={formData.email} />
 
             {/*Inicio - input Edad */}
-            <Inputs title={'Age'} mensajeError={errorAge} />
+            <Inputs title={'Age'} mensajeError={errorAge} onChange={onChange}  typetext={"age"}  fromdata={formData.email}/>
 
             {/*Inicio - input correo */}
-            <Inputs title={'Email address'} mensajeError={errorEmail} />
+            <Inputs title={'Email address'} mensajeError={errorEmail} onChange={onChange}  typetext={"email"}  fromdata={formData.email}  />
 
             {/*Inicio - input contraseña */}
 
-            <InputPassword title={"Password"} mensajeError={errorPassword} />
+            <InputPassword title={"Password"} mensajeError={errorPassword}  onChange={onChange}  typetext={"password"} fromdata={formData.password} />
 
 
             <View style={{
@@ -256,6 +298,12 @@ const Register = () => {
 
   )
 }
+
+const defaultFormValues = () => {
+  return {name: "", lastname: "", email: "", password: "", age: "" }
+
+}
+
 
 export default Register
 
