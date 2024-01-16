@@ -10,7 +10,7 @@ import Questions from '../Pages/App/Questions';
 import { useMessageSlice } from '../hooks/useMessagesSlice';
 import Chats from '../Pages/App/Chats';
 import MessagesPage from '../Pages/App/MessagesPage';
-import CardPost from '../components/CardPost';
+import CardPost from '../components/Profile/CardPost';
 
 const Stack = createNativeStackNavigator();
 

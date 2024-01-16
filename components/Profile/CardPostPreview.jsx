@@ -1,11 +1,14 @@
 import { useNavigation } from "@react-navigation/native"
-import { View,StyleSheet,Text, TouchableOpacity,Image } from "react-native"
+import { View,StyleSheet,Text, TouchableOpacity,Image,Modal } from "react-native"
+import { usePosterSlice } from "../../hooks/usePostSlice"
 
 
 const CardPostPreview = ({data})=> {
     const navigate = useNavigation()
+    const {AddSelectedPost} = usePosterSlice()
     const ViewPost = ()=> {
-        navigate.navigate("Info_Post",data)
+        AddSelectedPost(data)
+        navigate.navigate("Info_Post")
     }
     
     return (

@@ -1,23 +1,32 @@
-import React, { useEffect } from "react"
-import { View,Text,StyleSheet,Image,TouchableOpacity } from "react-native"
+import React, { useEffect, useState } from "react"
+import { View,Text,StyleSheet,Image,TouchableOpacity,Modal } from "react-native"
 import More from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import Feather from "react-native-vector-icons/Feather"
-import { usePosterSlice } from "../hooks/usePostSlice"
+import { usePosterSlice } from "../../hooks/usePostSlice"
+import Like_Component from "./Likes_Component"
+import { useUserSlice } from "../../hooks/useUserSlice"
 const CardPost = ({route})=> {
+    // hooks
+    const [modalVisible, setModalVisible] = useState(false);
+    const {user} = useUserSlice()
+    const {selectedPost,postsUser,addLike,quitLike,QuitSelectedPosts} = usePosterSlice()
 
-    const {comments,id,infoPost,info_comments,info_likes,likes,photos,user_posted_info} = route.params
-    const {} = usePosterSlice()
+    const {comments,id,infoPost,info_comments,info_likes,likes,photos,user_posted_info} = selectedPost
 
-    useEffect(()=> {
-        return ()=> {
-            
+    const isLikedPost = info_likes.find((like)=> like.id == user.id ) ? true : false
+    
+
+    console.log(info_likes);
+    
+    const AddOrQuitLike = ()=> {
+        if(isLikedPost == true) {
+            quitLike({id_post:infoPost.id,id_user:user.id})
+        } else {
+            addLike({id_post:infoPost.id,id_user:user.id})
         }
-    },[])
-    
-    console.log(photos);
-    
+    }
     
     return (
         <View style={styles.padreTodo}>
@@ -58,14 +67,17 @@ const CardPost = ({route})=> {
                 </View>
                 <View style={styles.interactions}>
                     <View style={styles.buttonsI}>
-                        <MaterialIcons name="favorite-border" size={28} color={"black"}/>
+                        {
+                            isLikedPost === true? <MaterialIcons onPress={AddOrQuitLike} name="favorite" size={28} color={"#FD5252"}/> : <MaterialIcons onPress={AddOrQuitLike} name="favorite-border" size={28} color={"black"}/>
+                        }
+                        
                         <EvilIcons name="comment" style={{marginLeft:10}} size={30} color={"black"}/>
                     </View>
                     <Feather name="send" size={30} color={"black"}/>
                 </View>
                 <View style={styles.infoPost}>
                     <View style={styles.likes}>
-                        <TouchableOpacity style={styles.likesButton}>
+                        <TouchableOpacity onPress={()=> setModalVisible(!modalVisible)} style={styles.likesButton}>
                             <Text>
                                 a {likes} {likes == 1 ? "persona les gustó esto." : "personas les gustó esto."}
                             </Text>
@@ -82,6 +94,35 @@ const CardPost = ({route})=> {
                 
                 
             </View>
+            <Modal style={{width:"100%", height:"100%"}}
+
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  setModalVisible(false);
+                }}
+            >
+                <View  style={styles.padreModal}>
+
+                    <View style={styles.ModalInfo}>
+                        <View style={styles.headerModal}>
+                            <TouchableOpacity onPress={()=> setModalVisible(!modalVisible)}>
+                                <EvilIcons name="close" size={25}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.infoModal}>
+                        {
+                            info_likes[0]? info_likes.map((info)=> {
+                                return <Like_Component key={info.id} info={info}/>
+                            }) : <Text style={{textAlign:"center"}}>No hay likes aún.</Text>
+                        }
+                        </View>
+
+                    </View>
+
+                </View>
+            </Modal>
         </View>
     )
 
@@ -90,7 +131,11 @@ const CardPost = ({route})=> {
 
 const styles = StyleSheet.create({
     padreTodo:{
-        flex:1
+        width:"100%",
+        flex:1,
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"center"
     },
     padre:{
         display:"flex",
@@ -181,6 +226,34 @@ const styles = StyleSheet.create({
     textTime:{
         fontSize:16,
         color:"#C2C2C2"
+    },
+    padreModal: {
+
+        width:"100%",
+        height:"100%",
+        display:"flex",
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"center"
+    },
+    ModalInfo:{
+        width:300,
+        backgroundColor:"white",
+        borderRadius:10,
+    },
+    infoModal:{
+        display:"flex",
+        flexDirection:"column",
+        padding:10
+    },
+    headerModal:{
+        paddingVertical:8,
+        paddingHorizontal:5,
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"flex-end",
+        borderBottomColor:"#D5D5D5",
+        borderBottomWidth:1
     }
     
 })

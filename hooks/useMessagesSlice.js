@@ -15,7 +15,7 @@ export const useMessageSlice = ()=> {
     const LoadContactsMessage = async(userID) => {
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.get("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/chats/" + userID)
+            const {data} = await axios.get("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/chats/" + userID)
             console.log(data);
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
@@ -37,7 +37,7 @@ export const useMessageSlice = ()=> {
     const loadMessageFromUser = async(id_chat)=> {
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.get("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/messages/" + id_chat,{
+            const {data} = await axios.get("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/messages/" + id_chat,{
                 headers: { "Authorization": `Bearer ${tk}` }
             })
             Dispach(onLoadChats(data.messages))
@@ -54,7 +54,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://a716-2800-a4-1323-9600-7d5c-52fc-18bc-82a3.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,

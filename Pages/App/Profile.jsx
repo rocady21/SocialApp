@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/Ionicons"
 import ModalAddPost from "../../components/ModalAddPost"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import { useUserSlice } from "../../hooks/useUserSlice"
-import CardPostPreview from "../../components/CardPostPreview"
+import CardPostPreview from "../../components/Profile/CardPostPreview"
 
 
 
