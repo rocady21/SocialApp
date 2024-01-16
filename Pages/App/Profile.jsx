@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity,Modal } from "react-native"
+import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity,Modal,ActivityIndicator } from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
@@ -100,12 +100,20 @@ const Profile = () => {
                         <Text style={styles.title} >Posts</Text>
                     </View>
 
-                    <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex" }} >
+                    <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex"}} >
                         <View style={styles.posts}>
                             {
-                                postsUser[0]? postsUser.map((post)=> {
-                                    return <CardPostPreview key={post.id} data={post} />
-                                }) : <Text>Cargando...</Text>
+                                postsUser[0]?
+                                <View style={styles.postsList}>
+                                    {
+                                        postsUser.map((post)=> {
+                                            return <CardPostPreview key={post.id} data={post} />
+                                        })
+                                    }
+                                </View>
+                                 :  <View style={styles.indicator}>
+                                        <ActivityIndicator color={"black"} size={"large"}/>
+                                 </View>
                             }
                             
 
@@ -129,6 +137,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         filter: "blur(2)",
+    },
+    indicator:{
+        width:"100%",
+        height:"100%",
+        display:"flex",
+        flexDirection:"row",
+        justifyContent:"center",
+        alignContent:"center",
+        
     },
     info: {
         display: "flex",
@@ -204,11 +221,18 @@ const styles = StyleSheet.create({
     },
     posts: {
         width: "100%",
+        height:"100%",
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
 
 
+    },
+    postsList:{
+        width: "100%",
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "wrap",
     },
     buttonsInteractions: {
         width: "80%",

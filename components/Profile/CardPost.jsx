@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { View,Text,StyleSheet,Image,TouchableOpacity,Modal } from "react-native"
+import { View,Text,StyleSheet,Image,TouchableOpacity,Modal,TouchableWithoutFeedback } from "react-native"
 import More from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import EvilIcons from "react-native-vector-icons/EvilIcons"
@@ -10,6 +10,7 @@ import { useUserSlice } from "../../hooks/useUserSlice"
 const CardPost = ({route})=> {
     // hooks
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalComment, setModalComment] = useState(false);
     const {user} = useUserSlice()
     const {selectedPost,postsUser,addLike,quitLike,QuitSelectedPosts} = usePosterSlice()
 
@@ -71,7 +72,7 @@ const CardPost = ({route})=> {
                             isLikedPost === true? <MaterialIcons onPress={AddOrQuitLike} name="favorite" size={28} color={"#FD5252"}/> : <MaterialIcons onPress={AddOrQuitLike} name="favorite-border" size={28} color={"black"}/>
                         }
                         
-                        <EvilIcons name="comment" style={{marginLeft:10}} size={30} color={"black"}/>
+                        <EvilIcons name="comment" onPress={()=> setModalComment(true)} style={{marginLeft:10}} size={30} color={"black"}/>
                     </View>
                     <Feather name="send" size={30} color={"black"}/>
                 </View>
@@ -121,6 +122,26 @@ const CardPost = ({route})=> {
 
                     </View>
 
+                </View>
+            </Modal>
+
+            {
+            //modal de comentarios 
+            }
+
+            <Modal style={{width:"100%", height:"100%"}}
+                animationType="slide"
+                transparent={true}
+                visible={modalComment}
+                onRequestClose={() => {
+                setModalComment(false)
+                }}
+                
+            >
+                <View style={{display:"flex",flexDirection:"row",alignContent:"flex-end",height:"100%"}}>
+                    <View  style={styles.comments}>
+                        <Text style={styles.titleComment}>Comentarios</Text>
+                    </View>
                 </View>
             </Modal>
         </View>
@@ -225,7 +246,8 @@ const styles = StyleSheet.create({
     },
     textTime:{
         fontSize:16,
-        color:"#C2C2C2"
+        color:"#C2C2C2",
+        marginHorizontal:5
     },
     padreModal: {
 
@@ -254,6 +276,21 @@ const styles = StyleSheet.create({
         justifyContent:"flex-end",
         borderBottomColor:"#D5D5D5",
         borderBottomWidth:1
+    },
+    comments:{
+        width:"100%",
+        height:500,
+        backgroundColor:"white",
+        borderTopRightRadius:15,
+        borderTopLeftRadius:15,
+        alignSelf:"flex-end",
+        display:"flex",
+        flexDirection:"column",
+        alignItems:"center"
+    },
+    titleComment:{
+        fontSize:20,
+        fontWeight:"500"
     }
     
 })

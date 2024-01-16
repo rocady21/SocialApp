@@ -1,4 +1,4 @@
-import { View,StyleSheet,Text,TextInput,TouchableOpacity,KeyboardAvoidingView, Platform, ScrollView } from "react-native"
+import { View,StyleSheet,Text,TextInput,TouchableOpacity,KeyboardAvoidingView, Platform, ScrollView,ActivityIndicator } from "react-native"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import { useCallback, useEffect, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
@@ -75,7 +75,7 @@ import icon_error from "../../icons/icon_error"
                 <Text style={styles.textE}>No tienes ningun chat aun.</Text>
 
             </View>
-         : <Text>Cargando...</Text>
+         : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"}/>
             }
 
         </ScrollView>
@@ -104,9 +104,10 @@ const styles = StyleSheet.create({
         maxHeight:"80%",
         height:"80%",
         display:"flex",
-
-        
-        
+    },
+    indicator:{
+        alignSelf:"center",
+        marginTop:"45%"
     },
     top:{
         display:"flex",
