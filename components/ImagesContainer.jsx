@@ -6,14 +6,15 @@ import {launchCamera,launchImageLibrary} from "react-native-image-picker"
 import * as ImagePicker from "expo-image-picker"
 
 
-export const ImageContainer = ()=> {
+export const ImageContainer = ({setImage})=> {
     const [imageSelected,setImageSelected] = useState("")
     const options = {
         mediaType: "photo",
         title:"Select Image",
         maxWidth:2000,
         maxHeiht:2000,
-        quality:0.8
+        quality:0.8,
+       
     }
 
     const handleSelectPhoto = async () => {
@@ -21,10 +22,11 @@ export const ImageContainer = ()=> {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
         if (status === "granted") {
-          const result = await ImagePicker.launchImageLibraryAsync(options);
+          const result = await ImagePicker.launchImageLibraryAsync({...options, multiple:true});
     
           if (!result.canceled) {
-            setImageSelected(result.assets[0].uri)
+            console.log(result.assets);
+            setImage(result.assets[0].uri)
           }
         } else {
           Alert.alert("Permission Denied", "Please grant permission to access the gallery.");

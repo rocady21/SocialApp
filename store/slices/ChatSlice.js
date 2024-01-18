@@ -7,7 +7,8 @@ const ChatSlice = createSlice({
         stateChats:"no-chats",
         messages:[],
         contactsChat:[],
-        selectedChat:false
+        selectedChat:false,
+        searchContact:[]
     },
     reducers:{
         onLoadingChats:(state,{payload})=> {
@@ -41,15 +42,12 @@ const ChatSlice = createSlice({
         },
         onAddMessageRealTIme:(state,{payload})=> {
 
-            console.log("state");
             console.log(payload);
             const {newMessage,id_me,socket} = payload
                 if (newMessage.usuario === id_me) {
                     newMessage["is_me"] = true
-                    console.log("soy yo");
                 } else {
                     newMessage["is_me"] = false
-                    console.log("no soy yo");
                 }
             
             // aqui verifico si el mensaje del socekt es mio o no, asi no lo agarro si es que lo es
@@ -61,11 +59,26 @@ const ChatSlice = createSlice({
                 state.messages = [...state.messages,newMessage]
             }
 
-        } 
+        },
+        onfilterContactsChats:(state,{payload})=> {
+
+            const valueSearch = payload.toLowerCase()
+
+            searchContacts = state.contactsChat.map((contacts)=> {
+                nombreLower = contacts.nombre_user.toLowerCase()
+
+                if( nombreLower.includes(valueSearch)) {
+                    return contacts
+                }
+
+            })
+
+            state.searchContact = searchContacts
+        }
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme,onLoadingChats,onNoChats} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats} = ChatSlice.actions
 
 export default ChatSlice

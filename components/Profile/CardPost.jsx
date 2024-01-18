@@ -7,19 +7,24 @@ import Feather from "react-native-vector-icons/Feather"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import Like_Component from "./Likes_Component"
 import { useUserSlice } from "../../hooks/useUserSlice"
+import { formatDate } from "../../utils/FormatDate"
 const CardPost = ({route})=> {
     // hooks
     const [modalVisible, setModalVisible] = useState(false);
     const [modalComment, setModalComment] = useState(false);
     const {user} = useUserSlice()
     const {selectedPost,postsUser,addLike,quitLike,QuitSelectedPosts} = usePosterSlice()
+    // hooks para simular carrousel
 
     const {comments,id,infoPost,info_comments,info_likes,likes,photos,user_posted_info} = selectedPost
 
+    const [indexPhoto,setindexPhoto] = useState(0)
+
     const isLikedPost = info_likes.find((like)=> like.id == user.id ) ? true : false
     
+    console.log(indexPhoto);
 
-    console.log(info_likes);
+    const formated_date = formatDate(infoPost.fecha,false)
     
     const AddOrQuitLike = ()=> {
         if(isLikedPost == true) {
@@ -28,7 +33,22 @@ const CardPost = ({route})=> {
             addLike({id_post:infoPost.id,id_user:user.id})
         }
     }
+
+    const Next = ()=> {
+        if( indexPhoto == photos.length - 1) {
+            setindexPhoto(0)
+        } else {
+            setindexPhoto(indexPhoto + 1)
+        }
+    }
     
+    const Back = ()=> {
+        if( indexPhoto === 0) {
+            setindexPhoto(photos.length - 1 )
+        } else {
+            setindexPhoto(indexPhoto -1)
+        }
+    }
     return (
         <View style={styles.padreTodo}>
             <View style={styles.padre} >
@@ -48,18 +68,18 @@ const CardPost = ({route})=> {
 
                 </View>
                 <View style={styles.body}>
-                    <Image 
+                        <Image 
                         style={styles.imageBody}
                         source={{
-                            uri: photos[0].photo_url
+                            uri: photos[indexPhoto].photo_url
                         }}
-                    />
+                        />
                     {
                         photos.length !== 1 && <View style={styles.CarrouselPadre}>
-                            <TouchableOpacity style={styles.arrowLeft}>
+                            <TouchableOpacity onPress={Back} style={styles.arrowLeft}>
                         <MaterialIcons name="keyboard-arrow-left" size={30} color={"white"}  />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.arrowRight}>
+                    <TouchableOpacity onPress={Next} style={styles.arrowRight}>
                         <MaterialIcons name="keyboard-arrow-right" size={30} color={"white"}/>
                     </TouchableOpacity>
                         </View>
@@ -80,7 +100,7 @@ const CardPost = ({route})=> {
                     <View style={styles.likes}>
                         <TouchableOpacity onPress={()=> setModalVisible(!modalVisible)} style={styles.likesButton}>
                             <Text>
-                                a {likes} {likes == 1 ? "persona les gustó esto." : "personas les gustó esto."}
+                                {isLikedPost === true && likes == 1? "a ti te gusto esto." : isLikedPost == true && likes > 1? "a ti y " + (likes - 1)  + " les gusto esto.": "a " + likes + " les gusto esto."  }
                             </Text>
 
                         </TouchableOpacity>
@@ -90,7 +110,7 @@ const CardPost = ({route})=> {
                     </View>
                 </View>
                 <View style={styles.time}>
-                    <Text style={styles.textTime}>Hace 5 dias</Text>
+                    <Text style={styles.textTime}>{formated_date}</Text>
                 </View>
                 
                 
@@ -141,6 +161,11 @@ const CardPost = ({route})=> {
                 <View style={{display:"flex",flexDirection:"row",alignContent:"flex-end",height:"100%"}}>
                     <View  style={styles.comments}>
                         <Text style={styles.titleComment}>Comentarios</Text>
+                        {
+                        info_comments !== null? info_comments.map((comment)=>{
+                            return <Text key={comment.id}>Hay comentarios</Text>
+                        }) : <Text style={styles.commentTitle}>No hay comentarios aun</Text>
+                        }
                     </View>
                 </View>
             </Modal>
@@ -290,7 +315,15 @@ const styles = StyleSheet.create({
     },
     titleComment:{
         fontSize:20,
-        fontWeight:"500"
+        fontWeight:"500",
+        borderBottomColor:"#DDDDDD",
+        borderBottomWidth:2,
+        padding:10
+    },
+    commentTitle:{
+        textAlign:"center",
+        marginTop:25,
+        fontSize:20
     }
     
 })

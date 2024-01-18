@@ -16,7 +16,7 @@ import icon_error from "../../icons/icon_error"
 
     const {name} = route
     const {user} = useUserSlice()
-    const {LoadContactsMessage,SeleccionarChat} = useMessageSlice()
+    const {LoadContactsMessage,SeleccionarChat,SearchMessage,searchContact} = useMessageSlice()
     const {contactsChat,stateChats} = useMessageSlice()
     const [SearchMessageContact,setSearchMessageContact] = useState("")
     
@@ -35,7 +35,12 @@ import icon_error from "../../icons/icon_error"
         }, [])
       );
 
-
+    useEffect(()=> {
+      if(SearchMessageContact !== "") {
+          SearchMessage(SearchMessageContact)
+      }
+    },[SearchMessageContact])
+    
 
     
     return (
@@ -53,7 +58,7 @@ import icon_error from "../../icons/icon_error"
                 <View style={styles.InputFalse}>
                     <Icon style={{width:"10%"}} name="search" size={30} />
                     <TextInput
-                        onChange={(text)=> setSearchMessageContact(text)}
+                        onChangeText={(text)=> setSearchMessageContact(text)}
                         value={SearchMessageContact}
                         placeholder="Buscar un Mensaje"
                         style={styles.inputSearch}
@@ -63,7 +68,9 @@ import icon_error from "../../icons/icon_error"
         </View>
         <ScrollView style={styles.body}>
             {
-            stateChats === "chats"? contactsChat.map((contact,index)=> {
+
+            SearchMessageContact == "" ? 
+            (stateChats === "chats"? contactsChat.map((contact,index)=> {
                 return <ChatCard data={contact} key={index}/>
             }) : stateChats === "no-chats"? 
             <View style={styles.error}>
@@ -75,8 +82,19 @@ import icon_error from "../../icons/icon_error"
                 <Text style={styles.textE}>No tienes ningun chat aun.</Text>
 
             </View>
-         : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"}/>
-            }
+
+: <ActivityIndicator style={styles.indicator} color={"black"} size={"large"}/>) : (searchContact[0]? searchContact.map((value,index)=> {
+    return <ChatCard data={value} key={index}/>
+}) :<View style={styles.error}>
+<SvgXml
+    height={250}
+    width={250}
+    xml={icon_error}  
+/>
+<Text style={styles.textE}>No hay ningun usuario con ese nombre.</Text>
+
+</View> )
+}
 
         </ScrollView>
 

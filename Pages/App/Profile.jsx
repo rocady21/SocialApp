@@ -4,7 +4,6 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
 import Icon from "react-native-vector-icons/Ionicons"
-
 import ModalAddPost from "../../components/ModalAddPost"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import { useUserSlice } from "../../hooks/useUserSlice"
@@ -19,10 +18,9 @@ const Profile = () => {
     const [isFollower, setIsFollower] = useState()
     const [is_me, setIs_me] = useState(true)
     const [stateModal, setStateModal] = useState(false)
-
     const {LoadPostsUser,postsUser} = usePosterSlice()
     const {user} = useUserSlice()
-
+    
     useEffect(()=> {
         // aqui cargare los posts del usuario 
         LoadPostsUser(user.id)

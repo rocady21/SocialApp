@@ -13,11 +13,10 @@ export const usePosterSlice = ()=> {
 
     const LoadPostsUser = async(id_me)=> {
         try {
-            const {data} = await axios.get("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/post/user/" + id_me)
+            const {data} = await axios.get("https://677b-2800-a4-131e-f900-69a2-79c9-1fe3-35b4.ngrok-free.app/api/post/user/" + id_me)
             console.log();
             if(data.ok === true){
                 Dispatch(onLoadPostUser(data.posts))
-                console.log(data);
             } 
 
         } catch (error) {
@@ -29,7 +28,7 @@ export const usePosterSlice = ()=> {
     const addLike = async(info)=> {
         console.log(info);
         try {
-            const {data} = await axios.post("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/post/like",info)
+            const {data} = await axios.post("https://677b-2800-a4-131e-f900-69a2-79c9-1fe3-35b4.ngrok-free.app/api/post/like",info)
             if(data.ok === true) {
                 Dispatch(onAddOrQUitLike({
                     data:info,
@@ -49,7 +48,7 @@ export const usePosterSlice = ()=> {
     const quitLike = async(info)=> {
         console.log("borrar");
         try {
-            const {data} = await axios.delete("https://a915-2800-a4-1322-2d00-b986-53d8-7cc6-9b03.ngrok-free.app/api/post/like",{
+            const {data} = await axios.delete("https://677b-2800-a4-131e-f900-69a2-79c9-1fe3-35b4.ngrok-free.app/api/post/like",{
                 data:info
             })
             if(data.ok === true) {
