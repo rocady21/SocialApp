@@ -8,12 +8,10 @@ import CheckBox from 'react-native-check-box';
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
-import { validateEmail } from '../Utils/helpers'
+import { validateEmail, loadImageFromGallery } from '../Utils/helpers'
 import { size } from 'lodash'
 import { onChange } from 'react-native';
-
-
-
+import { Avatar } from 'react-native-elements';
 
 
 
@@ -36,23 +34,18 @@ const Register = () => {
   }
 
 
-
-
-
   const registerUser = () => {
     if (!validateData()) {
-    console.log("prueba formdata => ", formData)
+      console.log("prueba formdata => ", formData)
 
       return;
 
-
-
-    }else{
+    } else {
 
       console.log("Validado")
       // console.log("prueba fomdata => ", formData)
     }
-   
+
 
 
 
@@ -67,7 +60,7 @@ const Register = () => {
     setErrorPassword("")
     let isValid = true
 
-    if (!validateEmail()) {
+    if (!validateEmail(formData.email)) {
       setErrorEmail("debes colocar un email.")
       isValid = false
     }
@@ -83,11 +76,10 @@ const Register = () => {
 
     if (formData.age == "") {
       setErrorAge("ingrese una edad valida")
-  
+
       isValid = false
     }
 
-    
 
     if (size(formData.password) < 6) {
       setErrorPassword("la contrasela debe de tener un minimo de 6 caracteres.")
@@ -97,20 +89,37 @@ const Register = () => {
     return isValid
   }
 
-
+  const changePhoto = async () => {
+    console.log("change foto")
+    const result = await loadImageFromGallery([1, 1])
+    console.log(result)
+  }
 
   return (
 
     <SafeAreaView style={{ flex: 1, backgroundColor: temasA.fonts.grey50 }}>
       <ScrollView>
+
+
         <View style={{ flex: 1, marginHorizontal: 22 }}>
-          <View style={{ marginVertical: 22 }}>
+
+          <View style={{ marginVertical: 22 }}
+
+          >
+
+            <Avatar
+              rounded
+              onPress={changePhoto}
+              source={{
+                uri:
+                  'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
+              }}
+            />
             <Text style={{
               fontSize: 22,
               fontWeight: temasA.fontWheights.bold,
               marginVertical: 12,
               color: temasA.colors.black
-
             }}>
               Create Account
 
@@ -129,17 +138,17 @@ const Register = () => {
             <Inputs title={'Name'} mensajeError={errorName} onChange={onChange} typetext={"name"} fromdata={formData.name} />
 
             {/*Inicio - input Apellido */}
-            <Inputs title={'Last name'} mensajeError={errorLastName} onChange={onChange}  typetext={"lastname"} fromdata={formData.email} />
+            <Inputs title={'Last_name'} mensajeError={errorLastName} onChange={onChange} typetext={"lastname"} fromdata={formData.lastname} />
 
             {/*Inicio - input Edad */}
-            <Inputs title={'Age'} mensajeError={errorAge} onChange={onChange}  typetext={"age"}  fromdata={formData.email}/>
+            <Inputs title={'Age'} mensajeError={errorAge} onChange={onChange} typetext={"age"} fromdata={formData.age} />
 
             {/*Inicio - input correo */}
-            <Inputs title={'Email address'} mensajeError={errorEmail} onChange={onChange}  typetext={"email"}  fromdata={formData.email}  />
+            <Inputs title={'Email_address'} mensajeError={errorEmail} onChange={onChange} typetext={"email"} fromdata={formData.email} />
 
             {/*Inicio - input contraseña */}
 
-            <InputPassword title={"Password"} mensajeError={errorPassword}  onChange={onChange}  typetext={"password"} fromdata={formData.password} />
+            <InputPassword title={"Password"} mensajeError={errorPassword} onChange={onChange} typetext={"password"} fromdata={formData.password} />
 
 
             <View style={{
@@ -300,7 +309,7 @@ const Register = () => {
 }
 
 const defaultFormValues = () => {
-  return {name: "", lastname: "", email: "", password: "", age: "" }
+  return { name: "", lastname: "", email: "", password: "", age: "" }
 
 }
 
