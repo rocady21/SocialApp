@@ -3,6 +3,8 @@ import { View,Text,StyleSheet,Image,TouchableOpacity,Modal,TouchableWithoutFeedb
 import More from "react-native-vector-icons/Feather"
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import EvilIcons from "react-native-vector-icons/EvilIcons"
+import Fontisto from "react-native-vector-icons/Fontisto"
+
 import Feather from "react-native-vector-icons/Feather"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import Like_Component from "./Likes_Component"
@@ -92,7 +94,7 @@ const CardPost = ({route})=> {
                             isLikedPost === true? <MaterialIcons onPress={AddOrQuitLike} name="favorite" size={28} color={"#FD5252"}/> : <MaterialIcons onPress={AddOrQuitLike} name="favorite-border" size={28} color={"black"}/>
                         }
                         
-                        <EvilIcons name="comment" onPress={()=> setModalComment(true)} style={{marginLeft:10}} size={30} color={"black"}/>
+                        <Fontisto name="comment" onPress={()=> setModalComment(true)} style={{marginLeft:10}} size={20} color={"black"}/>
                     </View>
                     <Feather name="send" size={30} color={"black"}/>
                 </View>
@@ -134,8 +136,8 @@ const CardPost = ({route})=> {
                         </View>
                         <View style={styles.infoModal}>
                         {
-                            info_likes[0]? info_likes.map((info)=> {
-                                return <Like_Component key={info.id} info={info}/>
+                            info_likes[0]? info_likes.map((info,index)=> {
+                                return <Like_Component key={index} info={info}/>
                             }) : <Text style={{textAlign:"center"}}>No hay likes aún.</Text>
                         }
                         </View>

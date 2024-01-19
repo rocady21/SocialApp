@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     post:{
         width:"33%",
         margin:0.6,
-        height:150,
+        height:125,
         backgroundColor:"black"
     },
     image: {

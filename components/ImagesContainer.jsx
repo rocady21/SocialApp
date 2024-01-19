@@ -25,8 +25,8 @@ export const ImageContainer = ({setImage})=> {
           const result = await ImagePicker.launchImageLibraryAsync({...options, multiple:true});
     
           if (!result.canceled) {
-            console.log(result.assets);
             setImage(result.assets[0].uri)
+            setImageSelected(result.assets[0].uri)
           }
         } else {
           Alert.alert("Permission Denied", "Please grant permission to access the gallery.");

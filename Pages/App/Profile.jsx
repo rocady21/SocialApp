@@ -8,6 +8,7 @@ import ModalAddPost from "../../components/ModalAddPost"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import CardPostPreview from "../../components/Profile/CardPostPreview"
+import ToastManager from "toastify-react-native"
 
 
 
@@ -29,6 +30,7 @@ const Profile = () => {
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+            <ToastManager/>
             <View  style={styles.padre}>
             <ModalAddPost stateModal={stateModal} setStateModal={(state)=> setStateModal(state)}/>
 

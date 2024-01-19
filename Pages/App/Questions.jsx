@@ -1,14 +1,14 @@
 import { useEffect } from "react";
-import { View,StyleSheet,Text } from "react-native"
+import { View,StyleSheet,Text,SafeAreaView } from "react-native"
 
 
  const Questions = ({navigation})=> {
 
     
     return (
-        <View style={styles.padre}>
+        <SafeAreaView style={styles.padre}>
             <Text>Pagina de QUestions</Text>
-        </View>
+        </SafeAreaView>
     )
 }
 

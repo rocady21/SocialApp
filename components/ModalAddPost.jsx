@@ -2,47 +2,64 @@ import React, { useState,useEffect,useRef } from "react";
 import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, PermissionsAndroid,Image } from "react-native";
 import CloseIcon from "react-native-vector-icons/EvilIcons"
 import { ImageContainer } from "./ImagesContainer";
-import { ref, uploadBytes,getDownloadURL } from "firebase/storage";
-import { storage } from "../services/UploadImages_Firebase";
+
 import { useUserSlice } from "../hooks/useUserSlice";
 import { getFileNameFromUrl } from "../utils/getPathURL";
+import { usePosterSlice } from "../hooks/usePostSlice";
+import { sendPhotos } from "../utils/AddImageFirebase";
+import { SuccessToastify } from "../utils/Toastify";
 
 const ModalAddPost = ({ stateModal, setStateModal }) => {
 
+
     const {user} = useUserSlice()
-    const {stateNewPost,setStateNewPost} = useState({
+    const {AddNewPost} = usePosterSlice()
+
+    const initialValue = {
         id_user:user.id,
         descripcion: "",
         photo:[]
-    })
-    const [image,setImage] = useState("")
-    const [imageURL,setImageURL] = useState("")
-
-    console.log(image);
-    const sendPhotos = async()=> {
-
-        const img_name = getFileNameFromUrl(image)
-        // formateo el nombre para que no sea tan grande el nombre del archivo 
-        const storageRef = ref(storage,`Posts_images/${img_name}`)
-        const response = await fetch(image)
-        const blob = await response.blob()
-
-        // espesifico que tipo de archivo sera
-        const contentType = 'image/jpeg'
-        const uploadTask = uploadBytes(storageRef, blob,{contentType})
-            .then((snapshot) => {
-            console.log('Uploaded a blob or file!');
-        }).catch((error)=> {
-            console.log(error);
-        })
-
-        await uploadTask
-
-        const imageUrl = await getDownloadURL(storageRef);
-        setStateNewPost({...stateNewPost,photo:[...stateNewPost,imageUrl]})
-            
-          
     }
+
+    const [stateNewPost,setStateNewPost] = useState(initialValue)
+
+    useEffect(()=> {
+        return ()=> {
+            setStateNewPost(initialValue)
+        }
+    },[])
+    
+    const AddPost = async ()=> {
+        console.log("dde");
+        try {
+        if(stateNewPost.descripcion !== "" && stateNewPost.photo.length !== 0) {
+            let ArrPhotosSend = []
+            for (const element of stateNewPost.photo) {
+                const imgURL = await sendPhotos(element)
+                ArrPhotosSend.push(imgURL)
+            }
+            console.log(ArrPhotosSend);
+            if(ArrPhotosSend.length !== 0) {
+                console.log("a");
+                const resp = await AddNewPost({
+                    id_user:stateNewPost.id_user,
+                    descripcion:stateNewPost.descripcion,
+                    photo: ArrPhotosSend
+                })
+                if( resp == true) {
+                    SuccessToastify("¡Post creado correctamente!"),
+                    setStateModal(false)
+                }
+            }
+        } 
+        }catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(()=> {
+        console.log(stateNewPost);
+    },[stateNewPost])
     
     return (
         <Modal
@@ -53,26 +70,19 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
             onRequestClose={() => {
                 setStateModal(false);
             }}>
+            
             <View style={styles.padre}>
                 <View style={styles.content}>
                     <View style={styles.header}>
                         <CloseIcon name="close" onPress={() => setStateModal(!stateModal)} size={25} />
-                        <TouchableOpacity style={styles.button}  >
+                        <TouchableOpacity onPress={AddPost} style={styles.button}  >
                             <Text style={{ color: "white", fontSize: 16 }}>Publicar</Text>
                         </TouchableOpacity>
                     </View>
-                    {
-                    imageURL !== "" && <Image
-                    style={styles.Image}
-                    source={{
-                        uri: imageURL 
-                    }}
-                    />
-                    }
                     <View style={styles.description}>
                         <TextInput
                             placeholder="¿Sobre que quieres hablar?"
-
+                            onChangeText={(text)=> setStateNewPost({...stateNewPost,descripcion:text})}
                             numberOfLines={5}
                             style={styles.input}
                             multiline={true}
@@ -80,7 +90,7 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
                         />
 
                     </View>
-                    <ImageContainer setImage={(img)=> {setImage(img)}}/>
+                    <ImageContainer setImage={(img)=> setStateNewPost({...stateNewPost,photo:[...stateNewPost.photo,img]})}/>
 
 
                 </View>
