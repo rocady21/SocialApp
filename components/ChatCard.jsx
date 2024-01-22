@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
 import { useUserSlice } from "../hooks/useUserSlice"
 import { useNavigation } from "@react-navigation/native"
 import { useMessageSlice } from "../hooks/useMessagesSlice"
+import { formatDate } from "../utils/FormatDate"
 
 const ChatCard = ({ data }) => {
     const {user} = useUserSlice()
@@ -12,6 +13,7 @@ const ChatCard = ({ data }) => {
         SeleccionarChat(true)  
         navigate.navigate("Messages",data)
     }
+    const time_format = formatDate(data.time_last_message,true)
     
     return (
         <View style={styles.padre}>
@@ -32,7 +34,7 @@ const ChatCard = ({ data }) => {
                 {data.last_message}</Text>
             </TouchableOpacity>
             <View style={styles.time}>
-                <Text>5m</Text>
+                <Text>{time_format}</Text>
             </View>
         </View>
     )

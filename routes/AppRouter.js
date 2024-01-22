@@ -10,7 +10,8 @@ import Questions from '../Pages/App/Questions';
 import { useMessageSlice } from '../hooks/useMessagesSlice';
 import Chats from '../Pages/App/Chats';
 import MessagesPage from '../Pages/App/MessagesPage';
-import CardPost from '../components/CardPost';
+import CardPost from '../components/Profile/CardPost';
+import ViewProfileUser from '../Pages/App/ViewProfileUser';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,8 @@ export default function AppRouter() {
             <Stack.Screen name="Questions" component={Questions} />
             <Stack.Screen name="Messages" component={MessagesPage} />
             <Stack.Screen name="Info_Post" component={CardPost} />
+            <Stack.Screen name="View_profile_user" component={ViewProfileUser} />
+            
             
 
         </Stack.Navigator>

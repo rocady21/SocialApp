@@ -1,5 +1,5 @@
 
-import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity,Modal,ActivityIndicator } from "react-native"
+import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity, Modal, ActivityIndicator } from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
@@ -13,33 +13,44 @@ import ToastManager from "toastify-react-native"
 
 
 
-const Profile = () => {
+const Profile = ({ route }) => {
 
     // hooks
     const [isFollower, setIsFollower] = useState()
-
-
     const [stateModal, setStateModal] = useState(false)
-    const {LoadPostsUser,postsUser,ClearPostUsers,statusPosts} = usePosterSlice()
-    const {user,user_profile,loadInfoUserById,ClearUser_info} = useUserSlice()
-    const is_me = true
-    useEffect(()=> {
+    const { LoadPostsUser, postsUser, ClearPostUsers, statusPosts } = usePosterSlice()
+    const { user, user_profile, loadInfoUserById, ClearUser_info } = useUserSlice()
+    const [statusData,setsetStatusData] = useState(false)
+
+    const load_data = async()=> {
+        Promise.all(
+            loadInfoUserById(route.params.id),
+            LoadPostsUser(route.params.id)
+        )
+
+        setsetStatusData(true)
+        
+    }
+    useEffect(() => {
         // aqui cargare los posts del usuario 
+        load_data()
 
-        LoadPostsUser(user.id)
-
-        return ()=> {
+        return () => {
             ClearPostUsers()
+            ClearUser_info()
         }
-    },[])
+    }, [])
 
+    const coso = false
 
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
-            <ToastManager/>
-            <View  style={styles.padre}>
-            <ModalAddPost stateModal={stateModal} setStateModal={(state)=> setStateModal(state)}/>
+            <ToastManager />
+
+            {user_profile.nombre  ?
+            <View style={styles.padre}>
+                <ModalAddPost stateModal={stateModal} setStateModal={(state) => setStateModal(state)} />
 
                 <View style={styles.info}>
                     <View>
@@ -48,11 +59,11 @@ const Profile = () => {
                             source={{
                                 uri: "https://lapi.com.mx/web/image/product.template/5449/image_1024?unique=9f103a0"
                             }}
-                            
+
                         />
                     </View>
                     <View style={styles.infoUser}>
-                        <Text style={styles.textInfo}>{user.nombre + " " +  user.apellido}</Text>
+                        <Text style={styles.textInfo}>{user_profile.nombre + " " + user_profile.apellido}</Text>
                         <View style={styles.buttons}>
                             <TouchableOpacity style={styles.button}>
                                 <Text>Posts</Text>
@@ -75,28 +86,20 @@ const Profile = () => {
 
                 </View>
 
-                {
+                <View style={styles.buttonsInteractions}>
+                    <TouchableOpacity style={styles.buttonI}>
+                        {/*Aqui es en donde validaremos si seguimos al usuario o no */}
+                        <Text>Seguir</Text>
 
-                    is_me === false ? <View style={styles.buttonsInteractions}>
-                        <TouchableOpacity style={styles.buttonI}>
-                            {/*Aqui es en donde validaremos si seguimos al usuario o no */}
-                            <Text>Seguir</Text>
+                    </TouchableOpacity>
 
-                        </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonI}>
+                        <Text>Enviar Mensaje</Text>
 
-                        <TouchableOpacity style={styles.buttonI}>
-                            <Text>Enviar Mensaje</Text>
+                    </TouchableOpacity>
+                </View>
 
-                        </TouchableOpacity>
-                    </View> : <View style={styles.buttonsInteractions}>
-                        <TouchableOpacity style={styles.buttonI}>
-                            <Text>Editar Perfil</Text>
-
-                        </TouchableOpacity>
-                    </View>
-                }
-
-                <TouchableOpacity onPress={()=> setStateModal(true)} style={styles.post}>
+                <TouchableOpacity onPress={() => setStateModal(true)} style={styles.post}>
                     <Icon name="add-sharp" size={40} />
                 </TouchableOpacity>
 
@@ -108,29 +111,30 @@ const Profile = () => {
                         <Text style={styles.title} >Posts</Text>
                     </View>
 
-                    <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex"}} >
+                    <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex" }} >
                         <View style={styles.posts}>
                             {
-                                statusPosts === "posts"?
-                                <View style={styles.postsList}>
-                                    {
-                                        postsUser.map((post)=> {
-                                            return <CardPostPreview key={post.id} data={post} />
-                                        })
-                                    }
-                                </View>
-                                 : statusPosts === "loading"? <View style={styles.indicator}>
-                                        <ActivityIndicator color={"black"} size={"large"}/>
-                                 </View> : <View style={styles.NoPosts}><Text style={styles.NoPostsText}>Aún no hay publicaciones.</Text></View>
+                                statusPosts === "posts" ?
+                                    <View style={styles.postsList}>
+                                        {
+                                            postsUser.map((post) => {
+                                                return <CardPostPreview key={post.id} data={post} />
+                                            })
+                                        }
+                                    </View>
+                                    : statusPosts === "loading" ? <View style={styles.indicator}>
+                                        <ActivityIndicator color={"black"} size={"large"} />
+                                    </View> : <View style={styles.NoPosts}><Text style={styles.NoPostsText}>Aún no hay publicaciones.</Text></View>
                             }
-                            
+
 
                         </View>
                     </ScrollView>
 
 
                 </View>
-            </View>
+            </View> :   <View style={styles.padreIndic}><ActivityIndicator style={styles.indicatorF} color={"black"} size={"large"} /></View>
+            }
         </ScrollView>
 
     )
@@ -146,14 +150,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         filter: "blur(2)",
     },
-    indicator:{
-        width:"100%",
-        height:"100%",
-        display:"flex",
-        flexDirection:"row",
-        justifyContent:"center",
-        alignContent:"center",
-        
+    indicator: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignContent: "center",
+
     },
     info: {
         display: "flex",
@@ -229,14 +233,14 @@ const styles = StyleSheet.create({
     },
     posts: {
         width: "100%",
-        height:"100%",
+        height: "100%",
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
 
 
     },
-    postsList:{
+    postsList: {
         width: "100%",
         display: "flex",
         flexDirection: "row",
@@ -268,13 +272,21 @@ const styles = StyleSheet.create({
         backgroundColor: "#E7E7E7",
         borderRadius: 50
     },
-    NoPosts:{
-        width:"100%"
+    NoPosts: {
+        width: "100%"
     },
-    NoPostsText:{
-        fontSize:20,
-        textAlign:"center",
-        marginTop:50
+    NoPostsText: {
+        fontSize: 20,
+        textAlign: "center",
+        marginTop: 50
+    },
+    padreIndic:{
+        width:"100%",
+        height:"100%",
+        display:"flex",
+        flexDirection:"row",
+        alignContent:"center",
+        justifyContent:"center"
     }
 
 })

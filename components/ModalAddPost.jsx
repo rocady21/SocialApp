@@ -1,10 +1,65 @@
 import React, { useState,useEffect,useRef } from "react";
-import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, PermissionsAndroid } from "react-native";
+import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, PermissionsAndroid,Image } from "react-native";
 import CloseIcon from "react-native-vector-icons/EvilIcons"
 import { ImageContainer } from "./ImagesContainer";
 
+import { useUserSlice } from "../hooks/useUserSlice";
+import { getFileNameFromUrl } from "../utils/getPathURL";
+import { usePosterSlice } from "../hooks/usePostSlice";
+import { sendPhotos } from "../utils/AddImageFirebase";
+import { SuccessToastify } from "../utils/Toastify";
+
 const ModalAddPost = ({ stateModal, setStateModal }) => {
 
+
+    const {user} = useUserSlice()
+    const {AddNewPost} = usePosterSlice()
+
+    const initialValue = {
+        id_user:user.id,
+        descripcion: "",
+        photo:[]
+    }
+
+    const [stateNewPost,setStateNewPost] = useState(initialValue)
+
+    useEffect(()=> {
+        return ()=> {
+            setStateNewPost(initialValue)
+        }
+    },[])
+    
+    const AddPost = async ()=> {
+        console.log("dde");
+        try {
+        if(stateNewPost.descripcion !== "" && stateNewPost.photo.length !== 0) {
+            let ArrPhotosSend = []
+            for (const element of stateNewPost.photo) {
+                const imgURL = await sendPhotos(element)
+                ArrPhotosSend.push(imgURL)
+            }
+            console.log(ArrPhotosSend);
+            if(ArrPhotosSend.length !== 0) {
+                console.log("a");
+                const resp = await AddNewPost({
+                    id_user:stateNewPost.id_user,
+                    descripcion:stateNewPost.descripcion,
+                    photo: ArrPhotosSend
+                })
+                if( resp == true) {
+                    SuccessToastify("¡Post creado correctamente!"),
+                    setStateModal(false)
+                }
+            }
+        } 
+        }catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(()=> {
+        console.log(stateNewPost);
+    },[stateNewPost])
     
     return (
         <Modal
@@ -15,25 +70,28 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
             onRequestClose={() => {
                 setStateModal(false);
             }}>
+            
             <View style={styles.padre}>
                 <View style={styles.content}>
                     <View style={styles.header}>
                         <CloseIcon name="close" onPress={() => setStateModal(!stateModal)} size={25} />
-                        <TouchableOpacity style={styles.button}  >
+                        <TouchableOpacity onPress={AddPost} style={styles.button}  >
                             <Text style={{ color: "white", fontSize: 16 }}>Publicar</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.description}>
                         <TextInput
                             placeholder="¿Sobre que quieres hablar?"
-
+                            onChangeText={(text)=> setStateNewPost({...stateNewPost,descripcion:text})}
                             numberOfLines={5}
                             style={styles.input}
                             multiline={true}
                             textAlignVertical="top"
                         />
+
                     </View>
-                    <ImageContainer/>
+                    <ImageContainer setImage={(img)=> setStateNewPost({...stateNewPost,photo:[...stateNewPost.photo,img]})}/>
+
 
                 </View>
             </View>
@@ -113,7 +171,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 10
     },
-
+    Image:{
+        width:100,
+        height:100,
+        backgroundColorn:"red"
+    }
 
 })
 
