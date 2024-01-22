@@ -5,8 +5,11 @@ const userSlice = createSlice({
   initialState: {
     message: "",
     user: {},
+    user_profile:{},
     userStatus:"no-user",
-    messageError:""
+    messageError:"",
+    statusSearch:"preview",
+    searchUsers:[]
   },
   reducers: {
     setMessage: (state,{payload})=> {
@@ -19,13 +22,33 @@ const userSlice = createSlice({
     credentialsError:(state,{payload})=> {
       state.messageError = payload
     },
-    onExistUser:(state,{payload})=> {
+    onExistUser:(state)=> {
       state.user = {},
       state.userStatus = "no-user"
 
+    },
+    onLoadingSearch:(state)=> {
+      state.statusSearch == "loading"
+    },
+    onSearchResults: (state,{payload})=> {
+      state.statusSearch = "loaded",
+      state.searchUsers = payload
+    },
+    onNoResults:(state)=> {
+      state.statusSearch = "no-results"
+    },
+    onPreviewState:(state)=> {
+      state.statusSearch = "preview",
+      state.searchUsers = []
+    },
+    onLoadUser_info:(state,{payload})=> {
+      state.user_profile = payload
+    },
+    onClearUser_info:(state,{payload})=> {
+      state.user_profile = {}
     }
   }
 })
 
-export const { setMessage,credentialsError,addNewUser,onExistUser } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info } = userSlice.actions
 export default userSlice

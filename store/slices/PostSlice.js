@@ -6,12 +6,20 @@ const PostSlice = createSlice({
     initialState: {
         postsUser: [],
         loadPosts: false,
-        selectedPost:{}
+        selectedPost:{},
+        statusPosts:"no-posts"
     },
     reducers: {
         onLoadPostUser: (state, { payload }) => {
             state.postsUser = payload
-            state.loadPosts = true
+            state.loadPosts = true,
+            state.statusPosts = "posts"
+        },
+        onLoadingPostUser:(state,{payload})=> {
+            state.statusPosts = "loading"
+        },
+        onNoPost:(state,{payload})=> {
+            state.statusPosts = "no-posts"
         },
         onAddSelectedPost:(state,{payload})=>{
             state.selectedPost = payload
@@ -20,6 +28,7 @@ const PostSlice = createSlice({
             state.selectedPost = {}
         },
         onClearPostUsers: (state, { payload }) => {
+        
             state.postsUser = []
             state.loadPosts = false
         },
@@ -65,5 +74,5 @@ const PostSlice = createSlice({
     }
 })
 
-export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts } = PostSlice.actions
+export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost } = PostSlice.actions
 export default PostSlice

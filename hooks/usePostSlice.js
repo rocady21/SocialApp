@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
-import { onLoadPostUser,onClearPostUsers,onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts } from "../store/slices/PostSlice"
+import { onLoadPostUser,onClearPostUsers,onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost } from "../store/slices/PostSlice"
 import { useDispatch } from "react-redux"
 import { useUserSlice } from "./useUserSlice"
 
@@ -8,27 +8,32 @@ import { useUserSlice } from "./useUserSlice"
 export const usePosterSlice = ()=> {
 
     const Dispatch = useDispatch()
-    const {postsUser,loadPosts,selectedPost} = useSelector((state)=> state.post)
+    const {postsUser,loadPosts,selectedPost,statusPosts} = useSelector((state)=> state.post)
     const {user} = useUserSlice()
 
     const LoadPostsUser = async(id_me)=> {
+
+        Dispatch(onLoadingPostUser())
         try {
-            const {data} = await axios.get("https://090f-2800-a4-1314-bd00-2454-3ae8-7626-27de.ngrok-free.app/api/post/user/" + id_me)
-            console.log();
+            const {data} = await axios.get("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/user/" + id_me)
             if(data.ok === true){
+                console.log("data");
+                console.log(data);
                 Dispatch(onLoadPostUser(data.posts))
-            } 
+            }else if(data.ok === false ) {
+                Dispatch(onNoPost())
+            }
 
         } catch (error) {
             console.log(error);
+
         }
 
 
     }
     const addLike = async(info)=> {
-        console.log(info);
         try {
-            const {data} = await axios.post("https://090f-2800-a4-1314-bd00-2454-3ae8-7626-27de.ngrok-free.app/api/post/like",info)
+            const {data} = await axios.post("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/like",info)
             if(data.ok === true) {
                 Dispatch(onAddOrQUitLike({
                     data:info,
@@ -48,7 +53,7 @@ export const usePosterSlice = ()=> {
     const quitLike = async(info)=> {
         console.log("borrar");
         try {
-            const {data} = await axios.delete("https://090f-2800-a4-1314-bd00-2454-3ae8-7626-27de.ngrok-free.app/api/post/like",{
+            const {data} = await axios.delete("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/like",{
                 data:info
             })
             if(data.ok === true) {
@@ -65,7 +70,7 @@ export const usePosterSlice = ()=> {
 
     const AddNewPost = async(info)=> {
         try {
-            const {data} = await axios.post("https://090f-2800-a4-1314-bd00-2454-3ae8-7626-27de.ngrok-free.app/api/newPost",info)
+            const {data} = await axios.post("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/newPost",info)
             if(data.ok === true) {
 
                 return true
@@ -83,16 +88,21 @@ export const usePosterSlice = ()=> {
         Dispatch(onQuitSelectedPosts())
     }
     
+    const ClearPostUsers = ()=> {
+        Dispatch(onClearPostUsers())
+    }  
     return {
         postsUser,
         loadPosts,
         selectedPost,
+        statusPosts,
         LoadPostsUser,
         addLike,
         quitLike,
         AddSelectedPost,
         QuitSelectedPosts,
-        AddNewPost
+        AddNewPost,
+        ClearPostUsers
     }
 
 }
