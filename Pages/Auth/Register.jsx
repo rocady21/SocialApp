@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 
-import { View, Text, TouchableOpacity, SafeAreaView, Image, Button, ScrollView, TextInput, Pressable } from "react-native"
+import { View, Text, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable } from "react-native"
 import temasA from '../Thems/temas'
-import { Ionicons } from '@expo/vector-icons';
 import Black_button from './Componentes/black_button';
 import CheckBox from 'react-native-check-box';
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
-import { validateEmail, loadImageFromGallery } from '../Utils/helpers'
+import { validateEmail, loadImageFromGallery, fileToBlob } from '../Utils/helpers'
 import { size } from 'lodash'
-import { onChange } from 'react-native';
 import { Avatar } from 'react-native-elements';
 
 
@@ -27,6 +25,9 @@ const Register = () => {
   const [errorAge, setErrorAge] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
+  const [blob1, setBlob] = useState(null);
+  const [blobUrl, setBlobUrl] = useState("");
+
 
 
   const onChange = (e, type) => {
@@ -90,9 +91,15 @@ const Register = () => {
   }
 
   const changePhoto = async () => {
-    console.log("change foto")
     const result = await loadImageFromGallery([1, 1])
-    console.log(result)
+    console.log("este es el result =>", result)
+    let pepe = result
+    console.log(" es el pepe => ", pepe.image.uri);
+
+    setBlob(pepe);
+
+
+
   }
 
   return (
@@ -103,18 +110,17 @@ const Register = () => {
 
         <View style={{ flex: 1, marginHorizontal: 22 }}>
 
-          <View style={{ marginVertical: 22 }}
+          <View style={{ marginVertical: 22 }}>
 
-          >
-
-            <Avatar
-              rounded
-              onPress={changePhoto}
-              source={{
-                uri:
-                  'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-              }}
-            />
+          {blob1 ? (
+              <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: blob1.image.uri }} />
+            ) : (
+              <Avatar
+                rounded
+                onPress={changePhoto}
+                source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
+              />
+            )}
             <Text style={{
               fontSize: 22,
               fontWeight: temasA.fontWheights.bold,
