@@ -1,7 +1,8 @@
 import { StyleSheet, View,Text } from "react-native"
+import { FormatHours } from "../utils/FormatDate";
 
-const MessageCard = ({is_me,message})=> {
-
+const MessageCard = ({is_me,message,time})=> {
+    const fechaInHours = FormatHours(time)
     const styles = StyleSheet.create({
         chat: {
           alignSelf: is_me === true ? "flex-end" : "flex-start",
@@ -33,7 +34,7 @@ const MessageCard = ({is_me,message})=> {
                 <Text>{message}</Text>
             </View>
             <View style={styles.date}>
-                <Text>10:30 AM</Text>
+                <Text>{fechaInHours}</Text>
             </View>
         </View>
     )

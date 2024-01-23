@@ -8,7 +8,8 @@ const ChatSlice = createSlice({
         messages:[],
         contactsChat:[],
         selectedChat:false,
-        searchContact:[]
+        searchContact:[],
+        NoMoreMessages:"more"
     },
     reducers:{
         onLoadingChats:(state,{payload})=> {
@@ -31,11 +32,26 @@ const ChatSlice = createSlice({
             state.stateChats = "chats"
             state.contactsChat = data_filtrada
         },
+        onNoMoreMessages:(state,{payload})=> {
+            state.NoMoreMessages = "no-more"
+        },
+        onResetNoMoreMessages:(state)=> {
+            state.NoMoreMessages = "more"
+        },
         onSelectedChat:(state,{payload})=> {
             state.selectedChat = payload
         },
         onLoadChats:(state,{payload})=> {
-            state.messages = payload
+
+            if(state.messages[0]) {
+                state.messages = [...state.messages,...payload]
+            } else {
+                state.messages = payload
+            }
+
+            const order_messages = state.messages.sort((a,b)=> a.id - b.id)
+
+            state.messages = order_messages
         },
         onClearMessages:(state)=> {
             state.messages = []
@@ -79,6 +95,6 @@ const ChatSlice = createSlice({
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onNoMoreMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats} = ChatSlice.actions
 
 export default ChatSlice
