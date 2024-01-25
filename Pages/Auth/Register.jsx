@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { View, Text, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable } from "react-native"
 import temasA from '../Thems/temas'
 import Black_button from './Componentes/black_button';
@@ -7,9 +6,10 @@ import CheckBox from 'react-native-check-box';
 import { useNavigation } from '@react-navigation/native';
 import Inputs from './Componentes/Input';
 import InputPassword from './Componentes/InputPassword';
-import { validateEmail, loadImageFromGallery, fileToBlob } from '../Utils/helpers'
+import { validateEmail, loadImageFromGallery } from '../Utils/helpers'
 import { size } from 'lodash'
 import { Avatar } from 'react-native-elements';
+import { uploadImage } from '../Utils/actions';
 
 
 
@@ -92,12 +92,18 @@ const Register = () => {
 
   const changePhoto = async () => {
     const result = await loadImageFromGallery([1, 1])
-    console.log("este es el result =>", result)
-    let pepe = result
-    console.log(" es el pepe => ", pepe.image.uri);
+    console.log("este es el result => ", result.image )
+    let imag_eend = result.image.uri
+    let valor2 = imag_eend.split('/');
+    let nombre_image = valor2[valor2.length -1]
 
-    setBlob(pepe);
+    console.log("pruebita uwu => ", nombre_image)
 
+    const resultUploadImage = await uploadImage(result.image.uri, "Image_Perfil", nombre_image )
+    if (!resultUploadImage.statusResponse) {
+        Alert.alert("Ha ocurrido un error al almacenar la foto de perfil.")
+        return
+    }
 
 
   }
@@ -112,15 +118,15 @@ const Register = () => {
 
           <View style={{ marginVertical: 22 }}>
 
-          {blob1 ? (
-              <Image style={{ width: 200, height: 200, borderRadius: 100 }} source={{ uri: blob1.image.uri }} />
-            ) : (
+        
               <Avatar
                 rounded
                 onPress={changePhoto}
-                source={{ uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
+                source={{   uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
               />
-            )}
+
+
+
             <Text style={{
               fontSize: 22,
               fontWeight: temasA.fontWheights.bold,
@@ -166,12 +172,6 @@ const Register = () => {
               <CheckBox
                 isChecked={isChecked}
                 onClick={() => setIsChecked(!isChecked)}
-                // rightText='pepe'
-                // rightTextStyle={{
-                //   color: temasA.colors.black, 
-                //   fontSize: 16,
-                //   fontWeight: 'bold'
-                // }}
                 checkedCheckBoxColor='green'
                 uncheckedCheckBoxColor='black'
               />
