@@ -13,15 +13,33 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
 
     const ScrollViewRef = useRef()
     const {user} = useUserSlice()
-    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages,onAddMessageRealTImeSocekt} = useMessageSlice()
+    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages,onAddMessageRealTImeSocekt,NoMoreMessages,ResetMoreMessages} = useMessageSlice()
     const [mensaje,setMensaje] = useState(``)
     const {id,nombre_user,photo,id_user_chat,user_from,user_to} = route.params
 
+    const numbersofMessages = 7
+    const [index,setIndex] = useState(0)
+    const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+    
+    const handleScroll = (event) => {
+      event.persist()
+      const offsetY = event.nativeEvent.contentOffset.y;
+      setIsScrolledToTop(offsetY == 0)
+    };
+
+    useEffect(()=> {
+      if(isScrolledToTop == true && index !== 0 && NoMoreMessages == "more") {
+        loadMessageFromUser(id,index,numbersofMessages)
+        setIndex(index + numbersofMessages)
+      } 
+    },[isScrolledToTop])
+    
 
     useEffect(() => {
-      loadMessageFromUser(id)
+      loadMessageFromUser(id,index,numbersofMessages)
+      setIndex(index + numbersofMessages)
       ScrollViewRef.current.scrollToEnd({ animated: true });
-      const socket = io("https://7f0b-2800-a4-130a-3600-9437-e26a-1cf1-f0d6.ngrok-free.app", {
+      const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
         transports: ["websocket"],
         cors: {
           origin: "*",
@@ -29,11 +47,8 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
       });
 
       socket.on('mensaje_servidor', (data) => {
-        console.log('Mensaje del servidor:', data.mensaje);
       });
       socket.on("chat_" + user_from + "_and_" + user_to,(data)=> {
-        console.log("socekt");
-        console.log(data);
         onAddMessageRealTImeSocekt(data.mensaje)
       })
 
@@ -48,6 +63,7 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
           SeleccionarChat(false)
           // tambien cada vez que se desmonte el componente, borraremos los chat
           ClearMessages()
+          ResetMoreMessages()
         });
         return unsubscribe;
       }, [navigation]);
@@ -91,11 +107,12 @@ const MessagesPage = ({navigation,route,infoUserSelected})=> {
             onContentSizeChange={() => {
               ScrollViewRef.current.scrollToEnd({ animated: true });
             }}
+            onScroll={handleScroll}
           >
            
             {
               messages[0]? messages.map((msg,index)=> {
-                return <MessageCard key={index} is_me={msg.is_me} message={msg.mensaje} />
+                return <MessageCard key={index} is_me={msg.is_me} message={msg.mensaje} time={msg.fecha} />
             }) : <ActivityIndicator style={styles} size="small" color="black" />
             }
 

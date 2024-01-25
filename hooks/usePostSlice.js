@@ -15,10 +15,9 @@ export const usePosterSlice = ()=> {
 
         Dispatch(onLoadingPostUser())
         try {
-            const {data} = await axios.get("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/user/" + id_me)
+            const {data} = await axios.get("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/post/user/" + id_me)
             if(data.ok === true){
-                console.log("data");
-                console.log(data);
+
                 Dispatch(onLoadPostUser(data.posts))
             }else if(data.ok === false ) {
                 Dispatch(onNoPost())
@@ -33,7 +32,7 @@ export const usePosterSlice = ()=> {
     }
     const addLike = async(info)=> {
         try {
-            const {data} = await axios.post("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/like",info)
+            const {data} = await axios.post("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/post/like",info)
             if(data.ok === true) {
                 Dispatch(onAddOrQUitLike({
                     data:info,
@@ -51,9 +50,8 @@ export const usePosterSlice = ()=> {
         }
     }
     const quitLike = async(info)=> {
-        console.log("borrar");
         try {
-            const {data} = await axios.delete("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/post/like",{
+            const {data} = await axios.delete("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/post/like",{
                 data:info
             })
             if(data.ok === true) {
@@ -70,7 +68,7 @@ export const usePosterSlice = ()=> {
 
     const AddNewPost = async(info)=> {
         try {
-            const {data} = await axios.post("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/newPost",info)
+            const {data} = await axios.post("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/newPost",info)
             if(data.ok === true) {
 
                 return true

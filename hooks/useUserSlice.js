@@ -5,6 +5,8 @@ import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
 import { BACKEND_URL} from '@env';
+import { getStorage } from "firebase/storage"
+import { onSelectedChat } from "../store/slices/ChatSlice"
 
 
 console.log(BACKEND_URL);
@@ -20,7 +22,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -48,7 +50,8 @@ export const useUserSlice = ()=> {
 
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
-            const {data} = await axios.get("https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/validToken",{
+
+            const {data} = await axios.get("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -56,13 +59,9 @@ export const useUserSlice = ()=> {
                 return Dispach(addNewUser(data.user))
             }
             
-
-
-            // aqui validaremos el token si es valido pasara a la app y sino no 
         } catch (error) {
             console.log(error);
             if(error.response.status == 401) {
-                console.log("no autorizado");
                 existUser()
             }
 
@@ -72,7 +71,7 @@ export const useUserSlice = ()=> {
     const SearchUser = async(value)=> {
         try {
             Dispach(onLoadingSearch())
-            const {data} = await axios.get(`https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/user/${value}`)    
+            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/user/${value}`)    
             if(data.ok == true) {
                 Dispach(onSearchResults(data.result))
             }
@@ -91,14 +90,14 @@ export const useUserSlice = ()=> {
             ClearStorage()
             removeValueStorage("token")
             Dispach(onExistUser())
+            Dispach(onSelectedChat(false))
         } catch (error) {
             console.log(error);
         }
     }
     const loadInfoUserById = async(id)=> {
-        console.log("a");
         try {
-            const {data} = await axios.get(`https://d6d8-2800-a4-12c6-b700-71ce-2d0c-315d-2705.ngrok-free.app/api/people/${id}`)
+            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/people/${id}`)
             if(data.ok === true) {
                 Dispach(onLoadUser_info(data.user))
             }

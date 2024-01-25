@@ -7,31 +7,13 @@ import { useEffect, useState } from 'react';
 import { getStorage } from './utils/AsyncStorage';
 import { useUserSlice } from './hooks/useUserSlice';
 
-export default  function ValidRouter() {
+export default  function ValidRouter({}) {
   
 
   const {validToken} = useUserSlice()
   const {userStatus} = useSelector((state) => state.user)
-  const [token,setToken ] = useState("")
 
   
-  useEffect(()=> {
-    obtenerToken()
-
-  },[])
-
-
-  useEffect(()=> {
-    if (token !== "" && token !== "no-token") {
-        validToken(token)
-    }
-  },[token])
-
-  const obtenerToken = async ()=> {
-    const tk = await getStorage("token")
-    setToken(tk)
-
-  }
   
 
 

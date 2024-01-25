@@ -26,11 +26,9 @@ const Chats = ({ route }) => {
     useFocusEffect(
         useCallback(() => {
             // Lógica específica cuando la pantalla Home se enfoca
-            console.log('La pantalla de chats se enfocó');
             SeleccionarChat(false)
             LoadContactsMessage(user.id)
             return () => {
-                console.log('La pantalla de chats se desenfocó');
             };
         }, [])
     );

@@ -38,9 +38,11 @@ export const formatDate = (date,abbreviated)=> {
             return `${ Math.round(fechainWeeks)} weeks ago`
         }
     }
-        
+}
 
-    
-
-
+export const FormatHours = (date)=> {
+    const fecha = new Date(date)
+    const hours = fecha.getHours()
+    const minutes = fecha.getMinutes()
+    return hours + ":" + minutes
 }

@@ -56,17 +56,17 @@ const Profile = () => {
                         <View style={styles.buttons}>
                             <TouchableOpacity style={styles.button}>
                                 <Text>Posts</Text>
-                                <Text>2</Text>
+                                <Text>{user.number_posts}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.button}>
                                 <Text>Seguidores</Text>
-                                <Text>150</Text>
+                                <Text>{user.seguidores}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={styles.button}>
                                 <Text>Seguidos</Text>
-                                <Text>236</Text>
+                                <Text>{user.seguidos_user}</Text>
                             </TouchableOpacity>
 
                         </View>

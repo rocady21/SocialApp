@@ -30,7 +30,6 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
     },[])
     
     const AddPost = async ()=> {
-        console.log("dde");
         try {
         if(stateNewPost.descripcion !== "" && stateNewPost.photo.length !== 0) {
             let ArrPhotosSend = []
@@ -38,9 +37,7 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
                 const imgURL = await sendPhotos(element)
                 ArrPhotosSend.push(imgURL)
             }
-            console.log(ArrPhotosSend);
             if(ArrPhotosSend.length !== 0) {
-                console.log("a");
                 const resp = await AddNewPost({
                     id_user:stateNewPost.id_user,
                     descripcion:stateNewPost.descripcion,
@@ -58,7 +55,6 @@ const ModalAddPost = ({ stateModal, setStateModal }) => {
     }
 
     useEffect(()=> {
-        console.log(stateNewPost);
     },[stateNewPost])
     
     return (
