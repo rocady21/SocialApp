@@ -44,21 +44,76 @@ const ChatSlice = createSlice({
         onLoadChats:(state,{payload})=> {
 
             if(state.messages[0]) {
-                state.messages = [...state.messages,...payload]
+                const old_arr = state.messages.map((msg) => {
+                    const matchingDay = payload.find((day) => day.day === msg.day);
+                    if (matchingDay) {
+                        return {
+                            ...matchingDay,
+                            messages: [...msg.messages, ...matchingDay.messages]
+                        };
+                    } else {
+                        return msg;
+                    }
+                });
+                const new_messages = payload.filter((objetoPayload) => 
+                !state.messages.some((objetoMessage) => objetoMessage.day === objetoPayload.day)
+                );
+                
+                console.log("old",old_arr);
+                console.log("new",new_messages);
+                if(new_messages.length > 0) {
+                    const new_arr = [...new_messages, ...old_arr]
+                    console.log("new_arr",new_arr);
+
+                    let order_messages = new_arr.map((mensaje) => {
+                    
+                        // Asegurarse de que 'mensaje.messages' exista y sea un array antes de realizar operaciones
+                        const messages_order = Array.isArray(mensaje.messages)
+                          ? mensaje.messages.sort((a, b) => {
+                              const dateA = new Date(a.fecha);
+                              const dateB = new Date(b.fecha);
+                    
+                              return dateA - dateB;
+                            })
+                          : [];
+                    
+                        return { ...mensaje, messages: messages_order };
+                      });
+                    
+
+                      state.messages = order_messages
+                } else {
+                    console.log("debo de actualizar los viejos");
+
+                    old_arr.map((mensaje)=> {
+                        messages_order = mensaje.messages.sort((a,b)=> {
+                            const dateA = new Date(a.fecha);
+                            const dateB = new Date(b.fecha);
+                        
+                            return dateA - dateB;
+                        })
+        
+                        return messages_order
+                    })
+                    state.messages = old_arr
+                }
+                
+
+            
             } else {
+                console.log(payload);
                 state.messages = payload
             }
 
-            const order_messages = state.messages.sort((a,b)=> a.id - b.id)
+            
 
-            state.messages = order_messages
+
         },
         onClearMessages:(state)=> {
             state.messages = []
         },
         onAddMessageRealTIme:(state,{payload})=> {
 
-            console.log(payload);
             const {newMessage,id_me,socket} = payload
                 if (newMessage.usuario === id_me) {
                     newMessage["is_me"] = true
@@ -72,7 +127,18 @@ const ChatSlice = createSlice({
                 return
             }
             else {
-                state.messages = [...state.messages,newMessage]
+                const state_f = state.messages.map((days)=> {
+                    if(days.day === "hoy") {
+                        console.log("es hoy");
+                        return {
+                            ...days,
+                            messages:[...days.messages,newMessage]
+                        }
+                    } else {
+                        return days
+                    }
+                })
+                state.messages = state_f
             }
 
         },
@@ -90,6 +156,9 @@ const ChatSlice = createSlice({
             })
 
             state.searchContact = searchContacts
+        },
+        onDeleteMessage:(state,{payload})=> {
+            
         }
     }
 })

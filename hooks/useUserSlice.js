@@ -22,7 +22,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -51,7 +51,7 @@ export const useUserSlice = ()=> {
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
 
-            const {data} = await axios.get("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -71,7 +71,7 @@ export const useUserSlice = ()=> {
     const SearchUser = async(value)=> {
         try {
             Dispach(onLoadingSearch())
-            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/user/${value}`)    
+            const {data} = await axios.get(`https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/user/${value}`)    
             if(data.ok == true) {
                 Dispach(onSearchResults(data.result))
             }
@@ -97,7 +97,7 @@ export const useUserSlice = ()=> {
     }
     const loadInfoUserById = async(id)=> {
         try {
-            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/people/${id}`)
+            const {data} = await axios.get(`https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/people/${id}`)
             if(data.ok === true) {
                 Dispach(onLoadUser_info(data.user))
             }

@@ -16,7 +16,7 @@ export const useMessageSlice = ()=> {
     const LoadContactsMessage = async(userID) => {
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.get("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/chats/" + userID)
+            const {data} = await axios.get("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/chats/" + userID)
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
             } else if(data.ok === false) {
@@ -33,9 +33,11 @@ export const useMessageSlice = ()=> {
     }
 
     const loadMessageFromUser = async(id_chat,index,number_of_messages)=> {
+
+
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.post("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/messages/" + id_chat,
+            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/" + id_chat,
             {
                 ofSett:index,
                 numberOfMessages:number_of_messages
@@ -44,7 +46,7 @@ export const useMessageSlice = ()=> {
                 headers: { "Authorization": `Bearer ${tk}` },
                 
             })
-
+            console.log(data);
             if( data.messages.length === 0) {
                 Dispach(onNoMoreMessages())
             } else {
@@ -53,6 +55,7 @@ export const useMessageSlice = ()=> {
         } catch (error) {
             if(error.response.status == 401){
                 existUser()
+                Dispach(onClearMessages())
             }
         }
     }
@@ -68,7 +71,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,
@@ -95,6 +98,16 @@ export const useMessageSlice = ()=> {
     const SearchMessage = (value)=> {
         Dispach(onfilterContactsChats(value))
     }
+
+    const Delete_message = async (id_message,day)=> {
+        try {
+            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/" + id_message,{
+
+            })
+        } catch (error) {
+            
+        }
+    }
     
     return {
         contactsChat,
@@ -110,7 +123,8 @@ export const useMessageSlice = ()=> {
         ClearMessages,
         onAddMessageRealTImeSocekt,
         SearchMessage,
-        ResetMoreMessages
+        ResetMoreMessages,
+        Delete_message
         
         
     }
