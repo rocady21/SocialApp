@@ -6,8 +6,8 @@ import Feather from "react-native-vector-icons/Feather"
 import IonIcons from "react-native-vector-icons/Ionicons"
 import icon_error from "../../icons/icon_error"
 import { SvgXml } from "react-native-svg"
-import { useUserSlice } from "../../hooks/useUserSlice"
 import { useNavigation } from "@react-navigation/native"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 const Search = () => {
 

@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native"
-import { useUserSlice } from "../hooks/useUserSlice"
 import { useNavigation } from "@react-navigation/native"
-import { useMessageSlice } from "../hooks/useMessagesSlice"
-import { formatDate } from "../utils/FormatDate"
+import { useMessageSlice } from "../../hooks/useMessagesSlice"
+import { formatDate } from "../../utils/FormatDate"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 const ChatCard = ({ data }) => {
     const {user} = useUserSlice()

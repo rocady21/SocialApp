@@ -1,6 +1,6 @@
 
 import {useDispatch,useSelector} from "react-redux"
-import { setMessage,credentialsError,addNewUser,onExistUser,onLoadingSearch,onNoResults,onPreviewState,onSearchResults,onLoadUser_info,onClearUser_info} from "../store/slices/userSlice"
+import { setMessage,credentialsError,addNewUser,onExistUser,onLoadingSearch,onFriend_Request,onNoFriend_Request,onNoResults,onPreviewState,onSearchResults,onLoadUser_info,onClearUser_info} from "../store/slices/userSlice"
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
@@ -12,7 +12,7 @@ import { onSelectedChat } from "../store/slices/ChatSlice"
 console.log(BACKEND_URL);
 export const useUserSlice = ()=> {
 
-    const {message,user,messageError,userStatus,statusSearch,searchUsers,user_profile} = useSelector((state)=> state.user)
+    const {message,user,messageError,userStatus,statusSearch,searchUsers,user_profile,friend_requests,StatusLoadingFriend_requests} = useSelector((state)=> state.user)
 
     const Dispach = useDispatch()
     
@@ -22,7 +22,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -51,7 +51,7 @@ export const useUserSlice = ()=> {
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
 
-            const {data} = await axios.get("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -71,7 +71,7 @@ export const useUserSlice = ()=> {
     const SearchUser = async(value)=> {
         try {
             Dispach(onLoadingSearch())
-            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/user/${value}`)    
+            const {data} = await axios.get(`https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/user/${value}`)    
             if(data.ok == true) {
                 Dispach(onSearchResults(data.result))
             }
@@ -97,7 +97,7 @@ export const useUserSlice = ()=> {
     }
     const loadInfoUserById = async(id)=> {
         try {
-            const {data} = await axios.get(`https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app/api/people/${id}`)
+            const {data} = await axios.get(`https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/people/${id}`)
             if(data.ok === true) {
                 Dispach(onLoadUser_info(data.user))
             }
@@ -105,6 +105,21 @@ export const useUserSlice = ()=> {
             console.log(error);
         }
     }
+    const LoadFriendRequest = async()=>{
+        try {
+            const {data} = await axios.get("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/request_friends/" + user.id)
+            if(data.ok === true) {
+                console.log("hay soli");
+                Dispach(onFriend_Request(data.friend_request))
+            }
+        } catch (error) {
+            if(error.response.data.ok === false) {
+                console.log("no hay soli");
+                Dispach(onNoFriend_Request())
+            }
+        }
+    }
+    
     const ClearUser_info = ()=> {
         Dispach(onClearUser_info())
     }
@@ -118,6 +133,8 @@ export const useUserSlice = ()=> {
         statusSearch,
         searchUsers,
         user_profile,
+        friend_requests,
+        StatusLoadingFriend_requests,
         mostrarMensaje,
         LoginUser,
         existUser,
@@ -125,7 +142,8 @@ export const useUserSlice = ()=> {
         SearchUser,
         DefaultSearch,
         loadInfoUserById,
-        ClearUser_info
+        ClearUser_info,
+        LoadFriendRequest
     }
 }
 

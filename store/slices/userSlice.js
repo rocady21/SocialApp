@@ -9,7 +9,9 @@ const userSlice = createSlice({
     userStatus:"no-user",
     messageError:"",
     statusSearch:"preview",
-    searchUsers:[]
+    searchUsers:[],
+    friend_requests:[],
+    StatusLoadingFriend_requests:"loading"
   },
   reducers: {
     setMessage: (state,{payload})=> {
@@ -46,9 +48,17 @@ const userSlice = createSlice({
     },
     onClearUser_info:(state,{payload})=> {
       state.user_profile = {}
-    }
+    },
+    onFriend_Request:(state,{payload})=> {
+      state.StatusLoadingFriend_requests = "exist"
+      state.friend_requests = payload
+    },
+    onNoFriend_Request:(state)=> {
+      state.StatusLoadingFriend_requests = "no-exist"
+
+    },
   }
 })
 
-export const { setMessage,credentialsError,addNewUser,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info } = userSlice.actions
 export default userSlice

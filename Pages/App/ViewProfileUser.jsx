@@ -4,11 +4,11 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
 import Icon from "react-native-vector-icons/Ionicons"
-import ModalAddPost from "../../components/ModalAddPost"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import CardPostPreview from "../../components/Profile/CardPostPreview"
 import ToastManager from "toastify-react-native"
+import ModalAddPost from "../../components/Profile/ModalAddPost"
 
 
 

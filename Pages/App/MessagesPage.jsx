@@ -1,142 +1,169 @@
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useRef, useState } from "react";
-import { View,Text,Button,StyleSheet,ScrollView,TextInput,TouchableOpacity,Image,SafeAreaView,ActivityIndicator } from "react-native"
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  Keyboard,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  SafeAreaView,
+  ActivityIndicator,
+} from "react-native";
 import { useMessageSlice } from "../../hooks/useMessagesSlice";
-import Icon from "react-native-vector-icons/FontAwesome"
-import Arrow from "react-native-vector-icons/SimpleLineIcons"
-import More from "react-native-vector-icons/Feather"
-import MessageCard from "../../components/MessageCard";
-import { useUserSlice } from "../../hooks/useUserSlice";
+import Icon from "react-native-vector-icons/FontAwesome";
+import Arrow from "react-native-vector-icons/SimpleLineIcons";
+import More from "react-native-vector-icons/Feather";
 import { io } from "socket.io-client";
-const MessagesPage = ({navigation,route,infoUserSelected})=> {
+import { useUserSlice } from "../../hooks/useUserSlice";
+import MessageCard from "../../components/Chat/MessageCard";
 
+const MessagesPage = ({ navigation, route, infoUserSelected }) => {
+  const ScrollViewRef = useRef(null);
+  const { user } = useUserSlice();
+  const {
+    SeleccionarChat,
+    loadMessageFromUser,
+    messages,
+    SendMessage,
+    ClearMessages,
+    onAddMessageRealTImeSocekt,
+    NoMoreMessages,
+    ResetMoreMessages,
+  } = useMessageSlice();
+  const [mensaje, setMensaje] = useState(``);
+  const { id, nombre_user, photo, id_user_chat, user_from, user_to } =
+    route.params;
 
-    const ScrollViewRef = useRef()
-    const {user} = useUserSlice()
-    const {SeleccionarChat,loadMessageFromUser,messages,SendMessage,ClearMessages,onAddMessageRealTImeSocekt,NoMoreMessages,ResetMoreMessages} = useMessageSlice()
-    const [mensaje,setMensaje] = useState(``)
-    const {id,nombre_user,photo,id_user_chat,user_from,user_to} = route.params
+  const numbersofMessages = 7;
+  const [index, setIndex] = useState(0);
+  const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-    const numbersofMessages = 7
-    const [index,setIndex] = useState(0)
-    const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-    
-    const handleScroll = (event) => {
-      event.persist()
-      const offsetY = event.nativeEvent.contentOffset.y;
-      setIsScrolledToTop(offsetY == 0)
+  const handleScroll = (event) => {
+    event.persist();
+    const offsetY = event.nativeEvent.contentOffset.y;
+    setIsScrolledToTop(offsetY === 0);
+  };
+
+  useEffect(() => {
+    if (isScrolledToTop && index !== 0 && NoMoreMessages === "more") {
+      loadMessageFromUser(id, index, numbersofMessages);
+      setIndex(index + numbersofMessages);
+    }
+  }, [isScrolledToTop]);
+
+  useEffect(() => {
+    loadMessageFromUser(id, index, numbersofMessages);
+    setIndex(index + numbersofMessages);
+
+    const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
+      transports: ["websocket"],
+      cors: {
+        origin: "*",
+      },
+    });
+
+    socket.on('mensaje_servidor', (data) => {});
+    socket.on("chat_" + user_from + "_and_" + user_to, (data) => {
+      setIndex(index + 1)
+      onAddMessageRealTImeSocekt(data.mensaje);
+    });
+
+    return () => {
+      socket.disconnect();
     };
-
-    useEffect(()=> {
-      if(isScrolledToTop == true && index !== 0 && NoMoreMessages == "more") {
-        loadMessageFromUser(id,index,numbersofMessages)
-        setIndex(index + numbersofMessages)
-      } 
-    },[isScrolledToTop])
-    
-
-    useEffect(() => {
-      loadMessageFromUser(id,index,numbersofMessages)
-      setIndex(index + numbersofMessages)
-      ScrollViewRef.current.scrollToEnd({ animated: true });
-      const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
-        transports: ["websocket"],
-        cors: {
-          origin: "*",
-        },
-      });
-
-      socket.on('mensaje_servidor', (data) => {
-      });
-      socket.on("chat_" + user_from + "_and_" + user_to,(data)=> {
-        onAddMessageRealTImeSocekt(data.mensaje)
-      })
-
-      return ()=> {
-        socket.disconnect()
-      }
-      
-    }, []); // Se ejecuta al montar el componente
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-          SeleccionarChat(false)
-          // tambien cada vez que se desmonte el componente, borraremos los chat
-          ClearMessages()
-          ResetMoreMessages()
-        });
-        return unsubscribe;
-      }, [navigation]);
+  }, []);
+  
 
 
-
-    const enviarMensaje = ()=> {
-      if(mensaje !== "") {
-        SendMessage(mensaje,user.id,id_user_chat,)
-        setMensaje("")
-      }
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      SeleccionarChat(false);
+      ClearMessages();
+      ResetMoreMessages();
+    });
+    return ()=> {
+      console.log("se desmonto");
+      unsubscribe()
     }
-    
-    
+  }, []);
 
-    const goBack = ()=> {
-      navigation.goBack()
+  const enviarMensaje = () => {
+    if (mensaje !== "") {
+      setIndex(index + 1)
+      SendMessage(mensaje, user.id, id_user_chat);
+      setMensaje("");
     }
-      
+  };
 
-    return (
-        <SafeAreaView style={styles.padre}>
-          <View style={styles.InfoContact}>
-            <TouchableOpacity onPress={goBack}>
-              <Arrow name="arrow-left" size={20} color={"white"}/>
-            </TouchableOpacity>
+  const goBack = () => {
+    navigation.goBack();
+  };
 
-            <View style={styles.datos}>
-                <Image style={styles.img} source={{
-                  uri:photo
-                }}/>
-              <Text style={styles.name}>{nombre_user}</Text>
+  return (
+    <SafeAreaView style={styles.padre}>
+      <View style={styles.InfoContact}>
+        <TouchableOpacity onPress={goBack}>
+          <Arrow name="arrow-left" size={20} color={"white"} />
+        </TouchableOpacity>
 
+        <View style={styles.datos}>
+          <Image style={styles.img} source={{ uri: photo }} />
+          <Text style={styles.name}>{nombre_user}</Text>
+        </View>
+        <More name="more-vertical" size={20} color={"white"} />
+      </View>
+      <ScrollView
+        style={styles.Messages}
+        ref={ScrollViewRef}
+        contentContainerStyle={styles.contentContainer}
+        onContentSizeChange={() => {
+          ScrollViewRef.current.scrollToEnd({ animated: false });
+        }}
+        onScroll={handleScroll}
+      >
+        {messages[0] ? (
+          messages.map((msg_day, index) => (
+            <View key={index} style={styles.messages_day}>
+              <Text style={{ textAlign: "center", marginVertical: 5 }}>
+                {msg_day.day}
+              </Text>
+              {msg_day.messages.map((msg, index) => (
+                <MessageCard
+                  key={index}
+                  is_me={msg.is_me}
+                  message={msg.mensaje}
+                  time={msg.fecha}
+                  day={msg_day.day}
+                  id={msg.id}
+                />
+              ))}
             </View>
-            <More name="more-vertical" size={20} color={"white"}/>
-          </View>
-          <ScrollView 
-            style={styles.Messages}
-            ref={ScrollViewRef}
-            contentContainerStyle={styles.contentContainer}
-            onContentSizeChange={() => {
-              ScrollViewRef.current.scrollToEnd({ animated: true });
-            }}
-            onScroll={handleScroll}
-          >
-           
-            {
-              messages[0]? messages.map((msg,index)=> {
-                return <MessageCard key={index} is_me={msg.is_me} message={msg.mensaje} time={msg.fecha} />
-            }) : <ActivityIndicator style={styles} size="small" color="black" />
-            }
-
-
-
-
-          </ScrollView>
-          <View style={styles.sendMessage}>
-            <TextInput
-              value={mensaje}
-              onChangeText={(text)=> setMensaje(text)}
-              style={styles.textInput}
-              placeholder="Mensaje..."
-              onSubmitEditing={enviarMensaje}
-            />
-            <TouchableOpacity style={styles.bottonEnviar} onPress={enviarMensaje} >
-              <Icon size={20} name="send-o" color={"white"} />
-            </TouchableOpacity>
-            
-          </View>
-
-        </SafeAreaView>
-    )
-}
+          ))
+        ) : (
+          <ActivityIndicator style={styles} size="small" color="black" />
+        )}
+      </ScrollView>
+      <View style={styles.sendMessage}>
+        <TextInput
+          value={mensaje}
+          onChangeText={(text) => setMensaje(text)}
+          style={styles.textInput}
+          placeholder="Mensaje..."
+          onSubmitEditing={enviarMensaje}
+        />
+        <TouchableOpacity style={styles.bottonEnviar} onPress={enviarMensaje}>
+          <Icon size={20} name="send-o" color={"white"} />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   padre:{
