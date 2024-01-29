@@ -1,15 +1,16 @@
 
-import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity,Modal,ActivityIndicator } from "react-native"
+import { View, StyleSheet, Text, Button, ScrollView, Image, TouchableOpacity,Modal,ActivityIndicator, Settings } from "react-native"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useEffect } from "react"
 import { useState } from "react"
 import Icon from "react-native-vector-icons/Ionicons"
-import ModalAddPost from "../../components/ModalAddPost"
+import ModalAddPost from "../../components/Profile/ModalAddPost"
 import { usePosterSlice } from "../../hooks/usePostSlice"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import CardPostPreview from "../../components/Profile/CardPostPreview"
 import ToastManager from "toastify-react-native"
-
+import MaterialcommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
+import SettingsComponent from "../../components/Profile/Settings"
 
 
 
@@ -18,11 +19,14 @@ const Profile = () => {
     // hooks
     const [isFollower, setIsFollower] = useState()
 
-
+    const [stateSidebar,setStateSidebar] = useState()
     const [stateModal, setStateModal] = useState(false)
     const {LoadPostsUser,postsUser,ClearPostUsers,statusPosts} = usePosterSlice()
     const {user,user_profile,loadInfoUserById,ClearUser_info} = useUserSlice()
     const is_me = true
+
+
+
     useEffect(()=> {
         // aqui cargare los posts del usuario 
 
@@ -37,6 +41,16 @@ const Profile = () => {
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+            <View style={styles.icon} >
+                {
+                    user.exist_friend_request === true && <View style={styles.puntoN}></View>
+
+                }
+                <MaterialcommunityIcons onPress={()=> setStateSidebar(!stateSidebar)} size={30} name="reorder-horizontal"/>
+            </View>
+            {
+                stateSidebar == true && <SettingsComponent/>
+            }
             <ToastManager/>
             <View  style={styles.padre}>
             <ModalAddPost stateModal={stateModal} setStateModal={(state)=> setStateModal(state)}/>
@@ -145,6 +159,16 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         filter: "blur(2)",
+    },
+    puntoN:{
+        width:7,
+        height:7,
+        borderRadius:3,
+        backgroundColor:"red",
+        position:"absolute",
+        bottom:7,
+        left:7,
+        zIndex:300
     },
     indicator:{
         width:"100%",
@@ -275,6 +299,13 @@ const styles = StyleSheet.create({
         fontSize:20,
         textAlign:"center",
         marginTop:50
+    },
+    icon:{
+        position:"absolute",
+        top:0,
+        right:0,
+        padding:5,
+        zIndex:200
     }
 
 })

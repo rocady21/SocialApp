@@ -1,8 +1,8 @@
 import { StyleSheet, View,Text,TouchableOpacity } from "react-native"
-import { FormatHours } from "../utils/FormatDate";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons"
 import { useRef, useState } from "react";
-import { useMessageSlice } from "../hooks/useMessagesSlice";
+import { useMessageSlice } from "../../hooks/useMessagesSlice";
+import { FormatHours } from "../../utils/FormatDate";
 
 const MessageCard = ({is_me,message,time,day,id})=> {
     const fechaInHours = FormatHours(time)
@@ -19,7 +19,7 @@ const MessageCard = ({is_me,message,time,day,id})=> {
           alignSelf: is_me === true ? "flex-end" : "flex-start",
           display: "flex",
           flexDirection: "column",
-          marginVertical:15
+          marginVertical:10
         },
         messageCard: {
           padding: 12,

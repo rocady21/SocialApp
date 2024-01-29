@@ -17,9 +17,9 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Arrow from "react-native-vector-icons/SimpleLineIcons";
 import More from "react-native-vector-icons/Feather";
-import MessageCard from "../../components/MessageCard";
-import { useUserSlice } from "../../hooks/useUserSlice";
 import { io } from "socket.io-client";
+import { useUserSlice } from "../../hooks/useUserSlice";
+import MessageCard from "../../components/Chat/MessageCard";
 
 const MessagesPage = ({ navigation, route, infoUserSelected }) => {
   const ScrollViewRef = useRef(null);

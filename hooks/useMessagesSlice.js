@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onNoMoreMessages,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
+import { onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onNoMoreMessages,onDeleteMessage,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
 import { getStorage } from "../utils/AsyncStorage"
 import {BACKEND_URL} from "@env"
 import { useUserSlice } from "./useUserSlice"
@@ -16,7 +16,7 @@ export const useMessageSlice = ()=> {
     const LoadContactsMessage = async(userID) => {
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.get("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/chats/" + userID)
+            const {data} = await axios.get("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/chats/" + userID)
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
             } else if(data.ok === false) {
@@ -37,7 +37,7 @@ export const useMessageSlice = ()=> {
 
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/" + id_chat,
+            const {data} = await axios.post("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/messages/" + id_chat,
             {
                 ofSett:index,
                 numberOfMessages:number_of_messages
@@ -71,7 +71,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,
@@ -101,9 +101,11 @@ export const useMessageSlice = ()=> {
 
     const Delete_message = async (id_message,day)=> {
         try {
-            const {data} = await axios.post("https://1f3d-2800-a4-12c0-5300-d866-48b9-a03c-c6cb.ngrok-free.app/api/messages/" + id_message,{
+            const {data} = await axios.post("https://12cf-2800-a4-12ad-a100-dcd9-5a40-beee-5c8d.ngrok-free.app/api/messages/" + id_message)
 
-            })
+            if(data.ok === true) {
+                Dispach(onDeleteMessage({id_message,day}))
+            }
         } catch (error) {
             
         }

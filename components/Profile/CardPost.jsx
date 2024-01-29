@@ -24,8 +24,6 @@ const CardPost = ({route})=> {
 
     const isLikedPost = info_likes.find((like)=> like.id == user.id ) ? true : false
     
-    console.log(indexPhoto);
-
     const formated_date = formatDate(infoPost.fecha,false)
     
     const AddOrQuitLike = ()=> {
@@ -35,6 +33,7 @@ const CardPost = ({route})=> {
             addLike({id_post:infoPost.id,id_user:user.id})
         }
     }
+                    user.exist_friend_request === true && <View style={styles.puntoN}></View>
 
     const Next = ()=> {
         if( indexPhoto == photos.length - 1) {

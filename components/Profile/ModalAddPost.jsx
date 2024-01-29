@@ -2,12 +2,10 @@ import React, { useState,useEffect,useRef } from "react";
 import { View, Modal, StyleSheet, Text, TextInput, TouchableOpacity, PermissionsAndroid,Image } from "react-native";
 import CloseIcon from "react-native-vector-icons/EvilIcons"
 import { ImageContainer } from "./ImagesContainer";
-
-import { useUserSlice } from "../hooks/useUserSlice";
-import { getFileNameFromUrl } from "../utils/getPathURL";
-import { usePosterSlice } from "../hooks/usePostSlice";
-import { sendPhotos } from "../utils/AddImageFirebase";
-import { SuccessToastify } from "../utils/Toastify";
+import { usePosterSlice } from "../../hooks/usePostSlice";
+import { sendPhotos } from "../../utils/AddImageFirebase";
+import { SuccessToastify } from "../../utils/Toastify";
+import { useUserSlice } from "../../hooks/useUserSlice";
 
 const ModalAddPost = ({ stateModal, setStateModal }) => {
 

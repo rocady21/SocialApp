@@ -1,14 +1,15 @@
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from "react-native"
-import { useUserSlice } from "../../hooks/useUserSlice"
+
 import { useCallback, useEffect, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
-import ChatCard from "../../components/ChatCard"
 import { useFocusEffect } from "@react-navigation/native"
 import React from "react"
 import { SvgXml } from "react-native-svg"
 import icon_error from "../../icons/icon_error"
+import ChatCard from "../../components/Chat/ChatCard"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 
 

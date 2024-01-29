@@ -5,6 +5,7 @@ import IconM from "react-native-vector-icons/Feather"
 import IconP from "react-native-vector-icons/AntDesign"
 import { useState } from "react"
 import { useNavigation } from "@react-navigation/native"
+import { useUserSlice } from "../hooks/useUserSlice"
 
 
 const Footer = ()=> {
@@ -15,7 +16,7 @@ const Footer = ()=> {
         setSelected(pageName)
         navigate.navigate(pageName)
     }
-    
+    const {user} = useUserSlice()
     const [selected,setSelected] = useState()
     return (
         <View style = {styles.footer}>
@@ -46,6 +47,9 @@ const Footer = ()=> {
             <TouchableOpacity onPress={()=> navigatePage("Profile")} style={StyleSheet.flatten([styles.buttonStyles,{
                 opacity: selected == "Profile"? 1 : 0.2
             }])}>
+                {
+                    user.exist_friend_request === true && <View style={styles.puntoN}></View>
+                }
                 <IconP name="user" size={35}/>
             </TouchableOpacity>
         </View>
@@ -70,6 +74,16 @@ const styles = StyleSheet.create({
         flexDirection:"row",
         justifyContent:"center",
         alignItems:"center",
+    },
+    puntoN:{
+        width:10,
+        height:10,
+        borderRadius:3,
+        backgroundColor:"red",
+        position:"absolute",
+        left:"40%",
+        top:5,
+        zIndex:300
     },
 
 })
