@@ -10,6 +10,7 @@ import { validateEmail, loadImageFromGallery } from '../Utils/helpers'
 import { size } from 'lodash'
 import { Avatar } from 'react-native-elements';
 import { uploadImage } from '../Utils/actions';
+import { Alert } from 'react-native';
 
 
 
@@ -25,8 +26,9 @@ const Register = () => {
   const [errorAge, setErrorAge] = useState("");
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
-  const [blob1, setBlob] = useState(null);
-  const [blobUrl, setBlobUrl] = useState("");
+  // const [blob1, setBlob] = useState(null);
+  // const [blobUrl, setBlobUrl] = useState("");
+  const [photoUrl, setPhotoUrl] = useState(null)
 
 
 
@@ -92,21 +94,28 @@ const Register = () => {
 
   const changePhoto = async () => {
     const result = await loadImageFromGallery([1, 1])
-    console.log("este es el result => ", result.image )
+    console.log("este es el result => ", result.image)
     let imag_eend = result.image.uri
     let valor2 = imag_eend.split('/');
-    let nombre_image = valor2[valor2.length -1]
+    let nombre_image = valor2[valor2.length - 1]
 
-    console.log("pruebita uwu => ", nombre_image)
+    // console.log("pruebita uwu => ", nombre_image)
 
-    const resultUploadImage = await uploadImage(result.image.uri, "Image_Perfil", nombre_image )
+    const resultUploadImage = await uploadImage(result.image.uri, "image_prueba", nombre_image)
+    console.log("resultUploadImage =>  ", resultUploadImage)
     if (!resultUploadImage.statusResponse) {
-        Alert.alert("Ha ocurrido un error al almacenar la foto de perfil.")
-        return
+      Alert.alert("Ha ocurrido un error al almacenar la foto de perfil.")
+
+      return
     }
 
 
+    setPhotoUrl(resultUploadImage.url)
+    console.log("resultUploadImage.url => ",resultUploadImage.url)
+    return
   }
+
+
 
   return (
 
@@ -118,12 +127,16 @@ const Register = () => {
 
           <View style={{ marginVertical: 22 }}>
 
-        
-              <Avatar
-                rounded
-                onPress={changePhoto}
-                source={{   uri: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg' }}
-              />
+
+            <Avatar
+              rounded
+              onPress={changePhoto}
+              source={
+                photoUrl
+                  ? { uri: photoUrl }
+                  : require("../../assets/default.png")
+              }
+            />
 
 
 
