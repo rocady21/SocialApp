@@ -10,6 +10,7 @@ import CardPostPreview from "../../components/Profile/CardPostPreview"
 import ToastManager from "toastify-react-native"
 import ModalAddPost from "../../components/Profile/ModalAddPost"
 import { useNavigation } from "@react-navigation/native"
+import axios from "axios"
 
 
 
@@ -20,7 +21,7 @@ const Profile = ({ route }) => {
     const [stateModal, setStateModal] = useState(false)
     const { LoadPostsUser, postsUser, ClearPostUsers, statusPosts } = usePosterSlice()
     const { user, user_profile, loadInfoUserById, ClearUser_info,FollowUser,UnfollowUser } = useUserSlice()
-    const {SeleccionarChat} = useMessageSlice()
+    const {SeleccionarChat,SendFirstMessage} = useMessageSlice()
     const [statusData,setsetStatusData] = useState(false)
     const navigation = useNavigation()
     const load_data = async()=> {
@@ -39,10 +40,26 @@ const Profile = ({ route }) => {
             ClearUser_info()
         }
     }, [])
+    console.log(user_profile.chatExist);
+    const MessagePage = async()=> {
+        try {
+            if(user_profile.chatExist === false) {
+                console.log("xd");
+                const data_response = await SendFirstMessage({id_from:user.id,id_to:user_profile.id})
     
-    const MessagePage = ()=> {
-            
-    }
+                if(data_response.ok === true) {
+                    console.log("se creo el chat jasjasj");
+                    SeleccionarChat(true),
+                    navigation.navigate("Messages",data_response.data)
+                }
+            } else {
+                SeleccionarChat(true)
+                navigation.navigate("Messages",user_profile.chatExist)
+            }
+        } catch (error) {
+        
+        }
+        }
 
     const FollowOrUnFollow = ()=> {
         if(user_profile.isFollower == true) {

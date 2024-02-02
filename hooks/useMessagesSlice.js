@@ -32,6 +32,19 @@ export const useMessageSlice = ()=> {
         Dispach(onSelectedChat(valor))
     }
 
+    const SendFirstMessage = async(info)=> {
+        try {
+            // creamos el mensaje
+            const {data} = await axios.post("https://9d34-2800-a4-12cf-c300-7412-7002-ea5d-82a5.ngrok-free.app/api/messages/send",info)
+            if(data.ok == true) {
+                return {ok:true,dataF:data.data}
+            }
+        } catch (error) {
+            
+        }
+            
+    }
+
     const loadMessageFromUser = async(id_chat,index,number_of_messages)=> {
 
 
@@ -126,8 +139,8 @@ export const useMessageSlice = ()=> {
         onAddMessageRealTImeSocekt,
         SearchMessage,
         ResetMoreMessages,
-        Delete_message
-        
+        Delete_message,
+        SendFirstMessage
         
     }
 }
