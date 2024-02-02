@@ -29,12 +29,14 @@ const ModalFriendRequest = ({onClose,status})=> {
                 <View style={styles.line}></View>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.body}>
                     {
-                        StatusLoadingFriend_requests === "exist" ? <ActivityIndicator style={styles.activity} size={"large"} color={"black"}/> :
+                        StatusLoadingFriend_requests === "loading" ? <ActivityIndicator style={styles.activity} size={"large"} color={"black"}/> :
                         StatusLoadingFriend_requests === "no-exist" ? <View style={styles.padreText}>
                                 <Image style={styles.image} source={require("../../icons/friend_request.png")}/>
                                 <Text>No hay solicitudes de amistad</Text>
                             </View> :
-                        <Text>Si hay</Text>
+                        friend_requests.map((request,index)=> {
+                            return <CardFriendRequest key={index} data={request}/>
+                        })
                     }
                     
                     

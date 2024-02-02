@@ -9,6 +9,7 @@ import { useUserSlice } from "../../hooks/useUserSlice"
 import CardPostPreview from "../../components/Profile/CardPostPreview"
 import ToastManager from "toastify-react-native"
 import ModalAddPost from "../../components/Profile/ModalAddPost"
+import { useNavigation } from "@react-navigation/native"
 
 
 
@@ -16,17 +17,15 @@ import ModalAddPost from "../../components/Profile/ModalAddPost"
 const Profile = ({ route }) => {
 
     // hooks
-    const [isFollower, setIsFollower] = useState()
     const [stateModal, setStateModal] = useState(false)
     const { LoadPostsUser, postsUser, ClearPostUsers, statusPosts } = usePosterSlice()
-    const { user, user_profile, loadInfoUserById, ClearUser_info } = useUserSlice()
+    const { user, user_profile, loadInfoUserById, ClearUser_info,FollowUser,UnfollowUser } = useUserSlice()
+    const {SeleccionarChat} = useMessageSlice()
     const [statusData,setsetStatusData] = useState(false)
-
+    const navigation = useNavigation()
     const load_data = async()=> {
-        Promise.all(
-            loadInfoUserById(route.params.id),
-            LoadPostsUser(route.params.id)
-        )
+        await loadInfoUserById(route.params.id),
+        await LoadPostsUser(route.params.id)
 
         setsetStatusData(true)
         
@@ -40,15 +39,24 @@ const Profile = ({ route }) => {
             ClearUser_info()
         }
     }, [])
+    
+    const MessagePage = ()=> {
+            
+    }
 
-    const coso = false
-
+    const FollowOrUnFollow = ()=> {
+        if(user_profile.isFollower == true) {
+            UnfollowUser()
+        } else {
+            FollowUser()
+        }
+    }
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <ToastManager />
 
-            {user_profile.nombre  ?
+            {statusData === true  ?
             <View style={styles.padre}>
                 <ModalAddPost stateModal={stateModal} setStateModal={(state) => setStateModal(state)} />
 
@@ -85,18 +93,23 @@ const Profile = ({ route }) => {
 
 
                 </View>
-
                 <View style={styles.buttonsInteractions}>
-                    <TouchableOpacity style={styles.buttonI}>
-                        {/*Aqui es en donde validaremos si seguimos al usuario o no */}
-                        <Text>Seguir</Text>
+                    {/*Aqui es en donde validaremos si seguimos al usuario o no */}
+                        {
+                            user_profile.isFollower === false? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                            <Text>Seguir</Text>
+                        </TouchableOpacity> : <View style={styles.buttonsI}>
+                        <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                            <Text>Siguiendo</Text>
+                        </TouchableOpacity>
 
-                    </TouchableOpacity>
+                        <TouchableOpacity onPress={MessagePage} style={styles.buttonI}>
+                            <Text>Enviar Mensaje</Text>
+                        </TouchableOpacity>
+                        </View>
+    
+                        }
 
-                    <TouchableOpacity style={styles.buttonI}>
-                        <Text>Enviar Mensaje</Text>
-
-                    </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity onPress={() => setStateModal(true)} style={styles.post}>
@@ -176,6 +189,13 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         borderWidth: 2
 
+    },
+    buttonsI:{
+        width:"100%",
+        margin: "auto",
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-around"
     },
     textInfo: {
         fontSize: 20,

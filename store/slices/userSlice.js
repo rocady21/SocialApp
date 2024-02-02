@@ -44,6 +44,9 @@ const userSlice = createSlice({
       state.searchUsers = []
     },
     onLoadUser_info:(state,{payload})=> {
+      console.log("payload");
+
+      console.log(payload);
       state.user_profile = payload
     },
     onClearUser_info:(state,{payload})=> {
@@ -57,8 +60,54 @@ const userSlice = createSlice({
       state.StatusLoadingFriend_requests = "no-exist"
 
     },
+    onRejectFriendRequest:(state,{payload})=> {
+      const newState = state.friend_requests.map((people)=> {
+        if(people.id !== payload) {
+          return people
+        }
+      })
+      if(!newState[0]) {
+        state.StatusLoadingFriend_requests = "no-exist"
+        state.user.exist_friend_request = false
+      }
+
+      state.friend_requests = newState
+      
+
+    },
+    onAcceptFriendRequest:(state,{payload})=> {
+      const newState = state.friend_requests.map((people)=> {
+        if(people.id !== payload) {
+          return people
+        }
+      })
+      if(!newState[0]) {
+        state.StatusLoadingFriend_requests = "no-exist"
+        state.user.exist_friend_request = false
+      }
+      
+      state.friend_requests = newState
+
+      state.user = {
+        ...state.user,
+        seguidores: state.user.seguidores + 1
+      }
+      
+    },
+    onFollow:(state)=> {
+      state.user_profile = {
+        ...state.user_profile,
+        isFollower: "Pendiente"
+      }
+    },
+    onUnFollow:(state)=> {
+      state.user_profile = {
+        ...state.user_profile,
+        isFollower: "Seguir"
+      }
+    }
   }
 })
 
-export const { setMessage,credentialsError,addNewUser,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
 export default userSlice
