@@ -40,17 +40,14 @@ const Profile = ({ route }) => {
             ClearUser_info()
         }
     }, [])
-    console.log(user_profile.chatExist);
     const MessagePage = async()=> {
         try {
             if(user_profile.chatExist === false) {
-                console.log("xd");
                 const data_response = await SendFirstMessage({id_from:user.id,id_to:user_profile.id})
     
                 if(data_response.ok === true) {
-                    console.log("se creo el chat jasjasj");
                     SeleccionarChat(true),
-                    navigation.navigate("Messages",data_response.data)
+                    navigation.navigate("Messages",data_response.dataF)
                 }
             } else {
                 SeleccionarChat(true)
@@ -60,12 +57,17 @@ const Profile = ({ route }) => {
         
         }
         }
-
     const FollowOrUnFollow = ()=> {
-        if(user_profile.isFollower == true) {
-            UnfollowUser()
+        if(user_profile.isFollower !== false) {
+            UnfollowUser({
+                id_user_seguidor:user.id,
+                id_user_seguido:user_profile.id
+            })
         } else {
-            FollowUser()
+            FollowUser({
+                id_user_seguidor:user.id,
+                id_user_seguido:user_profile.id
+            })
         }
     }
 
@@ -113,9 +115,11 @@ const Profile = ({ route }) => {
                 <View style={styles.buttonsInteractions}>
                     {/*Aqui es en donde validaremos si seguimos al usuario o no */}
                         {
-                            user_profile.isFollower === false? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                            user_profile.isFollower === false || user_profile.isFollower === "Rechazado"? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
                             <Text>Seguir</Text>
-                        </TouchableOpacity> : <View style={styles.buttonsI}>
+                        </TouchableOpacity> : user_profile.isFollower === "Pendiente"? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                            <Text>Pendiente</Text>
+                        </TouchableOpacity> :  <View style={styles.buttonsI}>
                         <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
                             <Text>Siguiendo</Text>
                         </TouchableOpacity>

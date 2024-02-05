@@ -1,4 +1,4 @@
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator } from "react-native"
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,Modal } from "react-native"
 
 import { useCallback, useEffect, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
@@ -10,18 +10,18 @@ import { SvgXml } from "react-native-svg"
 import icon_error from "../../icons/icon_error"
 import ChatCard from "../../components/Chat/ChatCard"
 import { useUserSlice } from "../../hooks/useUserSlice"
+import ModalDeletePost from "../../components/Chat/ModalDeletePost"
 
 
 
 const Chats = ({ route }) => {
 
-    const { name } = route
     const { user } = useUserSlice()
     const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact } = useMessageSlice()
     const { contactsChat, stateChats } = useMessageSlice()
     const [SearchMessageContact, setSearchMessageContact] = useState("")
-
-
+    const [modalDelete,setModalDelete] = useState(false)
+    const [selected_chat,setSelectedChat] = useState(selected_chat)
 
     // este useEffect es de react-navigation y sirve para detectar cuando estas o sales de una pantalla
     useFocusEffect(
@@ -41,17 +41,23 @@ const Chats = ({ route }) => {
     }, [SearchMessageContact])
 
 
-
+    const openModal = ()=> {
+        setModalDelete(true)
+    }
+    console.log(selected_chat);
     return (
 
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.padre}>
-
+            {
+                modalDelete === true && <ModalDeletePost id_chat={selected_chat.id} modalDelete={modalDelete} setModalDelete={(value)=>setModalDelete(value)}/>
+            }
             <View style={styles.header}>
                 <View style={styles.top}>
                     <Text style={styles.textTop}>Mensajes</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>setModalDelete(true)}>
                         <More size={35} name="more-vertical" />
                     </TouchableOpacity>
+                    
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.InputFalse}>
@@ -70,7 +76,7 @@ const Chats = ({ route }) => {
 
                     SearchMessageContact == "" ?
                         (stateChats === "chats" ? contactsChat.map((contact, index) => {
-                            return <ChatCard data={contact} key={index} />
+                            return <ChatCard setSelectedChat={(value)=> setSelectedChat(value)} OpenModal={openModal} data={contact} key={index} />
                         }) : stateChats === "no-chats" ?
                             <View style={styles.error}>
                                 <SvgXml
@@ -83,7 +89,7 @@ const Chats = ({ route }) => {
                             </View>
 
                             : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"} />) : (searchContact[0] ? searchContact.map((value, index) => {
-                                return <ChatCard data={value} key={index} />
+                                return <ChatCard setSelectedChat={(value)=> setSelectedChat(value)} OpenModal={openModal} data={value} key={index} />
                             }) : <View style={styles.error}>
                                 <SvgXml
                                     height={250}
@@ -163,7 +169,8 @@ const styles = StyleSheet.create({
     textE: {
         fontSize: 20,
         marginTop: 5
-    }
+    },
+
 
 
 })
