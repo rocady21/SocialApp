@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable } from "react-native"
+import { View, Text, TouchableOpacity, SafeAreaView, Image, ScrollView, Pressable, StyleSheet } from "react-native"
 import temasA from '../Thems/temas'
 import Black_button from './Componentes/black_button';
 import CheckBox from 'react-native-check-box';
@@ -12,10 +12,22 @@ import { Avatar } from 'react-native-elements';
 import { uploadImage } from '../Utils/actions';
 import { Alert } from 'react-native';
 
+const styles = StyleSheet.create({
+  avatar : {
+    width: 100,
+    height: 100,
+    margin: 10,
+    flex: 1,
 
+  },
+
+  container : {
+    alignItems: 'center'
+
+  }
+})
 
 const Register = () => {
-
 
   const [formData, setFormData] = useState(defaultFormValues())
 
@@ -111,7 +123,7 @@ const Register = () => {
 
 
     setPhotoUrl(resultUploadImage.url)
-    console.log("resultUploadImage.url => ",resultUploadImage.url)
+    console.log("resultUploadImage.url => ", resultUploadImage.url)
     return
   }
 
@@ -125,18 +137,12 @@ const Register = () => {
 
         <View style={{ flex: 1, marginHorizontal: 22 }}>
 
+
+
           <View style={{ marginVertical: 22 }}>
 
+         
 
-            <Avatar
-              rounded
-              onPress={changePhoto}
-              source={
-                photoUrl
-                  ? { uri: photoUrl }
-                  : require("../../assets/default.png")
-              }
-            />
 
 
 
@@ -150,14 +156,31 @@ const Register = () => {
 
             </Text>
 
-            <Text style={{
+            {/* <Text style={{
               fontSize: 16,
               color: temasA.black
 
             }}>
               Connect with your friend today!
-            </Text>
+            </Text> */}
           </View>
+
+          <View style={styles.container}>
+              <Avatar
+              style = {styles.avatar}
+                rounded
+                size="large" 
+                onPress={changePhoto}
+                overlayContainerStyle={{ backgroundColor: 'blue' }}
+                activeOpacity={0.3}
+                source={
+                  photoUrl
+                    ? { uri: photoUrl }
+                    : require("../../assets/default.png")
+                }
+              />
+            </View>
+
           <View>
             {/*Inicio - input Name */}
             <Inputs title={'Name'} mensajeError={errorName} onChange={onChange} typetext={"name"} fromdata={formData.name} />

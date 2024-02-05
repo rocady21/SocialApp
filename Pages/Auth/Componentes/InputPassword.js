@@ -40,7 +40,9 @@ const InputPassword = ({ title, placeholders, mensajeError, onChange, typetext, 
                     onChange={(e) => onChange(e, typetext)}
                     defaultValue={fromdata}
                     style={{
-                        width: '100%'
+                        width: '100',
+
+                        height: '10'
                     }}
                 />
 
@@ -56,7 +58,7 @@ const InputPassword = ({ title, placeholders, mensajeError, onChange, typetext, 
 
                     {
                         ispasswordShown == true ? (
-                            <Ionicons name="eye-off" size={24} color={temasA.colors.black} />
+                            <Ionicons name="eye-off" size={24} color={temasA.colors.black} style={{paddingBottom:'10%'}} />
 
                         ) : (
                             <Ionicons name="eye" size={24} color={temasA.colors.black} />
