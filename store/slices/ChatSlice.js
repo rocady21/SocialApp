@@ -9,7 +9,8 @@ const ChatSlice = createSlice({
         contactsChat:[],
         selectedChat:false,
         searchContact:[],
-        NoMoreMessages:"more"
+        NoMoreMessages:"more",
+        statusLoadingMessages:"loaded"
     },
     reducers:{
         onLoadingChats:(state,{payload})=> {
@@ -28,6 +29,12 @@ const ChatSlice = createSlice({
                 }
 
                 return contact
+            })
+            const order_contacy = data_filtrada.sort((a,b)=> {
+                aID = a.id,
+                bID = b.id
+
+                return bID - aID
             })
             state.stateChats = "chats"
             state.contactsChat = data_filtrada
@@ -80,7 +87,7 @@ const ChatSlice = createSlice({
                         return { ...mensaje, messages: messages_order };
                       });
                     
-
+                      state.statusLoadingMessages = "loaded"
                       state.messages = order_messages
                 } else {
                     console.log("debo de actualizar los viejos");
@@ -96,6 +103,7 @@ const ChatSlice = createSlice({
                         return messages_order
                     })
                     state.messages = old_arr
+                    state.statusLoadingMessages = "loaded"
                 }
                 
 
@@ -103,6 +111,7 @@ const ChatSlice = createSlice({
             } else {
                 console.log(payload);
                 state.messages = payload
+                state.statusLoadingMessages = "loaded"
             }
 
             
@@ -111,6 +120,12 @@ const ChatSlice = createSlice({
         },
         onClearMessages:(state)=> {
             state.messages = []
+        },
+        onLoadingMessages:(state)=> {
+            state.statusLoadingMessages = "loading"
+        },
+        onLoadedMessages:(state)=> {
+            state.statusLoadingMessages = "laoded"
         },
         onAddMessageRealTIme:(state,{payload})=> {
 
@@ -121,24 +136,35 @@ const ChatSlice = createSlice({
                     newMessage["is_me"] = false
                 }
             
+            console.log(newMessage);
             // aqui verifico si el mensaje del socekt es mio o no, asi no lo agarro si es que lo es
             // solo traeria los menasjes del usuario que este en el mismo socket que el mio
             if(socket === "socket" && newMessage.usuario === id_me ) {
                 return
             }
             else {
-                const state_f = state.messages.map((days)=> {
-                    if(days.day === "hoy") {
-                        console.log("es hoy");
-                        return {
-                            ...days,
-                            messages:[...days.messages,newMessage]
+                if( state.messages[0]) {
+                    const state_f = state.messages.map((days)=> {
+                        if(days.day === "hoy") {
+                            console.log("es hoy");
+                            return {
+                                ...days,
+                                messages:[...days.messages,newMessage]
+                            }
+                        } else {
+                            return days
                         }
-                    } else {
-                        return days
-                    }
-                })
-                state.messages = state_f
+                    })
+                    state.messages = state_f
+
+                } else {
+                    console.log("insertare uno nuevo xd");
+                    state.messages = [{
+                        day:"hoy",
+                        messages:[newMessage]
+                    }]
+                }
+ 
             }
 
         },
@@ -159,11 +185,16 @@ const ChatSlice = createSlice({
         },
         onDeleteMessage:(state,{payload})=> {
             
+        },
+        onDeleteChat:(state,{payload})=> {
+            state.contactsChat = state.contactsChat.filter((contact)=> {
+                return contact.id !== payload
+            })
         }
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onNoMoreMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onDeleteChat,onLoadChats,onClearMessages,onNoMoreMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
 
 export default ChatSlice

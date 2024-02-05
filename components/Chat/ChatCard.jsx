@@ -4,7 +4,7 @@ import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { formatDate } from "../../utils/FormatDate"
 import { useUserSlice } from "../../hooks/useUserSlice"
 
-const ChatCard = ({ data }) => {
+const ChatCard = ({data,OpenModal,setSelectedChat }) => {
     const {user} = useUserSlice()
 
     const navigate = useNavigation()
@@ -14,6 +14,12 @@ const ChatCard = ({ data }) => {
         navigate.navigate("Messages",data)
     }
     const time_format = formatDate(data.time_last_message,true)
+
+
+    const abrirModal = ()=> {
+        setSelectedChat(data)
+        OpenModal()
+    }
     
     return (
         <View style={styles.padre}>
@@ -25,7 +31,7 @@ const ChatCard = ({ data }) => {
                     }}
                 />
             </View>
-            <TouchableOpacity onPress={ShowChat} style={styles.info}>
+            <TouchableOpacity onLongPress={abrirModal} onPress={ShowChat} style={styles.info}>
                 <Text style={styles.title}>{data.nombre_user}</Text>
                 <Text numberOfLines={1} style={styles.text}> 
                 {

@@ -21,23 +21,23 @@ import { io } from "socket.io-client";
 import { useUserSlice } from "../../hooks/useUserSlice";
 import MessageCard from "../../components/Chat/MessageCard";
 
-const MessagesPage = ({ navigation, route, infoUserSelected }) => {
+const MessagesPage = ({ navigation, route }) => {
   const ScrollViewRef = useRef(null);
   const { user } = useUserSlice();
   const {
+    messages,
+    statusLoadingMessages,
+    NoMoreMessages,
     SeleccionarChat,
     loadMessageFromUser,
-    messages,
     SendMessage,
     ClearMessages,
     onAddMessageRealTImeSocekt,
-    NoMoreMessages,
     ResetMoreMessages,
   } = useMessageSlice();
   const [mensaje, setMensaje] = useState(``);
-  const { id, nombre_user, photo, id_user_chat, user_from, user_to } =
-    route.params;
-
+  const { id, nombre_user, photo, id_user_chat, user_from, user_to } = route.params
+  
   const numbersofMessages = 7;
   const [index, setIndex] = useState(0);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
@@ -92,6 +92,10 @@ const MessagesPage = ({ navigation, route, infoUserSelected }) => {
       unsubscribe()
     }
   }, []);
+  console.log(messages);
+
+
+  console.log(id_user_chat);
 
   const enviarMensaje = () => {
     if (mensaje !== "") {
@@ -127,27 +131,29 @@ const MessagesPage = ({ navigation, route, infoUserSelected }) => {
         }}
         onScroll={handleScroll}
       >
-        {messages[0] ? (
-          messages.map((msg_day, index) => (
-            <View key={index} style={styles.messages_day}>
-              <Text style={{ textAlign: "center", marginVertical: 5 }}>
-                {msg_day.day}
-              </Text>
-              {msg_day.messages.map((msg, index) => (
-                <MessageCard
-                  key={index}
-                  is_me={msg.is_me}
-                  message={msg.mensaje}
-                  time={msg.fecha}
-                  day={msg_day.day}
-                  id={msg.id}
-                />
-              ))}
-            </View>
-          ))
-        ) : (
-          <ActivityIndicator style={styles} size="small" color="black" />
-        )}
+        {
+          messages[0] ? (
+            messages.map((msg_day, index) => (
+              <View key={index} style={styles.messages_day}>
+                <Text style={{ textAlign: "center", marginVertical: 5 }}>
+                  {msg_day.day}
+                </Text>
+                {msg_day.messages.map((msg, index) => (
+                  <MessageCard
+                    key={index}
+                    is_me={msg.is_me}
+                    message={msg.mensaje}
+                    time={msg.fecha}
+                    day={msg_day.day}
+                    id={msg.id}
+                  />
+                ))}
+              </View>
+            ))
+          ) : (
+            <Text>¡Envia tu primer Mensaje!</Text>
+          )
+        }
       </ScrollView>
       <View style={styles.sendMessage}>
         <TextInput

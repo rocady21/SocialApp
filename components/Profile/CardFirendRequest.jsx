@@ -1,7 +1,11 @@
 import { StyleSheet,Text, View,Image,TouchableOpacity } from "react-native"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 
-const CardFriendRequest = ()=> {
+const CardFriendRequest = ({data})=> {
+
+    const {AcceptFriendRequest,RejectFriendRequest,user} = useUserSlice()
+
     return (
         <View style = {styles.p}>
             <Image
@@ -11,11 +15,11 @@ const CardFriendRequest = ()=> {
                 }}
             />
             <View style={styles.info}>
-                <Text>Rodrigo Olivera Silva solicitó seguirte.</Text>
+                <Text>{data.nombre + data.apellido} solicitó seguirte.</Text>
             </View>
             <View style={styles.buttons}>
-                <TouchableOpacity style={styles.buttonA}><Text style={{color:"white",textAlign:"center"}}>Aceptar</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.buttonR}><Text style={{color:"black",textAlign:"center"}}>Rechazar</Text></TouchableOpacity>
+                <TouchableOpacity onPress={()=> AcceptFriendRequest({id_user_seguidor:data.id,id_user_seguido:user.id})} style={styles.buttonA}><Text style={{color:"white",textAlign:"center"}}>Aceptar</Text></TouchableOpacity>
+                <TouchableOpacity onPress={()=> RejectFriendRequest({id_user_seguidor:data.id,id_user_seguido:user.id})} style={styles.buttonR}><Text style={{color:"black",textAlign:"center"}}>Rechazar</Text></TouchableOpacity>
 
             </View>
         </View>
