@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,Modal } from "react-native"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
@@ -16,30 +16,35 @@ import ModalDeletePost from "../../components/Chat/ModalDeletePost"
 
 const Chats = ({ route }) => {
 
+
+    const ref = useRef()
     const { user } = useUserSlice()
     const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact } = useMessageSlice()
     const { contactsChat, stateChats } = useMessageSlice()
     const [SearchMessageContact, setSearchMessageContact] = useState("")
     const [modalDelete,setModalDelete] = useState(false)
     const [selected_chat,setSelectedChat] = useState(selected_chat)
-
+    const number_of_contacts = 5
+    const [index,setIndex] = useState(0)
     // este useEffect es de react-navigation y sirve para detectar cuando estas o sales de una pantalla
     useFocusEffect(
         useCallback(() => {
             // Lógica específica cuando la pantalla Home se enfoca
-            SeleccionarChat(false)
-            LoadContactsMessage(user.id)
+            
             return () => {
             };
         }, [])
     );
 
+    useEffect(()=>{
+        LoadContactsMessage(user.id,index,number_of_contacts)
+    },[])
+    
     useEffect(() => {
         if (SearchMessageContact !== "") {
             SearchMessage(SearchMessageContact)
         }
     }, [SearchMessageContact])
-
 
     const openModal = ()=> {
         setModalDelete(true)
@@ -71,7 +76,7 @@ const Chats = ({ route }) => {
                     </View>
                 </View>
             </View>
-            <ScrollView style={styles.body}>
+            <ScrollView ref={ref} style={styles.body}>
                 {
 
                     SearchMessageContact == "" ?

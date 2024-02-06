@@ -22,9 +22,11 @@ import { useUserSlice } from "../../hooks/useUserSlice";
 import MessageCard from "../../components/Chat/MessageCard";
 
 const MessagesPage = ({ navigation, route }) => {
+  console.log("selected_chat",selectedChat);
   const ScrollViewRef = useRef(null);
   const { user } = useUserSlice();
   const {
+    selectedChat,
     messages,
     statusLoadingMessages,
     NoMoreMessages,
@@ -37,11 +39,11 @@ const MessagesPage = ({ navigation, route }) => {
   } = useMessageSlice();
   const [mensaje, setMensaje] = useState(``);
   const { id, nombre_user, photo, id_user_chat, user_from, user_to } = route.params
+  const [mounted,setMounted] = useState(false)
   
-  const numbersofMessages = 7;
-  const [index, setIndex] = useState(0);
+  const numbersofMessages = 10;
+  const [index, setIndex] = useState(10);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const handleScroll = (event) => {
     event.persist();
@@ -50,16 +52,14 @@ const MessagesPage = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (isScrolledToTop && index !== 0 && NoMoreMessages === "more") {
+    if (isScrolledToTop && index !== 0 && NoMoreMessages === "more" && mounted === true) {
       loadMessageFromUser(id, index, numbersofMessages);
       setIndex(index + numbersofMessages);
     }
   }, [isScrolledToTop]);
 
   useEffect(() => {
-    loadMessageFromUser(id, index, numbersofMessages);
-    setIndex(index + numbersofMessages);
-
+    setMounted(true)
     const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
       transports: ["websocket"],
       cors: {
@@ -74,28 +74,19 @@ const MessagesPage = ({ navigation, route }) => {
     });
 
     return () => {
+      SeleccionarChat(false)
       socket.disconnect();
-    };
-  }, []);
-  
-
-
-  
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      SeleccionarChat(false);
       ClearMessages();
       ResetMoreMessages();
-    });
-    return ()=> {
-      console.log("se desmonto");
-      unsubscribe()
-    }
+      
+    };
   }, []);
-  console.log(messages);
 
 
-  console.log(id_user_chat);
+  
+  
+
+
 
   const enviarMensaje = () => {
     if (mensaje !== "") {
@@ -132,28 +123,28 @@ const MessagesPage = ({ navigation, route }) => {
         onScroll={handleScroll}
       >
         {
-          messages[0] ? (
-            messages.map((msg_day, index) => (
-              <View key={index} style={styles.messages_day}>
-                <Text style={{ textAlign: "center", marginVertical: 5 }}>
-                  {msg_day.day}
-                </Text>
-                {msg_day.messages.map((msg, index) => (
-                  <MessageCard
-                    key={index}
-                    is_me={msg.is_me}
-                    message={msg.mensaje}
-                    time={msg.fecha}
-                    day={msg_day.day}
-                    id={msg.id}
-                  />
-                ))}
-              </View>
-            ))
-          ) : (
-            <Text>¡Envia tu primer Mensaje!</Text>
-          )
-        }
+        messages[0] ? (
+
+        messages.map((msg_day, index) => (
+          <View key={index} style={styles.messages_day}>
+            <Text style={{ textAlign: "center", marginVertical: 5 }}>
+              {msg_day.day}
+            </Text>
+            {msg_day.messages.map((msg, index) => (
+              <MessageCard
+                key={msg.id}
+                is_me={msg.is_me}
+                message={msg.mensaje}
+                time={msg.fecha}
+                day={msg_day.day}
+                id={msg.id}
+              />
+            ))}
+          </View>
+        ))
+      ) : !messages[0]? (
+        <Text>¡Envía tu primer mensaje!</Text>
+      ) : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"} />}
       </ScrollView>
       <View style={styles.sendMessage}>
         <TextInput

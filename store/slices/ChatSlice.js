@@ -49,11 +49,11 @@ const ChatSlice = createSlice({
             state.selectedChat = payload
         },
         onLoadChats:(state,{payload})=> {
-
+            const {data} = payload
             if(state.messages[0]) {
                 const old_arr = state.messages.map((msg) => {
-                    const matchingDay = payload.find((day) => day.day === msg.day);
-                    if (matchingDay) {
+                    const matchingDay = data.find((day) => day.day === msg.day);
+                    if (matchingDay) {data
                         return {
                             ...matchingDay,
                             messages: [...msg.messages, ...matchingDay.messages]
@@ -62,12 +62,10 @@ const ChatSlice = createSlice({
                         return msg;
                     }
                 });
-                const new_messages = payload.filter((objetoPayload) => 
+                const new_messages = data.filter((objetoPayload) => 
                 !state.messages.some((objetoMessage) => objetoMessage.day === objetoPayload.day)
                 );
                 
-                console.log("old",old_arr);
-                console.log("new",new_messages);
                 if(new_messages.length > 0) {
                     const new_arr = [...new_messages, ...old_arr]
                     console.log("new_arr",new_arr);
@@ -108,14 +106,7 @@ const ChatSlice = createSlice({
                 
 
             
-            } else {
-                console.log(payload);
-                state.messages = payload
-                state.statusLoadingMessages = "loaded"
-            }
-
-            
-
+            } 
 
         },
         onClearMessages:(state)=> {
@@ -190,11 +181,14 @@ const ChatSlice = createSlice({
             state.contactsChat = state.contactsChat.filter((contact)=> {
                 return contact.id !== payload
             })
+        },
+        onLoadFirstsMessages:(state,{payload})=> {
+            state.messages = payload
         }
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onDeleteChat,onLoadChats,onClearMessages,onNoMoreMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onDeleteChat,onLoadChats,onClearMessages,onNoMoreMessages,onLoadFirstsMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
 
 export default ChatSlice

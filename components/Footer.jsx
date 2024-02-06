@@ -9,7 +9,6 @@ import { useUserSlice } from "../hooks/useUserSlice"
 
 
 const Footer = ()=> {
-
     const navigate = useNavigation()
 
     const navigatePage = (pageName)=> {

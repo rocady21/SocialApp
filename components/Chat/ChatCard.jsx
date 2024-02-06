@@ -8,9 +8,10 @@ const ChatCard = ({data,OpenModal,setSelectedChat }) => {
     const {user} = useUserSlice()
 
     const navigate = useNavigation()
-    const {SeleccionarChat} = useMessageSlice()
+    const {SeleccionarChat,LoadFirstsMessages} = useMessageSlice()
     const ShowChat = ()=> {
-        SeleccionarChat(true)  
+        SeleccionarChat(true)
+        LoadFirstsMessages(data.firsts_messages)
         navigate.navigate("Messages",data)
     }
     const time_format = formatDate(data.time_last_message,true)

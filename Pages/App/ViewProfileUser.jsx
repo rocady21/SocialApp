@@ -21,13 +21,12 @@ const Profile = ({ route }) => {
     const [stateModal, setStateModal] = useState(false)
     const { LoadPostsUser, postsUser, ClearPostUsers, statusPosts } = usePosterSlice()
     const { user, user_profile, loadInfoUserById, ClearUser_info,FollowUser,UnfollowUser } = useUserSlice()
-    const {SeleccionarChat,SendFirstMessage} = useMessageSlice()
+    const {SeleccionarChat,SendFirstMessage,LoadFirstsMessages} = useMessageSlice()
     const [statusData,setsetStatusData] = useState(false)
     const navigation = useNavigation()
     const load_data = async()=> {
         await loadInfoUserById(route.params.id),
         await LoadPostsUser(route.params.id)
-
         setsetStatusData(true)
         
     }
@@ -42,6 +41,7 @@ const Profile = ({ route }) => {
     }, [])
     const MessagePage = async()=> {
         try {
+
             if(user_profile.chatExist === false) {
                 const data_response = await SendFirstMessage({id_from:user.id,id_to:user_profile.id})
     
@@ -51,10 +51,11 @@ const Profile = ({ route }) => {
                 }
             } else {
                 SeleccionarChat(true)
+                LoadFirstsMessages(user_profile.messages)
                 navigation.navigate("Messages",user_profile.chatExist)
             }
         } catch (error) {
-        
+            console.log(error);
         }
         }
     const FollowOrUnFollow = ()=> {

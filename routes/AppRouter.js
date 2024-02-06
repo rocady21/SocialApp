@@ -20,6 +20,7 @@ export default function AppRouter() {
 
   const {selectedChat} = useMessageSlice()
 
+  console.log("jijiji",selectedChat);
 
   return (
     <View style={styles.padre}>
