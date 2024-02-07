@@ -32,7 +32,11 @@ const Search = () => {
     },[search])
 
     const ViewProfile = (id)=> {
-        navigation.navigate("View_profile_user",{id})
+        if(user.id === id) {
+            navigation.navigate("Profile")
+        } else {
+            navigation.navigate("View_profile_user",{id})
+        }
     }
     
     return (

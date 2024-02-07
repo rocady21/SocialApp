@@ -14,6 +14,17 @@ const userSlice = createSlice({
     StatusLoadingFriend_requests:"loading"
   },
   reducers: {
+    onResetUserState:(state)=> {
+      state.message= "",
+      state.user= {},
+      state.user_profile={},
+      state.userStatus="no-user",
+      state.messageError="",
+      state.statusSearch="preview",
+      state.searchUsers=[],
+      state.friend_requests=[],
+      state.StatusLoadingFriend_requests="loadingstate."
+    },
     setMessage: (state,{payload})=> {
       state.message = payload
     },
@@ -109,5 +120,5 @@ const userSlice = createSlice({
   }
 })
 
-export const { setMessage,credentialsError,addNewUser,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onResetUserState,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
 export default userSlice

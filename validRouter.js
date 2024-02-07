@@ -9,13 +9,9 @@ import { useUserSlice } from './hooks/useUserSlice';
 
 export default  function ValidRouter({}) {
   
+  const {userStatus} = useUserSlice()  
 
-  const {validToken} = useUserSlice()
-  const {userStatus} = useSelector((state) => state.user)
-
-  
-  
-
+  console.log("aaaaaaaaaa");
 
   return (
     <>

@@ -10,6 +10,12 @@ const PostSlice = createSlice({
         statusPosts:"no-posts"
     },
     reducers: {
+        onResetStatePost:(state)=> {
+            state.postsUser= [],
+            state.loadPosts= false,
+            state.selectedPost={},
+            state.statusPosts="no-posts"
+        },
         onLoadPostUser: (state, { payload }) => {
             state.postsUser = payload
             state.loadPosts = true,
@@ -74,5 +80,5 @@ const PostSlice = createSlice({
     }
 })
 
-export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost } = PostSlice.actions
+export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost,onResetStatePost} = PostSlice.actions
 export default PostSlice

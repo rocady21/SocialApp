@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { onLoadContactsMessage,onSelectedChat,onLoadChats,onClearMessages,onLoadFirstsMessages,onNoMoreMessages,onDeleteMessage,onLoadingMessages,onDeleteChat,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats,onLoadedMessages, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
+import { onLoadContactsMessage,onSelectedChat,onLoadChats,onResetStateChat,onClearMessages,onNoMoreContacts,onResetContacts,onLoadFirstsMessages,onNoMoreMessages,onResetNoMoreContacts,onDeleteMessage,onLoadingMessages,onDeleteChat,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats,onLoadedMessages, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
 import { getStorage } from "../utils/AsyncStorage"
 import {BACKEND_URL} from "@env"
 import { useUserSlice } from "./useUserSlice"
@@ -9,12 +9,13 @@ import { useUserSlice } from "./useUserSlice"
 export const useMessageSlice = ()=> {
 
     const Dispach = useDispatch()
-    const {contactsChat,messages,selectedChat,stateChats,searchContact,NoMoreMessages,statusLoadingMessages} = useSelector((state)=> state.chat)
+    const {contactsChat,messages,selectedChat,stateChats,searchContact,NoMoreMessages,statusLoadingMessages,NoMoreContacts} = useSelector((state)=> state.chat)
     const {user,existUser} = useUserSlice()
     
-    
+    const resetStateMessages = ()=> {
+        Dispach(onResetStateChat())
+    }
     const LoadContactsMessage = async(userID,index,number) => {
-
         const data_format = {
             index:index,
             limit:number
@@ -22,18 +23,25 @@ export const useMessageSlice = ()=> {
 
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.post("https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/chats/" + userID,data_format)
+            const {data} = await axios.post("https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/chats/" + userID,data_format)
+            console.log(data);
+
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
             } else if(data.ok === false) {
                 // este caso es cuando no tiene ningun chat
-                Dispach(onNoChats())
+                Dispach(onNoMoreContacts())
             }
         } catch (error) {
+            
+            console.log("aaaaaaaaaaaaaaaabcbed");
             console.log(error);
         }
     }
-
+    const ClearContacts = ()=> {
+        Dispach(onResetContacts())
+    }
+    
     const SeleccionarChat =(valor)=> {
         Dispach(onSelectedChat(valor))
     }
@@ -41,7 +49,7 @@ export const useMessageSlice = ()=> {
     const SendFirstMessage = async(info)=> {
         try {            
             // creamos el mensaje
-            const {data} = await axios.post("https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/messages/send",info)
+            const {data} = await axios.post("https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/messages/send",info)
             if(data.ok == true) {
                 return {ok:true,dataF:data.data}
             }
@@ -55,7 +63,7 @@ export const useMessageSlice = ()=> {
         Dispach(onLoadingMessages())
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.post("https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/messages/" + id_chat,
+            const {data} = await axios.post("https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/messages/" + id_chat,
             {
                 ofSett:index,
                 numberOfMessages:number_of_messages
@@ -85,6 +93,9 @@ export const useMessageSlice = ()=> {
     const ResetMoreMessages = ()=> {
         Dispach(onResetNoMoreMessages())
     }
+    const ResetNoMoreContacts = ()=> {
+        Dispach(onResetNoMoreContacts())
+    }
     const SendMessage = async(msg,id_from,id_to)=> {
         console.log("mandare los mensajes");
         const fromat_send = {
@@ -93,7 +104,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 console.log("llego y se inserto");
                 Dispach(onAddMessageRealTIme({
@@ -124,7 +135,7 @@ export const useMessageSlice = ()=> {
 
     const Delete_message = async (id_message,day)=> {
         try {
-            const {data} = await axios.post("https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/messages/" + id_message)
+            const {data} = await axios.post("https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/messages/" + id_message)
 
             if(data.ok === true) {
                 Dispach(onDeleteMessage({id_message,day}))
@@ -136,7 +147,7 @@ export const useMessageSlice = ()=> {
 
     const DeleteChat = async(id_chat)=> {
         try {
-            const {data} = await axios.delete(`https://7473-2800-a4-128d-9000-9fa-632-8ec7-e6f.ngrok-free.app/api/chats/${id_chat}`)
+            const {data} = await axios.delete(`https://74a2-2800-a4-1290-5900-3453-5dab-2369-1ea8.ngrok-free.app/api/chats/${id_chat}`)
             if(data.ok === true) {
                 Dispach(onDeleteChat(id_chat))
             }
@@ -157,6 +168,7 @@ export const useMessageSlice = ()=> {
         searchContact,
         NoMoreMessages,
         statusLoadingMessages,
+        NoMoreContacts,
         LoadContactsMessage,
         SeleccionarChat,
         loadMessageFromUser,
@@ -168,7 +180,10 @@ export const useMessageSlice = ()=> {
         Delete_message,
         SendFirstMessage,
         DeleteChat,
-        LoadFirstsMessages
+        LoadFirstsMessages,
+        resetStateMessages,
+        ClearContacts,
+        ResetNoMoreContacts
         
     }
 }

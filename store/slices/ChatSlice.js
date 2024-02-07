@@ -10,9 +10,20 @@ const ChatSlice = createSlice({
         selectedChat:false,
         searchContact:[],
         NoMoreMessages:"more",
+        NoMoreContacts:"more",
         statusLoadingMessages:"loaded"
     },
     reducers:{
+        onResetStateChat:(state)=> {
+            state.stateChats="no-chats",
+            state.messages=[],
+            state.contactsChat=[],
+            state.selectedChat=false,
+            state.searchContact=[],
+            state.NoMoreMessages="more",
+            state.NoMoreContacts="more",
+            state.statusLoadingMessages="loaded"
+        },
         onLoadingChats:(state,{payload})=> {
             state.stateChats = "loading"
         },
@@ -37,7 +48,7 @@ const ChatSlice = createSlice({
                 return bID - aID
             })
             state.stateChats = "chats"
-            state.contactsChat = data_filtrada
+            state.contactsChat = [...state.contactsChat,...data_filtrada]
         },
         onNoMoreMessages:(state,{payload})=> {
             state.NoMoreMessages = "no-more"
@@ -184,11 +195,21 @@ const ChatSlice = createSlice({
         },
         onLoadFirstsMessages:(state,{payload})=> {
             state.messages = payload
+        },
+        onResetContacts:(state)=> {
+            state.contactsChat = []
+        },
+        onNoMoreContacts:(state,{payload})=>{
+            state.NoMoreContacts = "no-more"
+        },
+        onResetNoMoreContacts:(state)=> {
+            state.NoMoreContacts = "more"
         }
+        
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onDeleteChat,onLoadChats,onClearMessages,onNoMoreMessages,onLoadFirstsMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onResetContacts,onDeleteChat,onNoMoreContacts,onLoadChats,onResetNoMoreContacts,onResetStateChat,onClearMessages,onNoMoreMessages,onLoadFirstsMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
 
 export default ChatSlice

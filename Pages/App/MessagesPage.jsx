@@ -44,7 +44,7 @@ const MessagesPage = ({ navigation, route }) => {
   const numbersofMessages = 10;
   const [index, setIndex] = useState(10);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-
+  console.log(messages);
   const handleScroll = (event) => {
     event.persist();
     const offsetY = event.nativeEvent.contentOffset.y;
