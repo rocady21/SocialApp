@@ -17,6 +17,7 @@ const Home = ({route})=> {
 
     useEffect(()=> {
         obtToken()
+
     },[])
     
 
@@ -30,8 +31,12 @@ const Home = ({route})=> {
     useFocusEffect(
         useCallback(() => {
             // Lógica específica cuando la pantalla Home se enfoca
-            if(token !== "" && token !== "no-token") {
+
+
+              if(token !== "" && token !== "no-token") {
                 validToken(token)
+
+
             }
 
         }, [])

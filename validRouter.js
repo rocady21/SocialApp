@@ -11,8 +11,6 @@ export default  function ValidRouter({}) {
   
   const {userStatus} = useUserSlice()  
 
-  console.log("aaaaaaaaaa");
-
   return (
     <>
     {userStatus === "no-user"? <LoginRouter/> : <AppRouter/>}

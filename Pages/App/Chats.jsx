@@ -11,6 +11,7 @@ import icon_error from "../../icons/icon_error"
 import ChatCard from "../../components/Chat/ChatCard"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import ModalDeletePost from "../../components/Chat/ModalDeletePost"
+import { io } from "socket.io-client"
 
 
 
@@ -27,7 +28,7 @@ const Chats = ({ route }) => {
     const number_of_contacts = 5
     const [index,setIndex] = useState(0)
     const [scrollBottom,setScrollBottom] = useState(false)
-
+    
     const handleScroll = (e)=> {
         const positionY = Math.round(e.nativeEvent.contentOffset.y)
         const HeightScroll = Math.round(e.nativeEvent.contentSize.height)
@@ -50,18 +51,40 @@ const Chats = ({ route }) => {
 
     useEffect(()=>{
         if(scrollBottom === true && NoMoreContacts === "more") {
-            console.log("llamare al coso ");
             LoadContactsMessage(user.id,index,number_of_contacts)
         }
     },[scrollBottom])
 
     
     useEffect(()=>{
-        LoadContactsMessage(user.id,index,number_of_contacts)
+        const socket = io("https://7707-2800-a4-1294-9f00-c1ff-7827-91aa-101d.ngrok-free.app", {
+            transports: ["websocket"],
+
+          });
+
+
+          
+          socket.on("user_id_" + user.id,(data)=> {
+            console.log(data);
+          })
+          socket.on("response_data",(data)=>{
+            console.log(data);
+          })
+
+          socket.on("msg",(data)=> {
+            console.log("data",data);
+          })
+          
+          LoadContactsMessage(user.id,index,number_of_contacts)
+
+          
+          
 
         return ()=> {
             ClearContacts()
             ResetNoMoreContacts()
+            console.log("se vaaaa");
+            socket.disconnect()
         }
     },[])
     

@@ -44,7 +44,8 @@ const MessagesPage = ({ navigation, route }) => {
   const numbersofMessages = 10;
   const [index, setIndex] = useState(10);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-  console.log(messages);
+
+
   const handleScroll = (event) => {
     event.persist();
     const offsetY = event.nativeEvent.contentOffset.y;
@@ -53,6 +54,7 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isScrolledToTop && index !== 0 && NoMoreMessages === "more" && mounted === true) {
+      console.log("llamar");
       loadMessageFromUser(id, index, numbersofMessages);
       setIndex(index + numbersofMessages);
     }
@@ -60,22 +62,28 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     setMounted(true)
-    const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
+    const socket = io("https://7707-2800-a4-1294-9f00-c1ff-7827-91aa-101d.ngrok-free.app", {
       transports: ["websocket"],
-      cors: {
-        origin: "*",
-      },
+      
     });
+    socket.emit('message_to_server',{"ok":true});
+    
+    socket.on("mensaje_servidor",(data)=> {
+      console.log("esta es la data",data);
+    })
 
-    socket.on('mensaje_servidor', (data) => {});
     socket.on("chat_" + user_from + "_and_" + user_to, (data) => {
+      console.log("a bueno");
       setIndex(index + 1)
       onAddMessageRealTImeSocekt(data.mensaje);
     });
+      
+
 
     return () => {
-      SeleccionarChat(false)
+      console.log("se desconecta");
       socket.disconnect();
+      SeleccionarChat(false)
       ClearMessages();
       ResetMoreMessages();
       
@@ -167,7 +175,8 @@ const styles = StyleSheet.create({
     flex:1,
     display:"flex",
     flexDirection:"column",
-    alignItems:"center"
+    alignItems:"center",
+    marginTop:15
   },
   InfoContact:{
     height:75,
