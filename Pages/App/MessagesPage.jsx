@@ -62,7 +62,7 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     setMounted(true)
-    const socket = io("https://7707-2800-a4-1294-9f00-c1ff-7827-91aa-101d.ngrok-free.app", {
+    const socket = io("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app", {
       transports: ["websocket"],
       
     });

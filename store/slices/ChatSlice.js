@@ -204,12 +204,81 @@ const ChatSlice = createSlice({
         },
         onResetNoMoreContacts:(state)=> {
             state.NoMoreContacts = "more"
+        },
+        onHandleMessage_recive:(state,{payload})=> {
+            const new_contact = payload
+            
+            const filter_contact = state.contactsChat.find((contact)=> {
+                return contact.id === new_contact.id
+            })
+
+            if(filter_contact) {
+
+                const new_state = state.contactsChat.map((contact)=> {
+                    if(contact.id === new_contact.id) {
+                        console.log("el contacto ya esta");
+                        // aqui fucionaremos los mensajes
+                        // validaremos si el dia existe en el arr
+                        const new_msgs = contact.firsts_messages.map((first_msg)=> {
+                            const exist_day = contact.firsts_messages.find((cnt)=> cnt.day === new_contact.day)
+                            if(exist_day) {
+                                const messages_add = [...first_msg.messages, ...new_contact.messages]
+    
+                                const messages_order = messages_add.sort((a,b)=> {
+                                    const dateA = new Date(a.fecha);
+                                    const dateB = new Date(b.fecha);
+                                
+                                    return dateA - dateB;
+                                })
+    
+                                return {
+                                    ...first_msg,
+                                    messages: messages_order
+                                }
+                            } else {
+                                // creamos el dia 
+                                const new_day = {
+                                    day:new_contact.day,
+                                    messages: new_contact.messages
+                                }
+                                return new_day
+                            }
+                        })
+
+                        return {
+                            ...new_contact,
+                            firsts_messages:new_msgs
+                        }
+                        
+                    } else {
+                        console.log("no existe");
+                        return contact
+                    }
+                })
+
+                console.log(new_state);
+
+                state.contactsChat = new_state[0]
+            } else {
+                const order_contact = [...state.contactsChat, new_contact]
+                const contacts_order = order_contact.sort((a,b)=> {
+                    const dateA = new Date(a.time_last_message);
+                    const dateB = new Date(b.time_last_message);
+                
+                    return dateA - dateB;
+                })
+                state.contactsChat = contacts_order
+            }
+
+            
+            
+
         }
         
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onResetContacts,onDeleteChat,onNoMoreContacts,onLoadChats,onResetNoMoreContacts,onResetStateChat,onClearMessages,onNoMoreMessages,onLoadFirstsMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
+export const {onLoadContactsMessage,onSelectedChat,onResetContacts,onDeleteChat,onNoMoreContacts,onHandleMessage_recive,onLoadChats,onResetNoMoreContacts,onResetStateChat,onClearMessages,onNoMoreMessages,onLoadFirstsMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
 
 export default ChatSlice

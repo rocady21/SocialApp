@@ -4,12 +4,13 @@ import { useUserSlice } from "../../hooks/useUserSlice"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import { useCallback, useEffect, useState } from "react"
 import { useFocusEffect, useNavigation } from "@react-navigation/native"
+import { io } from "socket.io-client"
 
 const Home = ({route})=> {
     
     const [token,setToken ] = useState("")
-    const {existUser,validToken} = useUserSlice()
-
+    const {existUser,validToken,user} = useUserSlice()
+    const {HandleMessage_recive} = useMessageSlice()
     const obtToken = async ()=> {
         const token = await getStorage("token")
         setToken(token)
@@ -17,8 +18,23 @@ const Home = ({route})=> {
 
     useEffect(()=> {
         obtToken()
+        const socket = io("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app", {
+            transports: ["websocket"],
 
-    },[])
+          });
+
+          socket.on("user_id_" + user.id,(data)=> {
+            HandleMessage_recive(data.contact)
+          })
+          socket.on("response_data",(data)=>{
+            console.log(data);
+          })
+
+
+          return ()=> {
+            socket.disconnect()
+          }
+        },[])
     
 
     const salir = ()=> {

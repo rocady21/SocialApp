@@ -56,35 +56,11 @@ const Chats = ({ route }) => {
     },[scrollBottom])
 
     
-    useEffect(()=>{
-        const socket = io("https://7707-2800-a4-1294-9f00-c1ff-7827-91aa-101d.ngrok-free.app", {
-            transports: ["websocket"],
-
-          });
-
-
-          
-          socket.on("user_id_" + user.id,(data)=> {
-            console.log(data);
-          })
-          socket.on("response_data",(data)=>{
-            console.log(data);
-          })
-
-          socket.on("msg",(data)=> {
-            console.log("data",data);
-          })
-          
+    useEffect(()=>{ 
           LoadContactsMessage(user.id,index,number_of_contacts)
-
-          
-          
-
         return ()=> {
             ClearContacts()
             ResetNoMoreContacts()
-            console.log("se vaaaa");
-            socket.disconnect()
         }
     },[])
     
