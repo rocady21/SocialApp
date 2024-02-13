@@ -11,9 +11,16 @@ import { size } from 'lodash'
 import { Avatar } from 'react-native-elements';
 import { uploadImage } from '../Utils/actions';
 import { Alert } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
+WebBrowser.maybeCompleteAuthSession();
+
+//android: 658387207902-ktgas522bbi7j4bspj7ncv8g9lamvqeu.apps.googleusercontent.com
 const styles = StyleSheet.create({
-  avatar : {
+  avatar: {
     width: 100,
     height: 100,
     margin: 10,
@@ -21,16 +28,22 @@ const styles = StyleSheet.create({
 
   },
 
-  container : {
+  container: {
     alignItems: 'center'
 
   }
 })
 
 const Register = () => {
+  //Auth
+  const [userInfo, setUserInfo] = React.useState(null);
+  const [request, response, promptAsyn] = Google.useAuthRequest({
+    androidClientId: "658387207902-ktgas522bbi7j4bspj7ncv8g9lamvqeu.apps.googleusercontent.com"
+  })
 
+
+  //Formulario
   const [formData, setFormData] = useState(defaultFormValues())
-
   const [isChecked, setIsChecked] = useState(false)
   const navigation = useNavigation();
   const [errorName, setErrorName] = useState("");
@@ -41,6 +54,8 @@ const Register = () => {
   // const [blob1, setBlob] = useState(null);
   // const [blobUrl, setBlobUrl] = useState("");
   const [photoUrl, setPhotoUrl] = useState(null)
+
+
 
 
 
@@ -127,7 +142,27 @@ const Register = () => {
     return
   }
 
+  const getLocalUser = async () => {
+    const data = await AsyncStorage.getItem("@user");
+    if (!data) return null;
+    return JSONS.parse(data);      
+    }
 
+    const getUserInfo = async (token) => {
+      if(!token) return;
+      try {
+        const response = await fetch(
+          "https://www.googleapis.com/userinfo/v2/me",
+          {
+            headers:{Authorization:  `Bearer ${token}`},
+          }
+        );
+        const user = await request.json();
+        await AsyncStorage.setItem("@user", JSON.stringify(user) );
+        setUserInfo(user);
+
+      } catch (e) { console.log(e) }
+    }
 
   return (
 
@@ -141,7 +176,7 @@ const Register = () => {
 
           <View style={{ marginVertical: 22 }}>
 
-         
+
 
 
 
@@ -166,20 +201,20 @@ const Register = () => {
           </View>
 
           <View style={styles.container}>
-              <Avatar
-              style = {styles.avatar}
-                rounded
-                size="large" 
-                onPress={changePhoto}
-                overlayContainerStyle={{ backgroundColor: 'blue' }}
-                activeOpacity={0.3}
-                source={
-                  photoUrl
-                    ? { uri: photoUrl }
-                    : require("../../assets/default.png")
-                }
-              />
-            </View>
+            <Avatar
+              style={styles.avatar}
+              rounded
+              size="large"
+              onPress={changePhoto}
+              overlayContainerStyle={{ backgroundColor: 'blue' }}
+              activeOpacity={0.3}
+              source={
+                photoUrl
+                  ? { uri: photoUrl }
+                  : require("../../assets/default.png")
+              }
+            />
+          </View>
 
           <View>
             {/*Inicio - input Name */}
