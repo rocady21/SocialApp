@@ -34,7 +34,7 @@ const ChatCard = ({data,OpenModal,setSelectedChat }) => {
             </View>
             <TouchableOpacity onLongPress={abrirModal} onPress={ShowChat} style={styles.info}>
                 <Text style={styles.title}>{data.nombre_user}</Text>
-                <Text numberOfLines={1} style={styles.text}> 
+                <Text numberOfLines={1} style={data.id_user_last_message !== user.id && data.show_last_message === false? styles.bold : styles.text }> 
                 {
                     data.id_user_last_message === user.id && "Yo:" + " "  
                 }
@@ -46,7 +46,6 @@ const ChatCard = ({data,OpenModal,setSelectedChat }) => {
         </View>
     )
 }
-
 
 const styles = StyleSheet.create({
     padre: {
@@ -87,6 +86,10 @@ const styles = StyleSheet.create({
     },
     text: {
         width: "100%"
+    },
+    bold:{
+        fontWeight:"900",
+        color:"black"
     }
 })
 

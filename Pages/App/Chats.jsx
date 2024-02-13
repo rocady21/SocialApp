@@ -20,7 +20,7 @@ const Chats = ({ route }) => {
 
     const ref = useRef()
     const { user } = useUserSlice()
-    const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact,NoMoreContacts ,ClearContacts,ResetNoMoreContacts} = useMessageSlice()
+    const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact,NoMoreContacts ,ClearContacts,ResetNoMoreContacts,Order_contacts} = useMessageSlice()
     const { contactsChat, stateChats } = useMessageSlice()
     const [SearchMessageContact, setSearchMessageContact] = useState("")
     const [modalDelete,setModalDelete] = useState(false)
@@ -29,6 +29,7 @@ const Chats = ({ route }) => {
     const [index,setIndex] = useState(0)
     const [scrollBottom,setScrollBottom] = useState(false)
     
+
     const handleScroll = (e)=> {
         const positionY = Math.round(e.nativeEvent.contentOffset.y)
         const HeightScroll = Math.round(e.nativeEvent.contentSize.height)

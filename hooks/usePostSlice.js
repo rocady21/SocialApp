@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 import { onLoadPostUser,onClearPostUsers,onResetStatePost,onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost } from "../store/slices/PostSlice"
 import { useDispatch } from "react-redux"
 import { useUserSlice } from "./useUserSlice"
-
+import {BACKEND_URL} from "@env"
 
 export const usePosterSlice = ()=> {
 
@@ -18,7 +18,7 @@ export const usePosterSlice = ()=> {
 
         Dispatch(onLoadingPostUser())
         try {
-            const {data} = await axios.get("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app/api/post/user/" + id_me)
+            const {data} = await axios.get(BACKEND_URL + "/api/post/user/" + id_me)
             if(data.ok === true){
 
                 Dispatch(onLoadPostUser(data.posts))
@@ -35,7 +35,7 @@ export const usePosterSlice = ()=> {
     }
     const addLike = async(info)=> {
         try {
-            const {data} = await axios.post("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app/api/post/like",info)
+            const {data} = await axios.post(BACKEND_URL + "/api/post/like",info)
             if(data.ok === true) {
                 Dispatch(onAddOrQUitLike({
                     data:info,
@@ -54,7 +54,7 @@ export const usePosterSlice = ()=> {
     }
     const quitLike = async(info)=> {
         try {
-            const {data} = await axios.delete("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app/api/post/like",{
+            const {data} = await axios.delete(BACKEND_URL + "/api/post/like",{
                 data:info
             })
             if(data.ok === true) {
@@ -71,7 +71,7 @@ export const usePosterSlice = ()=> {
 
     const AddNewPost = async(info)=> {
         try {
-            const {data} = await axios.post("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app/api/newPost",info)
+            const {data} = await axios.post(BACKEND_URL + "/api/newPost",info)
             if(data.ok === true) {
 
                 return true

@@ -22,7 +22,6 @@ import { useUserSlice } from "../../hooks/useUserSlice";
 import MessageCard from "../../components/Chat/MessageCard";
 
 const MessagesPage = ({ navigation, route }) => {
-  console.log("selected_chat",selectedChat);
   const ScrollViewRef = useRef(null);
   const { user } = useUserSlice();
   const {
@@ -36,9 +35,10 @@ const MessagesPage = ({ navigation, route }) => {
     ClearMessages,
     onAddMessageRealTImeSocekt,
     ResetMoreMessages,
+    message_read
   } = useMessageSlice();
   const [mensaje, setMensaje] = useState(``);
-  const { id, nombre_user, photo, id_user_chat, user_from, user_to } = route.params
+  const { id, nombre_user, photo, id_user_chat, user_from, user_to,id_user_last_message,show_last_message } = route.params
   const [mounted,setMounted] = useState(false)
   
   const numbersofMessages = 10;
@@ -54,7 +54,6 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isScrolledToTop && index !== 0 && NoMoreMessages === "more" && mounted === true) {
-      console.log("llamar");
       loadMessageFromUser(id, index, numbersofMessages);
       setIndex(index + numbersofMessages);
     }
@@ -62,18 +61,19 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     setMounted(true)
-    const socket = io("https://a769-2800-a4-127d-200-48cf-2a8-448f-36ae.ngrok-free.app", {
+    if(id_user_last_message !== user.id ) {
+      message_read(id)
+    }
+    const socket = io('https://ed93-2800-a4-1272-1f00-b4ba-2414-cff2-1d06.ngrok-free.app', {
       transports: ["websocket"],
       
     });
     socket.emit('message_to_server',{"ok":true});
     
     socket.on("mensaje_servidor",(data)=> {
-      console.log("esta es la data",data);
     })
 
     socket.on("chat_" + user_from + "_and_" + user_to, (data) => {
-      console.log("a bueno");
       setIndex(index + 1)
       onAddMessageRealTImeSocekt(data.mensaje);
     });
@@ -99,7 +99,7 @@ const MessagesPage = ({ navigation, route }) => {
   const enviarMensaje = () => {
     if (mensaje !== "") {
       setIndex(index + 1)
-      SendMessage(mensaje, user.id, id_user_chat);
+      SendMessage(mensaje, user.id, id_user_chat,id);
       setMensaje("");
     }
   };
