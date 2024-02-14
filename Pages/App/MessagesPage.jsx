@@ -40,10 +40,11 @@ const MessagesPage = ({ navigation, route }) => {
   const [mensaje, setMensaje] = useState(``);
   const { id, nombre_user, photo, id_user_chat, user_from, user_to,id_user_last_message,show_last_message } = route.params
   const [mounted,setMounted] = useState(false)
-  
   const numbersofMessages = 10;
-  const [index, setIndex] = useState(10);
+  const totalMensajes = messages?.reduce((total, objeto) => total + objeto.messages.length, 0);
+  const [index, setIndex] = useState(totalMensajes);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+
 
 
   const handleScroll = (event) => {
@@ -61,10 +62,11 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     setMounted(true)
+    console.log("uwu");
     if(id_user_last_message !== user.id ) {
       message_read(id)
     }
-    const socket = io('https://ed93-2800-a4-1272-1f00-b4ba-2414-cff2-1d06.ngrok-free.app', {
+    const socket = io('https://379e-2800-a4-1265-8800-9401-69a4-6935-530a.ngrok-free.app', {
       transports: ["websocket"],
       
     });
@@ -81,8 +83,8 @@ const MessagesPage = ({ navigation, route }) => {
 
 
     return () => {
-      console.log("se desconecta");
       socket.disconnect();
+      console.log("se desconecta");
       SeleccionarChat(false)
       ClearMessages();
       ResetMoreMessages();

@@ -9,31 +9,33 @@ import { io } from "socket.io-client"
 const Home = ({route})=> {
     
     const [token,setToken ] = useState("")
-    const {existUser,validToken,user} = useUserSlice()
+    const [socket,setSocket] = useState()
+    const {existUser,validToken,user,userStatus} = useUserSlice()
     const {HandleMessage_recive} = useMessageSlice()
     const obtToken = async ()=> {
         const token = await getStorage("token")
         setToken(token)
     }
 
+
     useEffect(()=> {
         obtToken()
-        const socket = io('https://ed93-2800-a4-1272-1f00-b4ba-2414-cff2-1d06.ngrok-free.app', {
+        const socket = io('https://379e-2800-a4-1265-8800-9401-69a4-6935-530a.ngrok-free.app', {
             transports: ["websocket"],
 
           });
-
           socket.on("user_id_" + user.id,(data)=> {
-            HandleMessage_recive(data.contact)
-          })
-          socket.on("response_data",(data)=>{
-            console.log(data);
-          })
-
-
-          return ()=> {
-            socket.disconnect()
-          }
+              HandleMessage_recive(data.contact,user.id)
+            })
+            socket.on("response_data",(data)=>{
+                console.log(data);
+            })
+            
+            setSocket(socket)
+            return ()=> {
+                socket.disconnect()
+                console.log("exit");
+            }
         },[])
     
 

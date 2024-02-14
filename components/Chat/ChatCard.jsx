@@ -6,7 +6,6 @@ import { useUserSlice } from "../../hooks/useUserSlice"
 
 const ChatCard = ({data,OpenModal,setSelectedChat }) => {
     const {user} = useUserSlice()
-
     const navigate = useNavigation()
     const {SeleccionarChat,LoadFirstsMessages} = useMessageSlice()
     const ShowChat = ()=> {
