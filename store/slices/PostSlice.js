@@ -61,13 +61,15 @@ const PostSlice = createSlice({
                 const updatePost = state.postsUser.map((post) => {
                     if (data.id_post === post.id) {
 
-                        const quitLikes = post.info_likes.map((like) => {
+                        const quitLikes = post.info_likes.filter((like) => {
                             return like.id !== data.id_user
                         })
+
+                        console.log(quitLikes);
                         const objReturn = {
                             ...post,
                             likes: post.likes - 1,
-                            info_likes: quitLikes[0] == false? [] : quitLikes
+                            info_likes: !quitLikes[0] ? [] : quitLikes
                         }
                         state.selectedPost = objReturn
                         return objReturn

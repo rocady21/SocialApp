@@ -11,22 +11,25 @@ import CardPostPreview from "../../components/Profile/CardPostPreview"
 import ToastManager from "toastify-react-native"
 import MaterialcommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import SettingsComponent from "../../components/Profile/Settings"
+import ModalFollowerOrUnFolloers from "../../components/Profile/ModalFollowerOrUnFolloers"
 
 
 
 const Profile = () => {
 
     // hooks
-    const [isFollower, setIsFollower] = useState()
-
     const [stateSidebar,setStateSidebar] = useState()
     const [stateModal, setStateModal] = useState(false)
     const {LoadPostsUser,postsUser,ClearPostUsers,statusPosts} = usePosterSlice()
     const {user,user_profile,loadInfoUserById,ClearUser_info} = useUserSlice()
     const is_me = true
+    const [modalInfoFollowers,setModalInfoFollowers] = useState({
+        state:false,
+        type:""
+    })
 
 
-
+    
     useEffect(()=> {
         // aqui cargare los posts del usuario 
 
@@ -37,10 +40,15 @@ const Profile = () => {
         }
     },[])
 
+    console.log(modalInfoFollowers);
 
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
+
+            {
+                modalInfoFollowers.state === true && <ModalFollowerOrUnFolloers state={modalInfoFollowers} closeModal={()=>setModalInfoFollowers({state:false,type:""})}/>
+            }
             <View style={styles.icon} >
                 {
                     user.exist_friend_request === true && <View style={styles.puntoN}></View>
@@ -73,12 +81,12 @@ const Profile = () => {
                                 <Text>{user.number_posts}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity onPress={()=> setModalInfoFollowers({state:true,type:"Seguidores"})} style={styles.button}>
                                 <Text>Seguidores</Text>
                                 <Text>{user.seguidores}</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.button}>
+                            <TouchableOpacity onPress={()=> setModalInfoFollowers({state:true,type:"Seguidos"})} style={styles.button}>
                                 <Text>Seguidos</Text>
                                 <Text>{user.seguidos_user}</Text>
                             </TouchableOpacity>

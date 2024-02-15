@@ -153,6 +153,10 @@ const ChatSlice = createSlice({
                                 messages: [...days.messages, newMessage]
                             }
                         } else {
+                            new_day = {
+                                day:"hoy",
+                                messages:[newMessage]
+                            }
                             return days
                         }
                     })
@@ -169,9 +173,9 @@ const ChatSlice = createSlice({
                             }
                         }
                         return contact
-                    })
-        
-                    state.contactsChat = new_state
+                    })  
+                    const contacts_order = Order_contactsF(new_state)
+                    state.contactsChat = contacts_order
                     
 
 
