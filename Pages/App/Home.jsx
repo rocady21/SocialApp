@@ -11,7 +11,8 @@ const Home = ({route})=> {
     const [token,setToken ] = useState("")
     const [socket,setSocket] = useState()
     const {existUser,validToken,user,userStatus} = useUserSlice()
-    const {HandleMessage_recive} = useMessageSlice()
+    const {HandleMessage_recive,resetStateMessages} = useMessageSlice()
+    
     const obtToken = async ()=> {
         const token = await getStorage("token")
         setToken(token)
@@ -20,7 +21,7 @@ const Home = ({route})=> {
 
     useEffect(()=> {
         obtToken()
-        const socket = io('https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app', {
+        const socket = io('https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app', {
             transports: ["websocket"],
 
           });
@@ -42,6 +43,7 @@ const Home = ({route})=> {
     const salir = ()=> {
         removeValueStorage("token")
         existUser()
+        resetStateMessages()
     }
 
     

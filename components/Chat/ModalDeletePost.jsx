@@ -6,6 +6,11 @@ const ModalDeletePost = ({stateModal,setModalDelete,id_chat})=> {
 
     const {DeleteChat} = useMessageSlice()
 
+    const handleDeleteChat = ()=> {
+        DeleteChat(id_chat)
+        setModalDelete(false)
+    }
+    
     return(
         <Modal
         animationType="slide"
@@ -21,7 +26,7 @@ const ModalDeletePost = ({stateModal,setModalDelete,id_chat})=> {
                     <TouchableOpacity onPress={()=> setModalDelete(false)} style={styles.cancel}>
                         <Text >Cancelar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=> DeleteChat(id_chat)} style={styles.accept}>
+                    <TouchableOpacity onPress={handleDeleteChat} style={styles.accept}>
                         <Text style={{color:"white",fontWeight:"600"}} >Eliminar</Text>
                     </TouchableOpacity>
                 </View>

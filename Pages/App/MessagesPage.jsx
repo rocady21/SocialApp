@@ -20,6 +20,7 @@ import More from "react-native-vector-icons/Feather";
 import { io } from "socket.io-client";
 import { useUserSlice } from "../../hooks/useUserSlice";
 import MessageCard from "../../components/Chat/MessageCard";
+import Close from "react-native-vector-icons/EvilIcons"
 
 const MessagesPage = ({ navigation, route }) => {
   const ScrollViewRef = useRef(null);
@@ -35,7 +36,8 @@ const MessagesPage = ({ navigation, route }) => {
     ClearMessages,
     onAddMessageRealTImeSocekt,
     ResetMoreMessages,
-    message_read
+    message_read,
+    Delete_message
   } = useMessageSlice();
   const [mensaje, setMensaje] = useState(``);
   const { id, nombre_user, photo, id_user_chat, user_from, user_to,id_user_last_message,show_last_message } = route.params
@@ -44,7 +46,7 @@ const MessagesPage = ({ navigation, route }) => {
   const totalMensajes = messages?.reduce((total, objeto) => total + objeto.messages.length, 0);
   const [index, setIndex] = useState(totalMensajes);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-
+  const [modalInfoMessage,setModalInfoMessage] = useState({id_selected:null,status:false,day:null})
 
 
   const handleScroll = (event) => {
@@ -62,11 +64,10 @@ const MessagesPage = ({ navigation, route }) => {
 
   useEffect(() => {
     setMounted(true)
-    console.log("uwu");
     if(id_user_last_message !== user.id ) {
       message_read(id)
     }
-    const socket = io('https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app', {
+    const socket = io('https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app', {
       transports: ["websocket"],
       
     });
@@ -93,9 +94,19 @@ const MessagesPage = ({ navigation, route }) => {
   }, []);
 
 
+  const open_modal = (id_message,day)=> {
+    setModalInfoMessage({status:true,id_selected:id_message,day:day})    
+  }
   
+  const DeleteMessage_F = async()=> {
+    if(modalInfoMessage.id_selected !== null){
+      const resp = await Delete_message(modalInfoMessage.id_selected,modalInfoMessage.day)
+      if(resp === true) {
+        setModalInfoMessage({day:null,id_selected:null,status:false})
+      }
+    }
+  }
   
-
 
 
   const enviarMensaje = () => {
@@ -109,9 +120,26 @@ const MessagesPage = ({ navigation, route }) => {
   const goBack = () => {
     navigation.goBack();
   };
-
   return (
     <SafeAreaView style={styles.padre}>
+
+    {
+        modalInfoMessage.status === true && <View style={styles.delete_message}>
+            <View style={styles.headerModal}>
+              <TouchableOpacity onPress={()=> setModalInfoMessage({id_selected:null,status:false,day:null})}>
+                  <Close name="close" size={20}/>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.buttonsModal}>
+              <TouchableOpacity onPress={DeleteMessage_F} style={styles.buttonMF}>
+                <Text style={{textAlign:"center"}}>Borrar Mensaje</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonMF}>
+                <Text style={{textAlign:"center"}}>Editar Mensaje</Text>
+              </TouchableOpacity>
+            </View>
+        </View>
+      }
       <View style={styles.InfoContact}>
         <TouchableOpacity onPress={goBack}>
           <Arrow name="arrow-left" size={20} color={"white"} />
@@ -132,6 +160,8 @@ const MessagesPage = ({ navigation, route }) => {
         }}
         onScroll={handleScroll}
       >
+
+
         {
         messages[0] ? (
 
@@ -148,7 +178,8 @@ const MessagesPage = ({ navigation, route }) => {
                 time={msg.fecha}
                 day={msg_day.day}
                 id={msg.id}
-              />
+                abrirModal={(id,day)=> open_modal(id,day)}
+                />
             ))}
           </View>
         ))
@@ -254,6 +285,37 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'flex-end',
   },
+  delete_message:{
+    position:"absolute",
+    right:"auto",
+    left:"auto",
+    bottom:"auto",
+    top:"40%",
+    minWidth:150,
+    padding:10,
+    backgroundColor:"white",
+    borderRadius:5,
+    display:"flex",
+    zIndex:100,
+    flexDirection:"column",
+  },
+  headerModal:{
+    display:"flex",
+    flexDirection:"row",
+    justifyContent:"flex-end",
+    marginBottom:15,
+  },
+  buttonsModal:{
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"center",
+    
+  },
+  buttonMF:{
+    padding:10,
+    borderTopColor:"#D6D6D6",
+    borderTopWidth:1
+  }
   
 })
 

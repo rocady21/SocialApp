@@ -13,7 +13,8 @@ const ChatSlice = createSlice({
         searchContact: [],
         NoMoreMessages: "more",
         NoMoreContacts: "more",
-        statusLoadingMessages: "loaded"
+        statusLoadingMessages: "loaded",
+        No_read_message:0
     },
     reducers: {
         onResetStateChat: (state) => {
@@ -193,19 +194,31 @@ const ChatSlice = createSlice({
 
             const valueSearch = payload.toLowerCase()
 
-            searchContacts = state.contactsChat.map((contacts) => {
+            const searchContacts = state.contactsChat.filter((contacts) => {
                 nombreLower = contacts.nombre_user.toLowerCase()
-
-                if (nombreLower.includes(valueSearch)) {
-                    return contacts
-                }
-
+                return nombreLower.includes(valueSearch)
             })
-
             state.searchContact = searchContacts
         },
         onDeleteMessage: (state, { payload }) => {
+            const {id_message,day} = payload
 
+            const New_s_messages = state.messages.map((days)=> {
+                if( days.day === day) {
+                    const new_state_msgs = days.messages.filter((msg)=> {
+                        return msg.id !== id_message
+                    })
+
+                    return {
+                        ...days,
+                        messages:new_state_msgs
+                    }
+                } else {
+                    return days
+                }
+            })
+
+            state.messages = New_s_messages
         },
         onDeleteChat: (state, { payload }) => {
             state.contactsChat = state.contactsChat.filter((contact) => {
@@ -228,6 +241,8 @@ const ChatSlice = createSlice({
 
             const {new_contact,id_me} = payload
 
+            console.log("me_",id_me);
+            console.log(new_contact);
             if(new_contact.id_user_last_message !== id_me) {
                 const filter_contact = state.contactsChat.find((contact) => {
                     return contact.id === new_contact.id
@@ -281,10 +296,13 @@ const ChatSlice = createSlice({
     
                 } else {
     
-    
+                    console.log("lo añadire xdddd");
+
                     const contacts = [...state.contactsChat, new_contact]
                     const order_contacts = Order_contactsF(contacts)
                     state.contactsChat = order_contacts
+
+
                 }
             }
             
@@ -315,12 +333,22 @@ const ChatSlice = createSlice({
             })
 
             state.contactsChat = new_state
+        },
+
+        onNoReadMessages:(state,{payload})=> {
+            const my_user_id = payload
+
+            const messages_no_read = state.contactsChat.filter((contact)=> {
+                return contact.show_last_message === false && contact.id_user_last_message !== my_user_id
+            })
+
+            state.No_read_message = messages_no_read.length
         }
         
     }
 })
 
 
-export const { onLoadContactsMessage,onReadMessage_ok, onSelectedChat, onResetContacts,onMessage, onDeleteChat,onOrderContacts, onNoMoreContacts, onHandleMessage_recive, onLoadChats, onResetNoMoreContacts, onResetStateChat, onClearMessages, onNoMoreMessages, onLoadFirstsMessages, onLoadedMessages, onResetNoMoreMessages, onAddMessageRealTIme, onLoadingChats, onNoChats, onfilterContactsChats, onLoadingMessages } = ChatSlice.actions
+export const { onLoadContactsMessage,onReadMessage_ok, onSelectedChat, onResetContacts,onMessage,onNoReadMessages,onDeleteMessage ,onDeleteChat,onOrderContacts, onNoMoreContacts, onHandleMessage_recive, onLoadChats, onResetNoMoreContacts, onResetStateChat, onClearMessages, onNoMoreMessages, onLoadFirstsMessages, onLoadedMessages, onResetNoMoreMessages, onAddMessageRealTIme, onLoadingChats, onNoChats, onfilterContactsChats, onLoadingMessages } = ChatSlice.actions
 
 export default ChatSlice

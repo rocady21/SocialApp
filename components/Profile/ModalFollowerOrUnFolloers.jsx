@@ -53,7 +53,7 @@ const ModalFollowerOrUnFolloers = ({state,closeModal})=> {
                                 <Text style={{marginTop:5}}>{flwr.nombre + " " + flwr.apellido}</Text>
 
                             </TouchableOpacity>
-                        }) : <Text>No tienes {state.type}</Text>
+                        }) : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"} />
                         }
                     </View> : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"} />
                 }

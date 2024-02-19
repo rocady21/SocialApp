@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,Modal } from "react-native"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
@@ -57,12 +57,16 @@ const Chats = ({ route }) => {
     },[scrollBottom])
 
     
-    useEffect(()=>{ 
-          LoadContactsMessage(user.id,index,number_of_contacts)
-        return ()=> {
-            ClearContacts()
-            ResetNoMoreContacts()
-        }
+    useLayoutEffect(()=>{ 
+                console.log("jjee");
+                if(contactsChat.length === 0) {
+                    LoadContactsMessage(user.id,index,number_of_contacts)
+                }
+                return ()=> {
+                    ResetNoMoreContacts()
+                }
+        
+
     },[])
     
     useEffect(() => {

@@ -43,10 +43,11 @@ const Profile = ({ route }) => {
     }, [])
     const MessagePage = async () => {
         try {
-
+            console.log(user_profile);
             if (user_profile.chatExist === false) {
                 const data_response = await SendFirstMessage({ id_from: user.id, id_to: user_profile.id })
-
+                console.log("data_response");
+                console.log(data_response);
                 if (data_response.ok === true) {
                     SeleccionarChat(true),
                         navigation.navigate("Messages", data_response.dataF)

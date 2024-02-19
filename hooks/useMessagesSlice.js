@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useSelector } from "react-redux"
 import { useDispatch } from "react-redux"
-import { onLoadContactsMessage,onSelectedChat,onLoadChats,onResetStateChat,onClearMessages,onOrderContacts,onNoMoreContacts,onResetContacts,onHandleMessage_recive,onUpdateContact,onLoadFirstsMessages,onNoMoreMessages,onResetNoMoreContacts,onDeleteMessage,onLoadingMessages,onDeleteChat,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats,onLoadedMessages, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
+import { onLoadContactsMessage,onSelectedChat,onLoadChats,onResetStateChat,onClearMessages,onOrderContacts,onNoMoreContacts,onResetContacts,onHandleMessage_recive,onReadMessage_ok,onNoReadMessages,onLoadFirstsMessages,onNoMoreMessages,onResetNoMoreContacts,onDeleteMessage,onLoadingMessages,onDeleteChat,onAddMessageRealTIme,onResetNoMoreMessages, onLoadingChats,onLoadedMessages, onNoChats,onfilterContactsChats } from "../store/slices/ChatSlice"
 import { getStorage } from "../utils/AsyncStorage"
 import {BACKEND_URL} from "@env"
 import { useUserSlice } from "./useUserSlice"
@@ -9,7 +9,8 @@ import { useUserSlice } from "./useUserSlice"
 export const useMessageSlice = ()=> {
 
     const Dispach = useDispatch()
-    const {contactsChat,messages,selectedChat,stateChats,searchContact,NoMoreMessages,statusLoadingMessages,NoMoreContacts} = useSelector((state)=> state.chat)
+    const {contactsChat,messages,selectedChat,No_read_message,stateChats,searchContact,NoMoreMessages,statusLoadingMessages,NoMoreContacts,followers_or_followings,load_info_followers
+        } = useSelector((state)=> state.chat)
     const {user,existUser} = useUserSlice()
     
     const resetStateMessages = ()=> {
@@ -22,7 +23,7 @@ export const useMessageSlice = ()=> {
         }
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.post("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/chats/" + userID,data_format)
+            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/chats/" + userID,data_format)
 
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
@@ -46,8 +47,9 @@ export const useMessageSlice = ()=> {
     const SendFirstMessage = async(info)=> {
         try {            
             // creamos el mensaje
-            const {data} = await axios.post("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/messages/send",info)
-            if(data.ok == true) {
+            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/messages/send",info)
+            console.log("ddd",data);
+            if(data.ok === true) {
                 return {ok:true,dataF:data.data}
             }
         } catch (error) {
@@ -64,7 +66,7 @@ export const useMessageSlice = ()=> {
         Dispach(onLoadingMessages())
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.post("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/messages/" + id_chat,
+            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/messages/" + id_chat,
             {
                 ofSett:index,
                 numberOfMessages:number_of_messages
@@ -104,7 +106,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,
@@ -135,19 +137,22 @@ export const useMessageSlice = ()=> {
 
     const Delete_message = async (id_message,day)=> {
         try {
-            const {data} = await axios.post("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/messages/" + id_message)
-
+            const {data} = await axios.delete("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/messages/" + id_message)
+            console.log(data);
             if(data.ok === true) {
                 Dispach(onDeleteMessage({id_message,day}))
+
+                return true
             }
         } catch (error) {
-            
+            console.log(error);
+            return false    
         }
     }
-
+    
     const DeleteChat = async(id_chat)=> {
         try {
-            const {data} = await axios.delete(`https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/chats/${id_chat}`)
+            const {data} = await axios.delete(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/chats/${id_chat}`)
             if(data.ok === true) {
                 Dispach(onDeleteChat(id_chat))
             }
@@ -165,7 +170,7 @@ export const useMessageSlice = ()=> {
 
     const message_read = async (id_chat)=> {
         try {
-            const {data} = await axios.get("https://33d3-2800-a4-125d-c500-a92f-a808-838d-e92c.ngrok-free.app/api/show_message/" + id_chat)
+            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/show_message/" + id_chat)
 
             if(data.ok === true) {
                 Dispach(onReadMessage_ok(id_chat))
@@ -174,7 +179,10 @@ export const useMessageSlice = ()=> {
             console.log(error);
         }
     }
-
+    const messages_no_read = (id)=> {
+        Dispach(onNoReadMessages(id))
+    }
+    
     
     return {
         contactsChat,
@@ -185,6 +193,9 @@ export const useMessageSlice = ()=> {
         NoMoreMessages,
         statusLoadingMessages,
         NoMoreContacts,
+        followers_or_followings,
+        load_info_followers,
+        No_read_message,
         LoadContactsMessage,
         Order_contacts,
         SeleccionarChat,
@@ -202,7 +213,8 @@ export const useMessageSlice = ()=> {
         ClearContacts,
         ResetNoMoreContacts,
         HandleMessage_recive,
-        message_read
+        message_read,
+        messages_no_read
         
     }
 }
