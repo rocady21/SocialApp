@@ -1,19 +1,18 @@
 
 import {useDispatch,useSelector} from "react-redux"
-import { setMessage,credentialsError,addNewUser,onExistUser,onLoadingSearch,onFriend_Request,onNoFriend_Request,onFollow,onUnFollow,onNoResults,onPreviewState,onSearchResults,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest} from "../store/slices/userSlice"
+import { setMessage,credentialsError,addNewUser,onExistUser,onResetUserState,onLoadFollowersorFollowings,onClearState,onLoadingSearch,onFriend_Request,onNoFriend_Request,onFollow,onUnFollow,onNoResults,onPreviewState,onSearchResults,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest} from "../store/slices/userSlice"
 import axios from "axios"
 import { ErrorToastify, SuccessToastify } from "../utils/Toastify"
 import { removeValueStorage, setItemStorage,ClearStorage } from "../utils/AsyncStorage"
-import { BACKEND_URL} from '@env';
 import { getStorage } from "firebase/storage"
 import { onSelectedChat } from "../store/slices/ChatSlice"
 
 
-console.log(BACKEND_URL);
+
 export const useUserSlice = ()=> {
 
-    const {message,user,messageError,userStatus,statusSearch,searchUsers,user_profile,friend_requests,StatusLoadingFriend_requests} = useSelector((state)=> state.user)
-
+    const {message,user,messageError,userStatus,statusSearch,searchUsers,user_profile,friend_requests,StatusLoadingFriend_requests,followers_or_followings,load_info_followers} = useSelector((state)=> state.user)
+    
     const Dispach = useDispatch()
     
     const mostrarMensaje = ()=> {
@@ -22,7 +21,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -51,7 +50,7 @@ export const useUserSlice = ()=> {
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
 
-            const {data} = await axios.get("https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -71,7 +70,7 @@ export const useUserSlice = ()=> {
 
     const FollowUser = async(info)=> {
         try {
-            const {data} = await axios.post("https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/send_request_friend",info)
+            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/send_request_friend",info)
             if(data.ok === true){
                 Dispach(onFollow())
             } 
@@ -81,9 +80,9 @@ export const useUserSlice = ()=> {
     }
     const UnfollowUser = async(info)=> {
         try {
-            const {} = await axios.post("https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/reject_request_friend",info)
+            const {data} = await axios.delete(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
             if(data.ok === true ) {
-                Dispach(onUnFollow)
+                Dispach(onUnFollow())
             }
         } catch (error) {
             console.log(error);
@@ -94,7 +93,7 @@ export const useUserSlice = ()=> {
     const SearchUser = async(value)=> {
         try {
             Dispach(onLoadingSearch())
-            const {data} = await axios.get(`https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/user/${value}`)    
+            const {data} = await axios.get(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/user/${value}`)    
             if(data.ok == true) {
                 Dispach(onSearchResults(data.result))
             }
@@ -112,8 +111,7 @@ export const useUserSlice = ()=> {
         try {
             ClearStorage()
             removeValueStorage("token")
-            Dispach(onExistUser())
-            Dispach(onSelectedChat(false))
+            Dispach(onResetUserState())
         } catch (error) {
             console.log(error);
         }
@@ -122,7 +120,7 @@ export const useUserSlice = ()=> {
     const loadInfoUserById = async(id)=> {
         
         try {
-            const {data} = await axios.post(`https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/people/${id}`,{
+            const {data} = await axios.post(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/people/${id}`,{
                 id_user_session:user.id
             })
 
@@ -135,7 +133,7 @@ export const useUserSlice = ()=> {
     }
     const LoadFriendRequest = async()=>{
         try {
-            const {data} = await axios.get("https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/request_friends/" + user.id)
+            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/request_friends/" + user.id)
             if(data.ok === true) {
                 Dispach(onFriend_Request(data.friend_request))
             }
@@ -148,7 +146,7 @@ export const useUserSlice = ()=> {
 
     const AcceptFriendRequest = async(info)=> {
         try {
-            const {data} = await axios.put("https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/accept_request_friend",info)
+            const {data} = await axios.put("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/accept_request_friend",info)
 
             console.log(data);
             if(data.ok === true) {
@@ -161,8 +159,7 @@ export const useUserSlice = ()=> {
 
     const RejectFriendRequest = async (info)=> {
         try {
-            const {data} = await axios.delete(`https://ea1a-2800-a4-1283-9300-fded-dd8d-e39c-71e2.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
-            console.log("Se mando reject");
+            const {data} = await axios.delete(`https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
             if(data.ok == true) {
                 Dispach(onRejectFriendRequest(info.id_user_seguidor))
             }
@@ -171,6 +168,36 @@ export const useUserSlice = ()=> {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const LoadFollowers = async()=> {
+        try {
+            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/follower/" + user.id)
+
+            if(data.ok === true) {
+                Dispach(onLoadFollowersorFollowings(data.amigos))
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const LoadFollowings = async()=> {
+        try {
+            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/following/" +  user.id)
+            if(data.ok === true) {
+                Dispach(onLoadFollowersorFollowings(data.amigos))
+
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const clearState = ()=> {
+        Dispach(onClearState())
     }
     
     const ClearUser_info = ()=> {
@@ -187,6 +214,8 @@ export const useUserSlice = ()=> {
         user_profile,
         friend_requests,
         StatusLoadingFriend_requests,
+        followers_or_followings,
+        load_info_followers,
         mostrarMensaje,
         LoginUser,
         existUser,
@@ -199,7 +228,10 @@ export const useUserSlice = ()=> {
         RejectFriendRequest,
         AcceptFriendRequest,
         FollowUser,
-        UnfollowUser
+        UnfollowUser,
+        LoadFollowers,
+        LoadFollowings,
+        clearState
                 
     }
 }

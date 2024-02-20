@@ -11,9 +11,22 @@ const userSlice = createSlice({
     statusSearch:"preview",
     searchUsers:[],
     friend_requests:[],
-    StatusLoadingFriend_requests:"loading"
+    StatusLoadingFriend_requests:"loading",
+    followers_or_followings:[],
+    load_info_followers:false
   },
   reducers: {
+    onResetUserState:(state)=> {
+      state.message= "",
+      state.user= {},
+      state.user_profile={},
+      state.userStatus="no-user",
+      state.messageError="",
+      state.statusSearch="preview",
+      state.searchUsers=[],
+      state.friend_requests=[],
+      state.StatusLoadingFriend_requests="loadingstate."
+    },
     setMessage: (state,{payload})=> {
       state.message = payload
     },
@@ -103,11 +116,20 @@ const userSlice = createSlice({
     onUnFollow:(state)=> {
       state.user_profile = {
         ...state.user_profile,
-        isFollower: "Seguir"
+        isFollower: false
       }
+    },
+    onLoadFollowersorFollowings:(state,{payload})=>{
+      state.followers_or_followings = payload,
+      state.load_info_followers = true
+    },
+    onClearState:(state)=>{
+      state.followers_or_followings = [],
+      state.load_info_followers = true
     }
   }
+
 })
 
-export const { setMessage,credentialsError,addNewUser,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,onLoadFollowersorFollowings,onClearState,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onResetUserState,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
 export default userSlice

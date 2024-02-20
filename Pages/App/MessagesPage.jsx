@@ -20,11 +20,13 @@ import More from "react-native-vector-icons/Feather";
 import { io } from "socket.io-client";
 import { useUserSlice } from "../../hooks/useUserSlice";
 import MessageCard from "../../components/Chat/MessageCard";
+import Close from "react-native-vector-icons/EvilIcons"
 
 const MessagesPage = ({ navigation, route }) => {
   const ScrollViewRef = useRef(null);
   const { user } = useUserSlice();
   const {
+    selectedChat,
     messages,
     statusLoadingMessages,
     NoMoreMessages,
@@ -34,14 +36,18 @@ const MessagesPage = ({ navigation, route }) => {
     ClearMessages,
     onAddMessageRealTImeSocekt,
     ResetMoreMessages,
+    message_read,
+    Delete_message
   } = useMessageSlice();
   const [mensaje, setMensaje] = useState(``);
-  const { id, nombre_user, photo, id_user_chat, user_from, user_to } = route.params
-  
-  const numbersofMessages = 7;
-  const [index, setIndex] = useState(0);
+  const { id, nombre_user, photo, id_user_chat, user_from, user_to,id_user_last_message,show_last_message } = route.params
+  const [mounted,setMounted] = useState(false)
+  const numbersofMessages = 10;
+  const totalMensajes = messages?.reduce((total, objeto) => total + objeto.messages.length, 0);
+  const [index, setIndex] = useState(totalMensajes);
   const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [modalInfoMessage,setModalInfoMessage] = useState({id_selected:null,status:false,day:null})
+
 
   const handleScroll = (event) => {
     event.persist();
@@ -50,57 +56,63 @@ const MessagesPage = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    if (isScrolledToTop && index !== 0 && NoMoreMessages === "more") {
+    if (isScrolledToTop && index !== 0 && NoMoreMessages === "more" && mounted === true) {
       loadMessageFromUser(id, index, numbersofMessages);
       setIndex(index + numbersofMessages);
     }
   }, [isScrolledToTop]);
 
   useEffect(() => {
-    loadMessageFromUser(id, index, numbersofMessages);
-    setIndex(index + numbersofMessages);
-
-    const socket = io("https://d4ed-2800-a4-12c0-8b00-479-2df1-75d4-ed4e.ngrok-free.app", {
+    setMounted(true)
+    if(id_user_last_message !== user.id ) {
+      message_read(id)
+    }
+    const socket = io('https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app', {
       transports: ["websocket"],
-      cors: {
-        origin: "*",
-      },
+      
     });
+    socket.emit('message_to_server',{"ok":true});
+    
+    socket.on("mensaje_servidor",(data)=> {
+    })
 
-    socket.on('mensaje_servidor', (data) => {});
     socket.on("chat_" + user_from + "_and_" + user_to, (data) => {
       setIndex(index + 1)
       onAddMessageRealTImeSocekt(data.mensaje);
     });
+      
+
 
     return () => {
       socket.disconnect();
-    };
-  }, []);
-  
-
-
-  
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      SeleccionarChat(false);
+      console.log("se desconecta");
+      SeleccionarChat(false)
       ClearMessages();
       ResetMoreMessages();
-    });
-    return ()=> {
-      console.log("se desmonto");
-      unsubscribe()
-    }
+      
+    };
   }, []);
-  console.log(messages);
 
 
-  console.log(id_user_chat);
+  const open_modal = (id_message,day)=> {
+    setModalInfoMessage({status:true,id_selected:id_message,day:day})    
+  }
+  
+  const DeleteMessage_F = async()=> {
+    if(modalInfoMessage.id_selected !== null){
+      const resp = await Delete_message(modalInfoMessage.id_selected,modalInfoMessage.day)
+      if(resp === true) {
+        setModalInfoMessage({day:null,id_selected:null,status:false})
+      }
+    }
+  }
+  
+
 
   const enviarMensaje = () => {
     if (mensaje !== "") {
       setIndex(index + 1)
-      SendMessage(mensaje, user.id, id_user_chat);
+      SendMessage(mensaje, user.id, id_user_chat,id);
       setMensaje("");
     }
   };
@@ -108,9 +120,26 @@ const MessagesPage = ({ navigation, route }) => {
   const goBack = () => {
     navigation.goBack();
   };
-
   return (
     <SafeAreaView style={styles.padre}>
+
+    {
+        modalInfoMessage.status === true && <View style={styles.delete_message}>
+            <View style={styles.headerModal}>
+              <TouchableOpacity onPress={()=> setModalInfoMessage({id_selected:null,status:false,day:null})}>
+                  <Close name="close" size={20}/>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.buttonsModal}>
+              <TouchableOpacity onPress={DeleteMessage_F} style={styles.buttonMF}>
+                <Text style={{textAlign:"center"}}>Borrar Mensaje</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonMF}>
+                <Text style={{textAlign:"center"}}>Editar Mensaje</Text>
+              </TouchableOpacity>
+            </View>
+        </View>
+      }
       <View style={styles.InfoContact}>
         <TouchableOpacity onPress={goBack}>
           <Arrow name="arrow-left" size={20} color={"white"} />
@@ -131,29 +160,32 @@ const MessagesPage = ({ navigation, route }) => {
         }}
         onScroll={handleScroll}
       >
+
+
         {
-          messages[0] ? (
-            messages.map((msg_day, index) => (
-              <View key={index} style={styles.messages_day}>
-                <Text style={{ textAlign: "center", marginVertical: 5 }}>
-                  {msg_day.day}
-                </Text>
-                {msg_day.messages.map((msg, index) => (
-                  <MessageCard
-                    key={index}
-                    is_me={msg.is_me}
-                    message={msg.mensaje}
-                    time={msg.fecha}
-                    day={msg_day.day}
-                    id={msg.id}
-                  />
-                ))}
-              </View>
-            ))
-          ) : (
-            <Text>¡Envia tu primer Mensaje!</Text>
-          )
-        }
+        messages[0] ? (
+
+        messages.map((msg_day, index) => (
+          <View key={index} style={styles.messages_day}>
+            <Text style={{ textAlign: "center", marginVertical: 5 }}>
+              {msg_day.day}
+            </Text>
+            {msg_day.messages.map((msg, index) => (
+              <MessageCard
+                key={msg.id}
+                is_me={msg.is_me}
+                message={msg.mensaje}
+                time={msg.fecha}
+                day={msg_day.day}
+                id={msg.id}
+                abrirModal={(id,day)=> open_modal(id,day)}
+                />
+            ))}
+          </View>
+        ))
+      ) : !messages[0]? (
+        <Text>¡Envía tu primer mensaje!</Text>
+      ) : <ActivityIndicator style={styles.indicator} color={"black"} size={"large"} />}
       </ScrollView>
       <View style={styles.sendMessage}>
         <TextInput
@@ -176,7 +208,8 @@ const styles = StyleSheet.create({
     flex:1,
     display:"flex",
     flexDirection:"column",
-    alignItems:"center"
+    alignItems:"center",
+    marginTop:15
   },
   InfoContact:{
     height:75,
@@ -252,6 +285,37 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'flex-end',
   },
+  delete_message:{
+    position:"absolute",
+    right:"auto",
+    left:"auto",
+    bottom:"auto",
+    top:"40%",
+    minWidth:150,
+    padding:10,
+    backgroundColor:"white",
+    borderRadius:5,
+    display:"flex",
+    zIndex:100,
+    flexDirection:"column",
+  },
+  headerModal:{
+    display:"flex",
+    flexDirection:"row",
+    justifyContent:"flex-end",
+    marginBottom:15,
+  },
+  buttonsModal:{
+    display:"flex",
+    flexDirection:"column",
+    justifyContent:"center",
+    
+  },
+  buttonMF:{
+    padding:10,
+    borderTopColor:"#D6D6D6",
+    borderTopWidth:1
+  }
   
 })
 

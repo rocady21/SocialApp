@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator,Modal } from "react-native"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
 import Icon from "react-native-vector-icons/EvilIcons"
 import More from "react-native-vector-icons/Feather"
@@ -11,40 +11,75 @@ import icon_error from "../../icons/icon_error"
 import ChatCard from "../../components/Chat/ChatCard"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import ModalDeletePost from "../../components/Chat/ModalDeletePost"
+import { io } from "socket.io-client"
 
 
 
 const Chats = ({ route }) => {
 
+
+    const ref = useRef()
     const { user } = useUserSlice()
-    const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact } = useMessageSlice()
+    const { LoadContactsMessage, SeleccionarChat, SearchMessage, searchContact,NoMoreContacts ,ClearContacts,ResetNoMoreContacts,Order_contacts} = useMessageSlice()
     const { contactsChat, stateChats } = useMessageSlice()
     const [SearchMessageContact, setSearchMessageContact] = useState("")
     const [modalDelete,setModalDelete] = useState(false)
     const [selected_chat,setSelectedChat] = useState(selected_chat)
+    const number_of_contacts = 5
+    const [index,setIndex] = useState(0)
+    const [scrollBottom,setScrollBottom] = useState(false)
+    
 
-    // este useEffect es de react-navigation y sirve para detectar cuando estas o sales de una pantalla
-    useFocusEffect(
-        useCallback(() => {
-            // Lógica específica cuando la pantalla Home se enfoca
-            SeleccionarChat(false)
-            LoadContactsMessage(user.id)
-            return () => {
-            };
-        }, [])
-    );
+    const handleScroll = (e)=> {
+        const positionY = Math.round(e.nativeEvent.contentOffset.y)
+        const HeightScroll = Math.round(e.nativeEvent.contentSize.height)
+        const positionInHeight = Math.round(e.nativeEvent.layoutMeasurement.height)
 
+        const difference = HeightScroll - positionInHeight;
+
+        // Verificar si el scroll está en la parte inferior
+        if (positionY >= difference) {
+            // El scroll está en la parte inferior
+            setScrollBottom(true)
+            setIndex(index + number_of_contacts)
+
+            // Realiza las acciones que necesites cuando el scroll está en la parte inferior
+        } else {
+            setScrollBottom(false)
+        }
+
+    }
+
+    useEffect(()=>{
+        if(scrollBottom === true && NoMoreContacts === "more") {
+            LoadContactsMessage(user.id,index,number_of_contacts)
+        }
+    },[scrollBottom])
+
+    
+    useLayoutEffect(()=>{ 
+                console.log("jjee");
+                if(contactsChat.length === 0) {
+                    LoadContactsMessage(user.id,index,number_of_contacts)
+                }
+                return ()=> {
+                    ResetNoMoreContacts()
+                }
+        
+
+    },[])
+    
     useEffect(() => {
         if (SearchMessageContact !== "") {
             SearchMessage(SearchMessageContact)
         }
     }, [SearchMessageContact])
 
-
     const openModal = ()=> {
         setModalDelete(true)
     }
-    console.log(selected_chat);
+
+
     return (
 
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.padre}>
@@ -71,13 +106,13 @@ const Chats = ({ route }) => {
                     </View>
                 </View>
             </View>
-            <ScrollView style={styles.body}>
+            <ScrollView ref={ref} onScroll={(e)=> handleScroll(e)} style={styles.body}>
                 {
 
                     SearchMessageContact == "" ?
-                        (stateChats === "chats" ? contactsChat.map((contact, index) => {
+                        (contactsChat[0] ? contactsChat.map((contact, index) => {
                             return <ChatCard setSelectedChat={(value)=> setSelectedChat(value)} OpenModal={openModal} data={contact} key={index} />
-                        }) : stateChats === "no-chats" ?
+                        }) : !contactsChat[0] ?
                             <View style={styles.error}>
                                 <SvgXml
                                     height={250}

@@ -20,17 +20,18 @@ const Profile = ({ route }) => {
     // hooks
     const [stateModal, setStateModal] = useState(false)
     const { LoadPostsUser, postsUser, ClearPostUsers, statusPosts } = usePosterSlice()
-    const { user, user_profile, loadInfoUserById, ClearUser_info,FollowUser,UnfollowUser } = useUserSlice()
-    const {SeleccionarChat,SendFirstMessage} = useMessageSlice()
-    const [statusData,setsetStatusData] = useState(false)
+    const { user, user_profile, loadInfoUserById, ClearUser_info, FollowUser, UnfollowUser } = useUserSlice()
+    const { SeleccionarChat, SendFirstMessage, LoadFirstsMessages } = useMessageSlice()
+    const [stateModalUnFollow, setStateModalUnFollow] = useState(false)
+    const [statusData, setsetStatusData] = useState(false)
     const navigation = useNavigation()
-    const load_data = async()=> {
+    const load_data = async () => {
         await loadInfoUserById(route.params.id),
-        await LoadPostsUser(route.params.id)
-
+            await LoadPostsUser(route.params.id)
         setsetStatusData(true)
-        
+
     }
+
     useEffect(() => {
         // aqui cargare los posts del usuario 
         load_data()
@@ -40,33 +41,34 @@ const Profile = ({ route }) => {
             ClearUser_info()
         }
     }, [])
-    const MessagePage = async()=> {
+    const MessagePage = async () => {
         try {
-            if(user_profile.chatExist === false) {
-                const data_response = await SendFirstMessage({id_from:user.id,id_to:user_profile.id})
-    
-                if(data_response.ok === true) {
+            console.log(user_profile);
+            if (user_profile.chatExist === false) {
+                const data_response = await SendFirstMessage({ id_from: user.id, id_to: user_profile.id })
+                console.log("data_response");
+                console.log(data_response);
+                if (data_response.ok === true) {
                     SeleccionarChat(true),
-                    navigation.navigate("Messages",data_response.dataF)
+                        navigation.navigate("Messages", data_response.dataF)
                 }
             } else {
                 SeleccionarChat(true)
-                navigation.navigate("Messages",user_profile.chatExist)
+                LoadFirstsMessages(user_profile.messages)
+                navigation.navigate("Messages", user_profile.chatExist)
             }
         } catch (error) {
-        
+            console.log(error);
         }
-        }
-    const FollowOrUnFollow = ()=> {
-        if(user_profile.isFollower !== false) {
-            UnfollowUser({
-                id_user_seguidor:user.id,
-                id_user_seguido:user_profile.id
-            })
+    }
+    const FollowOrUnFollow = () => {
+        if (user_profile.isFollower !== false) {
+            setStateModalUnFollow(true)
+
         } else {
             FollowUser({
-                id_user_seguidor:user.id,
-                id_user_seguido:user_profile.id
+                id_user_seguidor: user.id,
+                id_user_seguido: user_profile.id
             })
         }
     }
@@ -74,100 +76,121 @@ const Profile = ({ route }) => {
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} >
             <ToastManager />
-
-            {statusData === true  ?
-            <View style={styles.padre}>
-                <ModalAddPost stateModal={stateModal} setStateModal={(state) => setStateModal(state)} />
-
-                <View style={styles.info}>
-                    <View>
-                        <Image
-                            style={styles.image}
-                            source={{
-                                uri: "https://lapi.com.mx/web/image/product.template/5449/image_1024?unique=9f103a0"
-                            }}
-
-                        />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                style={styles.modal}
+                visible={stateModalUnFollow}
+                onRequestClose={() => {
+                    setStateModalUnFollow(false);
+                }}
+            >
+                <View style={styles.modal_info}>
+                    <Text style={{textAlign:"center"}}> Estas seguro que deseas dejar de seguir a {user_profile.nombre + " " + user_profile.apellido}?</Text>
+                    <View style={styles.buttons_modal}>
+                        <TouchableOpacity onPress={() => setModalDelete(false)} style={styles.cancel}>
+                            <Text >Cancelar</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.accept} onPress={() => UnfollowUser({ id_user_seguidor: user.id, id_user_seguido: user_profile.id })}>
+                            <Text style={{ color: "white", fontWeight: "600" }} >Eliminar</Text>
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.infoUser}>
-                        <Text style={styles.textInfo}>{user_profile.nombre + " " + user_profile.apellido}</Text>
-                        <View style={styles.buttons}>
-                            <TouchableOpacity style={styles.button}>
-                                <Text>Posts</Text>
-                                <Text>{user_profile.number_posts}</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}>
-                                <Text>Seguidores</Text>
-                                <Text>{user_profile.seguidores_user}</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}>
-                                <Text>Seguidos</Text>
-                                <Text>{user_profile.seguidos_user}</Text>
-                            </TouchableOpacity>
-
-                        </View>
-                    </View>
-
-
                 </View>
-                <View style={styles.buttonsInteractions}>
-                    {/*Aqui es en donde validaremos si seguimos al usuario o no */}
-                        {
-                            user_profile.isFollower === false || user_profile.isFollower === "Rechazado"? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
-                            <Text>Seguir</Text>
-                        </TouchableOpacity> : user_profile.isFollower === "Pendiente"? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
-                            <Text>Pendiente</Text>
-                        </TouchableOpacity> :  <View style={styles.buttonsI}>
-                        <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
-                            <Text>Siguiendo</Text>
-                        </TouchableOpacity>
+            </Modal>
+            {statusData === true ?
+                <View style={styles.padre}>
+                    <ModalAddPost stateModal={stateModal} setStateModal={(state) => setStateModal(state)} />
 
-                        <TouchableOpacity onPress={MessagePage} style={styles.buttonI}>
-                            <Text>Enviar Mensaje</Text>
-                        </TouchableOpacity>
+                    <View style={styles.info}>
+                        <View>
+                            <Image
+                                style={styles.image}
+                                source={{
+                                    uri: "https://lapi.com.mx/web/image/product.template/5449/image_1024?unique=9f103a0"
+                                }}
+
+                            />
                         </View>
-    
+                        <View style={styles.infoUser}>
+                            <Text style={styles.textInfo}>{user_profile.nombre + " " + user_profile.apellido}</Text>
+                            <View style={styles.buttons}>
+                                <TouchableOpacity style={styles.button}>
+                                    <Text>Posts</Text>
+                                    <Text>{user_profile.number_posts}</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.button}>
+                                    <Text>Seguidores</Text>
+                                    <Text>{user_profile.seguidores_user}</Text>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={styles.button}>
+                                    <Text>Seguidos</Text>
+                                    <Text>{user_profile.seguidos_user}</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        </View>
+
+
+                    </View>
+                    <View style={styles.buttonsInteractions}>
+                        {/*Aqui es en donde validaremos si seguimos al usuario o no */}
+                        {
+                            user_profile.isFollower === false || user_profile.isFollower === "Rechazado" || user_profile.isFollower === false ? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                                <Text>Seguir</Text>
+                            </TouchableOpacity> : user_profile.isFollower === "Pendiente" ? <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                                <Text>Pendiente</Text>
+                            </TouchableOpacity> :
+                                user_profile.isFollower === "Aceptado" && <View style={styles.buttonsI}>
+                                    <TouchableOpacity onPress={FollowOrUnFollow} style={styles.buttonI}>
+                                        <Text>Siguiendo</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity onPress={MessagePage} style={styles.buttonI}>
+                                        <Text>Enviar Mensaje</Text>
+                                    </TouchableOpacity>
+                                </View>
+
                         }
 
-                </View>
-
-                <TouchableOpacity onPress={() => setStateModal(true)} style={styles.post}>
-                    <Icon name="add-sharp" size={40} />
-                </TouchableOpacity>
-
-
-
-
-                <View style={styles.insignias}>
-                    <View style={styles.postsTitle}>
-                        <Text style={styles.title} >Posts</Text>
                     </View>
 
-                    <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex" }} >
-                        <View style={styles.posts}>
-                            {
-                                statusPosts === "posts" ?
-                                    <View style={styles.postsList}>
-                                        {
-                                            postsUser.map((post) => {
-                                                return <CardPostPreview key={post.id} data={post} />
-                                            })
-                                        }
-                                    </View>
-                                    : statusPosts === "loading" ? <View style={styles.indicator}>
-                                        <ActivityIndicator color={"black"} size={"large"} />
-                                    </View> : <View style={styles.NoPosts}><Text style={styles.NoPostsText}>Aún no hay publicaciones.</Text></View>
-                            }
+                    <TouchableOpacity onPress={() => setStateModal(true)} style={styles.post}>
+                        <Icon name="add-sharp" size={40} />
+                    </TouchableOpacity>
 
 
+
+
+                    <View style={styles.insignias}>
+                        <View style={styles.postsTitle}>
+                            <Text style={styles.title} >Posts</Text>
                         </View>
-                    </ScrollView>
+
+                        <ScrollView contentContainerStyle={{ flexGrow: 1, display: "flex" }} >
+                            <View style={styles.posts}>
+                                {
+                                    statusPosts === "posts" ?
+                                        <View style={styles.postsList}>
+                                            {
+                                                postsUser.map((post) => {
+                                                    return <CardPostPreview key={post.id} data={post} />
+                                                })
+                                            }
+                                        </View>
+                                        : statusPosts === "loading" ? <View style={styles.indicator}>
+                                            <ActivityIndicator color={"black"} size={"large"} />
+                                        </View> : <View style={styles.NoPosts}><Text style={styles.NoPostsText}>Aún no hay publicaciones.</Text></View>
+                                }
 
 
-                </View>
-            </View> :   <View style={styles.padreIndic}><ActivityIndicator style={styles.indicatorF} color={"black"} size={"large"} /></View>
+                            </View>
+                        </ScrollView>
+
+
+                    </View>
+                </View> : <View style={styles.padreIndic}><ActivityIndicator style={styles.indicatorF} color={"black"} size={"large"} /></View>
             }
         </ScrollView>
 
@@ -211,8 +234,8 @@ const styles = StyleSheet.create({
         borderWidth: 2
 
     },
-    buttonsI:{
-        width:"100%",
+    buttonsI: {
+        width: "100%",
         margin: "auto",
         display: "flex",
         flexDirection: "row",
@@ -321,13 +344,53 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 50
     },
-    padreIndic:{
-        width:"100%",
-        height:"100%",
-        display:"flex",
-        flexDirection:"row",
-        alignContent:"center",
-        justifyContent:"center"
+    padreIndic: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "row",
+        alignContent: "center",
+        justifyContent: "center"
+    },
+    modal: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignContent:"center"
+    },
+    modal_info: {
+        padding: 20,
+        borderRadius: 20,
+        alignSelf:"center",
+        width:350,
+        margin:"auto",
+        marginTop: "auto",
+        marginBottom: "auto",
+        backgroundColor:"white",
+        display: "flex",
+        flexDirection: "column"
+    },
+    buttons_modal: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        marginTop:15
+    },
+    cancel: {
+        padding: 5,
+        borderColor: "#DFDFDF",
+        borderWidth: 1,
+        borderRadius: 3,
+        marginRight: 10
+
+    },
+    accept: {
+        padding: 5,
+        borderRadius: 3,
+        backgroundColor: "#CD0000",
+        
+
     }
 
 })

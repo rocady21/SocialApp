@@ -1,28 +1,42 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Order_contactsF } from "../../utils/order_contacts";
+import { useDispatch } from "react-redux";
 
 
 const ChatSlice = createSlice({
-    name:"ChatSlice",
-    initialState:{
-        stateChats:"no-chats",
-        messages:[],
-        contactsChat:[],
-        selectedChat:false,
-        searchContact:[],
-        NoMoreMessages:"more",
-        statusLoadingMessages:"loaded"
+    name: "ChatSlice",
+    initialState: {
+        stateChats: "no-chats",
+        messages: [],
+        contactsChat: [],
+        selectedChat: false,
+        searchContact: [],
+        NoMoreMessages: "more",
+        NoMoreContacts: "more",
+        statusLoadingMessages: "loaded",
+        No_read_message:0
     },
-    reducers:{
-        onLoadingChats:(state,{payload})=> {
+    reducers: {
+        onResetStateChat: (state) => {
+            state.stateChats = "no-chats",
+                state.messages = [],
+                state.contactsChat = [],
+                state.selectedChat = false,
+                state.searchContact = [],
+                state.NoMoreMessages = "more",
+                state.NoMoreContacts = "more",
+                state.statusLoadingMessages = "loaded"
+        },
+        onLoadingChats: (state, { payload }) => {
             state.stateChats = "loading"
         },
-        onNoChats:(state,{payload})=> {
+        onNoChats: (state, { payload }) => {
             state.stateChats = "no-chats"
         },
-        onLoadContactsMessage:(state,{payload})=> {
+        onLoadContactsMessage: (state, { payload }) => {
             // aca si no tiene foto le pongo una random
-            const data_filtrada = payload.map((contact)=> {
-                if(contact.photo === "" || contact.photo === "vacio") {
+            const data_filtrada = payload.map((contact) => {
+                if (contact.photo === "" || contact.photo === "vacio") {
                     contact.photo = "https://image.emojipng.com/346/10131346.jpg"
 
                     return contact
@@ -30,30 +44,29 @@ const ChatSlice = createSlice({
 
                 return contact
             })
-            const order_contacy = data_filtrada.sort((a,b)=> {
-                aID = a.id,
-                bID = b.id
 
-                return bID - aID
-            })
+
             state.stateChats = "chats"
-            state.contactsChat = data_filtrada
+            const contacts = [...state.contactsChat, ...data_filtrada]
+            const order_contacts = Order_contactsF(contacts)
+            state.contactsChat = order_contacts
         },
-        onNoMoreMessages:(state,{payload})=> {
+        onNoMoreMessages: (state, { payload }) => {
             state.NoMoreMessages = "no-more"
         },
-        onResetNoMoreMessages:(state)=> {
+        onResetNoMoreMessages: (state) => {
             state.NoMoreMessages = "more"
         },
-        onSelectedChat:(state,{payload})=> {
+        onSelectedChat: (state, { payload }) => {
             state.selectedChat = payload
         },
-        onLoadChats:(state,{payload})=> {
-
-            if(state.messages[0]) {
+        onLoadChats: (state, { payload }) => {
+            const { data } = payload
+            if (state.messages[0]) {
                 const old_arr = state.messages.map((msg) => {
-                    const matchingDay = payload.find((day) => day.day === msg.day);
+                    const matchingDay = data.find((day) => day.day === msg.day);
                     if (matchingDay) {
+                        data
                         return {
                             ...matchingDay,
                             messages: [...msg.messages, ...matchingDay.messages]
@@ -62,139 +75,280 @@ const ChatSlice = createSlice({
                         return msg;
                     }
                 });
-                const new_messages = payload.filter((objetoPayload) => 
-                !state.messages.some((objetoMessage) => objetoMessage.day === objetoPayload.day)
+                const new_messages = data.filter((objetoPayload) =>
+                    !state.messages.some((objetoMessage) => objetoMessage.day === objetoPayload.day)
                 );
-                
-                console.log("old",old_arr);
-                console.log("new",new_messages);
-                if(new_messages.length > 0) {
+
+                if (new_messages.length > 0) {
                     const new_arr = [...new_messages, ...old_arr]
-                    console.log("new_arr",new_arr);
 
                     let order_messages = new_arr.map((mensaje) => {
-                    
+
                         // Asegurarse de que 'mensaje.messages' exista y sea un array antes de realizar operaciones
                         const messages_order = Array.isArray(mensaje.messages)
-                          ? mensaje.messages.sort((a, b) => {
-                              const dateA = new Date(a.fecha);
-                              const dateB = new Date(b.fecha);
-                    
-                              return dateA - dateB;
-                            })
-                          : [];
-                    
-                        return { ...mensaje, messages: messages_order };
-                      });
-                    
-                      state.statusLoadingMessages = "loaded"
-                      state.messages = order_messages
-                } else {
-                    console.log("debo de actualizar los viejos");
+                            ? mensaje.messages.sort((a, b) => {
+                                const dateA = new Date(a.fecha);
+                                const dateB = new Date(b.fecha);
 
-                    old_arr.map((mensaje)=> {
-                        messages_order = mensaje.messages.sort((a,b)=> {
+                                return dateA - dateB;
+                            })
+                            : [];
+
+                        return { ...mensaje, messages: messages_order };
+                    });
+
+                    state.statusLoadingMessages = "loaded"
+                    state.messages = order_messages
+                } else {
+                    old_arr.map((mensaje) => {
+                        messages_order = mensaje.messages.sort((a, b) => {
                             const dateA = new Date(a.fecha);
                             const dateB = new Date(b.fecha);
-                        
+
                             return dateA - dateB;
                         })
-        
+
                         return messages_order
                     })
                     state.messages = old_arr
                     state.statusLoadingMessages = "loaded"
                 }
-                
 
-            
-            } else {
-                console.log(payload);
-                state.messages = payload
-                state.statusLoadingMessages = "loaded"
+
+
             }
 
-            
-
-
         },
-        onClearMessages:(state)=> {
+        onClearMessages: (state) => {
             state.messages = []
         },
-        onLoadingMessages:(state)=> {
+        onLoadingMessages: (state) => {
             state.statusLoadingMessages = "loading"
         },
-        onLoadedMessages:(state)=> {
+        onLoadedMessages: (state) => {
             state.statusLoadingMessages = "laoded"
         },
-        onAddMessageRealTIme:(state,{payload})=> {
+        onAddMessageRealTIme: (state, { payload }) => {
+            const now = new Date().toISOString()
 
-            const {newMessage,id_me,socket} = payload
-                if (newMessage.usuario === id_me) {
-                    newMessage["is_me"] = true
-                } else {
-                    newMessage["is_me"] = false
-                }
-            
-            console.log(newMessage);
+
+            console.log("enviuare un mensaje");
+            const { newMessage, id_me, socket } = payload
+            if (newMessage.usuario === id_me) {
+                newMessage["is_me"] = true
+            } else {
+                newMessage["is_me"] = false
+            }
             // aqui verifico si el mensaje del socekt es mio o no, asi no lo agarro si es que lo es
             // solo traeria los menasjes del usuario que este en el mismo socket que el mio
-            if(socket === "socket" && newMessage.usuario === id_me ) {
+            if (socket === "socket" && newMessage.usuario === id_me) {
+                console.log("soy yopppppppppppppppppppppppppppppppppppppp");
                 return
             }
             else {
-                if( state.messages[0]) {
-                    const state_f = state.messages.map((days)=> {
-                        if(days.day === "hoy") {
-                            console.log("es hoy");
+                if (state.messages[0]) {
+                    const state_f = state.messages.map((days) => {
+                        if (days.day === "hoy") {
                             return {
                                 ...days,
-                                messages:[...days.messages,newMessage]
+                                messages: [...days.messages, newMessage]
                             }
                         } else {
+                            new_day = {
+                                day:"hoy",
+                                messages:[newMessage]
+                            }
                             return days
                         }
                     })
                     state.messages = state_f
+                    console.log("hasta aki llego");
+                    const new_state = state.contactsChat.map((contact)=> {
+                        if(contact.id === payload.chat_id) {
+                            return {
+                                ...contact,
+                                time_last_message:now,
+                                show_last_message:true,
+                                id_user_last_message:id_me,
+                                last_message:newMessage.mensaje,
+                            }
+                        }
+                        return contact
+                    })  
+                    const contacts_order = Order_contactsF(new_state)
+                    state.contactsChat = contacts_order
+                    
+
 
                 } else {
-                    console.log("insertare uno nuevo xd");
                     state.messages = [{
-                        day:"hoy",
-                        messages:[newMessage]
+                        day: "hoy",
+                        messages: [newMessage]
                     }]
                 }
- 
+
             }
 
         },
-        onfilterContactsChats:(state,{payload})=> {
+        onfilterContactsChats: (state, { payload }) => {
 
             const valueSearch = payload.toLowerCase()
 
-            searchContacts = state.contactsChat.map((contacts)=> {
+            const searchContacts = state.contactsChat.filter((contacts) => {
                 nombreLower = contacts.nombre_user.toLowerCase()
-
-                if( nombreLower.includes(valueSearch)) {
-                    return contacts
-                }
-
+                return nombreLower.includes(valueSearch)
             })
-
             state.searchContact = searchContacts
         },
-        onDeleteMessage:(state,{payload})=> {
-            
+        onDeleteMessage: (state, { payload }) => {
+            const {id_message,day} = payload
+
+            const New_s_messages = state.messages.map((days)=> {
+                if( days.day === day) {
+                    const new_state_msgs = days.messages.filter((msg)=> {
+                        return msg.id !== id_message
+                    })
+
+                    return {
+                        ...days,
+                        messages:new_state_msgs
+                    }
+                } else {
+                    return days
+                }
+            })
+
+            state.messages = New_s_messages
         },
-        onDeleteChat:(state,{payload})=> {
-            state.contactsChat = state.contactsChat.filter((contact)=> {
+        onDeleteChat: (state, { payload }) => {
+            state.contactsChat = state.contactsChat.filter((contact) => {
                 return contact.id !== payload
             })
+        },
+        onLoadFirstsMessages: (state, { payload }) => {
+            state.messages = payload
+        },
+        onResetContacts: (state) => {
+            state.contactsChat = []
+        },
+        onNoMoreContacts: (state, { payload }) => {
+            state.NoMoreContacts = "no-more"
+        },
+        onResetNoMoreContacts: (state) => {
+            state.NoMoreContacts = "more"
+        },
+        onHandleMessage_recive: (state, { payload }) => {
+
+            const {new_contact,id_me} = payload
+
+            console.log("me_",id_me);
+            console.log(new_contact);
+            if(new_contact.id_user_last_message !== id_me) {
+                const filter_contact = state.contactsChat.find((contact) => {
+                    return contact.id === new_contact.id
+                })
+                if (filter_contact) {
+    
+                    const new_state = state.contactsChat.map((contact) => {
+                        if (contact.id === new_contact.id) {
+                            // aqui fucionaremos los mensajes
+                            // validaremos si el dia existe en el arr
+                            const existingDayIndex = contact.firsts_messages.findIndex(cnt => cnt.day === new_contact.firsts_messages.day);
+                                if (existingDayIndex !== -1) {
+                                    // Si ya existe un día con el mismo día, fusionamos los mensajes
+                                    const existingDay = contact.firsts_messages[existingDayIndex];
+                                    const mergedMessages = [...existingDay.messages,new_contact.firsts_messages.messages];
+                                    const sortedMessages = mergedMessages.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+                                    
+                                    // Actualizamos los mensajes del día existente en el arreglo firsts_messages
+                                    const updatedFirstMessages = [...contact.firsts_messages];
+                                    updatedFirstMessages[existingDayIndex] = {
+                                        ...existingDay,
+                                        messages: sortedMessages
+                                    };
+                        
+                                    return {
+                                        ...new_contact,
+                                        firsts_messages: updatedFirstMessages
+                                    };
+                                } else {
+                                    // creamos el dia 
+                                    const new_day = {
+                                        day: new_contact.firsts_messages.day,
+                                        messages: new_contact.firsts_messages.messages
+                                    }
+                                    return {
+                                        ...new_contact,
+                                        firsts_messages:[...contact.firsts_messages,new_day]
+                                    }
+                                }
+                        } else {
+                            return contact
+                        }
+                    })
+    
+    
+    
+                    const order_contacts = Order_contactsF(new_state)
+                    
+                    
+                    state.contactsChat = order_contacts
+    
+                } else {
+    
+                    console.log("lo añadire xdddd");
+
+                    const contacts = [...state.contactsChat, new_contact]
+                    const order_contacts = Order_contactsF(contacts)
+                    state.contactsChat = order_contacts
+
+
+                }
+            }
+            
+
+        },
+        onOrderContacts:(state)=> {
+            const order_contacts = state.contactsChat.sort((a,b)=> {
+                const fecha_a = new Date(a.time_last_message)
+                const fecha_b = new Date(b.time_last_message)
+
+                return fecha_b - fecha_a;
+                
+            })
+            state.contactsChat = order_contacts
+        },
+        onMessage:(state)=> {
+            console.log("jaja buenas bueans");
+        },
+        onReadMessage_ok:(state,{payload})=> {
+            const new_state = state.contactsChat.map((contact)=> {
+                if(contact.id === payload) {
+                    return {
+                        ...contact,
+                        show_last_message:true,
+                    }
+                }
+                return contact
+            })
+
+            state.contactsChat = new_state
+        },
+
+        onNoReadMessages:(state,{payload})=> {
+            const my_user_id = payload
+
+            const messages_no_read = state.contactsChat.filter((contact)=> {
+                return contact.show_last_message === false && contact.id_user_last_message !== my_user_id
+            })
+
+            state.No_read_message = messages_no_read.length
         }
+        
     }
 })
 
 
-export const {onLoadContactsMessage,onSelectedChat,onDeleteChat,onLoadChats,onClearMessages,onNoMoreMessages,onLoadedMessages,onResetNoMoreMessages,onAddMessageRealTIme,onLoadingChats,onNoChats,onfilterContactsChats,onLoadingMessages} = ChatSlice.actions
+export const { onLoadContactsMessage,onReadMessage_ok, onSelectedChat, onResetContacts,onMessage,onNoReadMessages,onDeleteMessage ,onDeleteChat,onOrderContacts, onNoMoreContacts, onHandleMessage_recive, onLoadChats, onResetNoMoreContacts, onResetStateChat, onClearMessages, onNoMoreMessages, onLoadFirstsMessages, onLoadedMessages, onResetNoMoreMessages, onAddMessageRealTIme, onLoadingChats, onNoChats, onfilterContactsChats, onLoadingMessages } = ChatSlice.actions
 
 export default ChatSlice

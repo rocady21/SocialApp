@@ -10,6 +10,12 @@ const PostSlice = createSlice({
         statusPosts:"no-posts"
     },
     reducers: {
+        onResetStatePost:(state)=> {
+            state.postsUser= [],
+            state.loadPosts= false,
+            state.selectedPost={},
+            state.statusPosts="no-posts"
+        },
         onLoadPostUser: (state, { payload }) => {
             state.postsUser = payload
             state.loadPosts = true,
@@ -55,13 +61,15 @@ const PostSlice = createSlice({
                 const updatePost = state.postsUser.map((post) => {
                     if (data.id_post === post.id) {
 
-                        const quitLikes = post.info_likes.map((like) => {
+                        const quitLikes = post.info_likes.filter((like) => {
                             return like.id !== data.id_user
                         })
+
+                        console.log(quitLikes);
                         const objReturn = {
                             ...post,
                             likes: post.likes - 1,
-                            info_likes: quitLikes[0] == false? [] : quitLikes
+                            info_likes: !quitLikes[0] ? [] : quitLikes
                         }
                         state.selectedPost = objReturn
                         return objReturn
@@ -74,5 +82,5 @@ const PostSlice = createSlice({
     }
 })
 
-export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost } = PostSlice.actions
+export const { onLoadPostUser, onClearPostUsers, onAddOrQUitLike,onAddSelectedPost,onQuitSelectedPosts,onLoadingPostUser,onNoPost,onResetStatePost} = PostSlice.actions
 export default PostSlice

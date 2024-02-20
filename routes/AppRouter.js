@@ -19,8 +19,6 @@ export default function AppRouter() {
 
 
   const {selectedChat} = useMessageSlice()
-
-
   return (
     <View style={styles.padre}>
     <NavigationContainer >
