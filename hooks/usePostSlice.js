@@ -18,7 +18,7 @@ export const usePosterSlice = ()=> {
 
         Dispatch(onLoadingPostUser())
         try {
-            const {data} = await axios.get("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/post/user/" + id_me)
+            const {data} = await axios.get("https://beec-2800-a4-c067-b300-dd70-2a3d-e15d-76a.ngrok-free.app/api/post/user/" + id_me)
             if(data.ok === true){
 
                 Dispatch(onLoadPostUser(data.posts))
@@ -35,7 +35,7 @@ export const usePosterSlice = ()=> {
     }
     const addLike = async(info)=> {
         try {
-            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/post/like",info)
+            const {data} = await axios.post("https://beec-2800-a4-c067-b300-dd70-2a3d-e15d-76a.ngrok-free.app/api/post/like",info)
             if(data.ok === true) {
                 Dispatch(onAddOrQUitLike({
                     data:info,
@@ -54,7 +54,7 @@ export const usePosterSlice = ()=> {
     }
     const quitLike = async(info)=> {
         try {
-            const {data} = await axios.delete("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/post/like",{
+            const {data} = await axios.delete("https://beec-2800-a4-c067-b300-dd70-2a3d-e15d-76a.ngrok-free.app/api/post/like",{
                 data:info
             })
             if(data.ok === true) {
@@ -71,7 +71,7 @@ export const usePosterSlice = ()=> {
 
     const AddNewPost = async(info)=> {
         try {
-            const {data} = await axios.post("https://a8a5-2800-a4-1313-2e00-88e3-d5d9-8624-8d28.ngrok-free.app/api/newPost",info)
+            const {data} = await axios.post("https://beec-2800-a4-c067-b300-dd70-2a3d-e15d-76a.ngrok-free.app/api/newPost",info)
             if(data.ok === true) {
 
                 return true
