@@ -21,7 +21,7 @@ const Home = ({route})=> {
 
     useEffect(()=> {
         obtToken()
-        const socket = io('https://beec-2800-a4-c067-b300-dd70-2a3d-e15d-76a.ngrok-free.app', {
+        const socket = io('https://9f04-2800-a4-c078-2500-6006-80d6-6265-d3e4.ngrok-free.app', {
             transports: ["websocket"],
 
           });
