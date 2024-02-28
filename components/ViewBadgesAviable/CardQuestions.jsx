@@ -3,7 +3,7 @@ import { StyleSheet, Text, View,TouchableOpacity,Image } from "react-native"
 
 
 
-const CardQuestions = ()=> {
+const CardQuestions = ({data})=> {
 
     const navigation = useNavigation()
 
@@ -13,9 +13,9 @@ const CardQuestions = ()=> {
     
     return (
         <View style={styles.padre}>
-            <Text style={styles.tittle}>One piece</Text>
-            <Text style={styles.tittle}>P/15</Text>
-            <Text style={styles.text}>Este es un cuestionario de one piece para principiantes</Text>
+            <Text style={styles.tittle}>{data.nombre}</Text>
+            <Text style={styles.tittle}>P/{data.number_of_questions}</Text>
+            <Text style={styles.text}>{data.descripcion}</Text>
 
             <View style={styles.body}>
 
@@ -27,7 +27,7 @@ const CardQuestions = ()=> {
 
                 <Image
                     style={styles.Image}
-                    source={require("./images/image.png")}
+                    source={{uri:data.insignia.img}}
                 />
 
             </View>

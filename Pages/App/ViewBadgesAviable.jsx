@@ -1,20 +1,31 @@
 import { View,Text,StyleSheet, ScrollView } from "react-native"
 import CardQuestions from "../../components/ViewBadgesAviable/CardQuestions"
+import { useEffect } from "react"
+import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
 
-const ViewBadgesAviable = ()=> {
+const ViewBadgesAviable = ({route})=> {
 
+    const {handleLoadQuestionsFromEntity,questionsFromEntity} = useQuestionsSlice()
+    console.log("route.params",route.params);
+    const id = route.params
+
+    useEffect(()=> {
+        handleLoadQuestionsFromEntity(id)
+    },[])
+    
     return (
         <View style={styles.padre}>
             <View style={styles.header}>
                 <Text style={{textAlign:"center",fontSize:16,fontWeight:"bold"}}>Medallas Disponibles</Text>
             </View>
             <ScrollView style={styles.body}>
-                <CardQuestions/>
 
+                {
+                    questionsFromEntity[0]? questionsFromEntity.map((cuest)=> {
+                        return <CardQuestions data = {cuest}/>
+                    }) : <Text>No hay cuestionarios disponibles para esta entidad</Text>
+                }
                 
-
-
-
             </ScrollView>
         </View>
     )
@@ -22,6 +33,7 @@ const ViewBadgesAviable = ()=> {
 
 const styles = StyleSheet.create({
     padre:{
+        marginTop:15,
         flex:1,
         margin:10
     },

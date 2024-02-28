@@ -9,6 +9,6 @@ export const store = configureStore({
     user: userSlice.reducer,
     chat: ChatSlice.reducer,
     post: PostSlice.reducer,
-    quuestions: QuestionsSlice.reducer
+    questions: QuestionsSlice.reducer
   }
 });

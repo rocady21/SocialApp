@@ -10,11 +10,22 @@ const QuestionsSlice = createSlice({
         questionsFromEntity:[],
         questionSelected:{}
     },reducers:{
-
+        onLoadCateogryes:(state,{payload}) => {
+            state.category = payload
+        },
+        onLoadEntitiesFromCat:(state,{payload})=> {
+            state.entitiesfromCateogry = payload
+        },
+        onClearEntitiesFromCateogries:(state,{payload})=> {
+            state.entitiesfromCateogry = []
+        },
+        onloadQuestionsFromEntity:(state,{payload})=> {
+            state.questionsFromEntity = payload
+        }
     }
 
 })
 
 
-export const {} = QuestionsSlice.actions
+export const {onLoadCateogryes,onLoadEntitiesFromCat,onClearEntitiesFromCateogries,onloadQuestionsFromEntity} = QuestionsSlice.actions
 export default QuestionsSlice
