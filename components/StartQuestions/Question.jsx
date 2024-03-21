@@ -3,27 +3,47 @@ import { Text, View,StyleSheet,TouchableOpacity } from "react-native"
 
 
 
-const IniciarEncuesta = ()=> {
+const QuestionComponent = () => {
+    const [stateOptions, setStateOptions] = useState('');
+    const [w, set_w] = useState()
+  
+    useEffect(() => {
+      const interval_func = () => {
+        set_w(w - 20)
+      };
+  
+      const interval = setInterval(interval_func, 1000);
+  
+      setTimeout(() => {
+        console.log('Siguiente pregunta');
+        clearInterval(interval);
+      }, 5000);
+  
+      return () => clearInterval(interval);
+    }, []);
 
-    
-    const [stateOptions,setStateOptions] = useState("")
-
-
-    useEffect(()=> {
-        setTimeout(() => {
-            console.log("siguiente pregunta");
-        }, 5000);
-    },[])
-    
+  
     const onSelectedOption = (option)=> {
         setStateOptions(option)
     }
+
+
+    const styles_charge_time = StyleSheet.create({
+        ChargeTime:{
+            width:w + "%",
+            zIndex:100,
+            padding:4,
+            backgroundColor:"#00A024",
+            borderRadius:15,
+            transition: "width 0.5s ease-out", // Agrega la transición CSS
+        },
+    })
     
     return <View style={styles.padre}>
         
         <View style={styles.header}>
             <View style={styles.time}>
-                <View style={styles.ChargeTime}></View>
+                <View style={[styles_charge_time.ChargeTime]}></View>
             </View>
             <View style={styles.info_q}>
                 <Text>1/15</Text>
@@ -50,7 +70,7 @@ const IniciarEncuesta = ()=> {
             </TouchableOpacity>
 
             <TouchableOpacity style={[styles.option, {backgroundColor: stateOptions === "Un samurai" ? "#00D41D" : "white"}]} onPress={()=>onSelectedOption("Un samurai")}>
-                <Text>Un samurai</Text>
+                <Text>Un samuraia</Text>
             </TouchableOpacity>
 
         </View>
@@ -125,14 +145,6 @@ const styles = StyleSheet.create({
         justifyContent:"space-between",
         paddingHorizontal:15
     },
-    ChargeTime:{
-        width:"100%",
-        zIndex:100,
-        padding:4,
-        backgroundColor:"#00A024",
-        borderRadius:15
-        
-    },
     option:{
         padding:15,
         width:"100%",
@@ -149,5 +161,5 @@ const styles = StyleSheet.create({
     }
 })
 
-export default IniciarEncuesta
+export default QuestionComponent
 

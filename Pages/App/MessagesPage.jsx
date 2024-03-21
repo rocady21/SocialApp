@@ -67,7 +67,7 @@ const MessagesPage = ({ navigation, route }) => {
     if(id_user_last_message !== user.id ) {
       message_read(id)
     }
-    const socket = io('https://9f04-2800-a4-c078-2500-6006-80d6-6265-d3e4.ngrok-free.app', {
+    const socket = io('https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app', {
       transports: ["websocket"],
       
     });

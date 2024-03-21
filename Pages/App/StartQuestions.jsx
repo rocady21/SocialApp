@@ -1,59 +1,28 @@
 import { useEffect, useState } from "react"
 import { Text, View,StyleSheet,TouchableOpacity } from "react-native"
+import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
+import QuestionComponent from "../../components/StartQuestions/Question"
 
 
 
-const IniciarEncuesta = ()=> {
+const IniciarEncuesta = ({route})=> {
 
+    const id_cuest = route.params
     
-    const [stateOptions,setStateOptions] = useState("")
+    const {questionsFromEntity,CargarPreguntasDeCuestionario,questions} = useQuestionsSlice()
 
+
+    console.log(questions);
 
     useEffect(()=> {
-        setTimeout(() => {
-            console.log("siguiente pregunta");
-        }, 5000);
+        CargarPreguntasDeCuestionario(id_cuest)
     },[])
     
-    const onSelectedOption = (option)=> {
-        setStateOptions(option)
-    }
+
     
     return <View style={styles.padre}>
         
-        <View style={styles.header}>
-            <View style={styles.time}>
-                <View style={styles.ChargeTime}></View>
-            </View>
-            <View style={styles.info_q}>
-                <Text>1/15</Text>
-                <Text>5 Puntos</Text>
-
-            </View>
-        </View>
-        <View style={styles.question}>
-            <Text style={{fontSize:20,fontWeight:"400"}}>Quien era luffy?</Text>
-        </View>
-
-        <View style={styles.options}>
-
-            <TouchableOpacity onPress={()=>onSelectedOption("Un Pirata")} style={[styles.option, {backgroundColor: stateOptions === "Un Pirata" ? "#00D41D" : "white"}]}>
-                <Text>Un Pirata</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={()=>onSelectedOption("Un guerrero")} style={[styles.option, {backgroundColor: stateOptions === "Un guerrero" ? "#00D41D" : "white"}]}>
-                <Text>Un guerrero</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={()=>onSelectedOption("Un vendedor")} style={[styles.option, {backgroundColor: stateOptions === "Un vendedor" ? "#00D41D" : "white"}]}>
-                <Text>Un vendedor</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.option, {backgroundColor: stateOptions === "Un samurai" ? "#00D41D" : "white"}]} onPress={()=>onSelectedOption("Un samurai")}>
-                <Text>Un samurai</Text>
-            </TouchableOpacity>
-
-        </View>
+        <QuestionComponent/>
 
     </View>
 }

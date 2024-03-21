@@ -6,7 +6,6 @@ import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
 const ViewBadgesAviable = ({route})=> {
 
     const {handleLoadQuestionsFromEntity,questionsFromEntity} = useQuestionsSlice()
-    console.log("route.params",route.params);
     const id = route.params
 
     useEffect(()=> {
@@ -22,7 +21,7 @@ const ViewBadgesAviable = ({route})=> {
 
                 {
                     questionsFromEntity[0]? questionsFromEntity.map((cuest)=> {
-                        return <CardQuestions data = {cuest}/>
+                        return <CardQuestions key={cuest.id} data = {cuest}/>
                     }) : <Text>No hay cuestionarios disponibles para esta entidad</Text>
                 }
                 

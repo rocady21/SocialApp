@@ -8,7 +8,7 @@ const CardQuestions = ({data})=> {
     const navigation = useNavigation()
 
     const IniciarEncuesta = ()=> {
-            navigation.navigate("IniciarEncuesta")
+            navigation.navigate("IniciarEncuesta",data.id)
     }
     
     return (
