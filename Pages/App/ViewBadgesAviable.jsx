@@ -2,14 +2,19 @@ import { View,Text,StyleSheet, ScrollView } from "react-native"
 import CardQuestions from "../../components/ViewBadgesAviable/CardQuestions"
 import { useEffect } from "react"
 import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
+import { useUserSlice } from "../../hooks/useUserSlice"
 
 const ViewBadgesAviable = ({route})=> {
 
-    const {handleLoadQuestionsFromEntity,questionsFromEntity} = useQuestionsSlice()
+    const {user} = useUserSlice()
+    const {handleLoadQuestionsFromEntity,questionsFromEntity,ResetState} = useQuestionsSlice()
     const id = route.params
 
+    
     useEffect(()=> {
-        handleLoadQuestionsFromEntity(id)
+        ResetState()
+        handleLoadQuestionsFromEntity(id,user.id)
+
     },[])
     
     return (

@@ -2,27 +2,35 @@ import { useEffect, useState } from "react"
 import { Text, View,StyleSheet,TouchableOpacity } from "react-native"
 import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
 import QuestionComponent from "../../components/StartQuestions/Question"
+import { useUserSlice } from "../../hooks/useUserSlice"
+import CompletedQuestionnaire from "../../components/StartQuestions/CompletedQuestionnaire"
 
 
 
 const IniciarEncuesta = ({route})=> {
 
     const id_cuest = route.params
-    
-    const {questionsFromEntity,CargarPreguntasDeCuestionario,questions} = useQuestionsSlice()
-
-
-    console.log(questions);
+    const {user} = useUserSlice()
+    const {questionsFromEntity,CargarPreguntasDeCuestionario,questions,currentQuestion,ResetState,status_question,Create_cuest_user} = useQuestionsSlice()
 
     useEffect(()=> {
+        Create_cuest_user(user.id,id_cuest)
         CargarPreguntasDeCuestionario(id_cuest)
+
+        return ()=> {
+
+        }
     },[])
     
 
     
     return <View style={styles.padre}>
-        
-        <QuestionComponent/>
+        {
+            status_question !== "finished" ? 
+            (questions.length> 0 ?
+            <QuestionComponent data={questions[currentQuestion - 1]} />
+             : <Text>Loading</Text>) : <CompletedQuestionnaire/>
+        }
 
     </View>
 }

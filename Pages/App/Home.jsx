@@ -1,4 +1,4 @@
-import { View,Text,Button,StyleSheet } from "react-native"
+import { View,Text,Button,StyleSheet,SafeAreaView } from "react-native"
 import { getStorage, removeValueStorage } from "../../utils/AsyncStorage"
 import { useUserSlice } from "../../hooks/useUserSlice"
 import { useMessageSlice } from "../../hooks/useMessagesSlice"
@@ -21,7 +21,7 @@ const Home = ({route})=> {
 
     useEffect(()=> {
         obtToken()
-        const socket = io('https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app', {
+        const socket = io('https://4187-167-61-209-70.ngrok-free.app', {
             transports: ["websocket"],
 
           });
@@ -65,20 +65,21 @@ const Home = ({route})=> {
 
 
     return (
-        <View style={styles.home}>
+        <SafeAreaView style={styles.home}>
             <Text>Pagina de Homeeeee</Text>
             <Button
             title="Salir"
             onPress={salir}
             />      
         
-        </View>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     home:{
-        flex:1
+        flex:1,
+        marginTop:15
     }
 })
 

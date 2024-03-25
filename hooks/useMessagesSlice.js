@@ -23,7 +23,7 @@ export const useMessageSlice = ()=> {
         }
         try {
             Dispach(onLoadingChats())
-            const {data} = await axios.post("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/chats/" + userID,data_format)
+            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/chats/" + userID,data_format)
 
             if(data.ok === true) {
                 Dispach(onLoadContactsMessage(data.Chats))
@@ -47,7 +47,7 @@ export const useMessageSlice = ()=> {
     const SendFirstMessage = async(info)=> {
         try {            
             // creamos el mensaje
-            const {data} = await axios.post("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/messages/send",info)
+            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/messages/send",info)
             console.log("ddd",data);
             if(data.ok === true) {
                 return {ok:true,dataF:data.data}
@@ -65,7 +65,7 @@ export const useMessageSlice = ()=> {
         Dispach(onLoadingMessages())
         try {
             const tk = await getStorage("token")
-            const {data} = await axios.post("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/messages/" + id_chat,
+            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/messages/" + id_chat,
             {
                 ofSett:index,
                 numberOfMessages:number_of_messages
@@ -105,7 +105,7 @@ export const useMessageSlice = ()=> {
             id_to
         }
         try {
-            const {data} = await axios.post("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/messages/send",fromat_send)
+            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/messages/send",fromat_send)
             if(data.ok) {
                 Dispach(onAddMessageRealTIme({
                     newMessage:data.msg_send,
@@ -136,7 +136,7 @@ export const useMessageSlice = ()=> {
 
     const Delete_message = async (id_message,day)=> {
         try {
-            const {data} = await axios.delete("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/messages/" + id_message)
+            const {data} = await axios.delete("https://4187-167-61-209-70.ngrok-free.app/api/messages/" + id_message)
             console.log(data);
             if(data.ok === true) {
                 Dispach(onDeleteMessage({id_message,day}))
@@ -151,7 +151,7 @@ export const useMessageSlice = ()=> {
     
     const DeleteChat = async(id_chat)=> {
         try {
-            const {data} = await axios.delete(`https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/chats/${id_chat}`)
+            const {data} = await axios.delete(`https://4187-167-61-209-70.ngrok-free.app/api/chats/${id_chat}`)
             if(data.ok === true) {
                 Dispach(onDeleteChat(id_chat))
             }
@@ -169,7 +169,7 @@ export const useMessageSlice = ()=> {
 
     const message_read = async (id_chat)=> {
         try {
-            const {data} = await axios.get("https://2b47-2800-a4-c16c-e300-a137-be0-c4ef-d685.ngrok-free.app/api/show_message/" + id_chat)
+            const {data} = await axios.get("https://4187-167-61-209-70.ngrok-free.app/api/show_message/" + id_chat)
 
             if(data.ok === true) {
                 Dispach(onReadMessage_ok(id_chat))

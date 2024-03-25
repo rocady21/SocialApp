@@ -1,30 +1,47 @@
 import { useEffect, useState } from "react"
 import { Text, View,StyleSheet,TouchableOpacity } from "react-native"
+import { useQuestionsSlice } from "../../hooks/useQuestionsSlice";
 
 
 
-const QuestionComponent = () => {
+const QuestionComponent = ({data}) => {
+    const {NextQuestion,currentQuestion,questions,cuest_user,InsertResponse} = useQuestionsSlice()
     const [stateOptions, setStateOptions] = useState('');
-    const [w, set_w] = useState()
-  
+    const [w, set_w] = useState(100)
+    
     useEffect(() => {
-      const interval_func = () => {
-        set_w(w - 20)
-      };
-  
-      const interval = setInterval(interval_func, 1000);
-  
-      setTimeout(() => {
-        console.log('Siguiente pregunta');
-        clearInterval(interval);
-      }, 5000);
-  
-      return () => clearInterval(interval);
-    }, []);
+        const interval_func = () => {
+            set_w(prevW => prevW - 20); 
+        };
 
-  
-    const onSelectedOption = (option)=> {
-        setStateOptions(option)
+        const interval = setInterval(interval_func, 1000);
+
+        const timeout_func = async () => {
+            const resp = await InsertResponse(cuest_user)
+
+            if(resp === true) {
+                NextQuestion()
+                clearInterval(interval);
+            }
+        };
+
+        const timeout = setTimeout(timeout_func, 5000);
+
+        return () => {
+            clearInterval(interval);
+            clearTimeout(timeout);
+            set_w(100)
+        };
+    }, [data]);
+
+
+    const onSelectedOption = async(option)=> {
+        setStateOptions(option.texto)
+        const resp = await InsertResponse(cuest_user,option.id)
+        if(resp === true) {
+            NextQuestion()
+        }
+
     }
 
 
@@ -46,32 +63,25 @@ const QuestionComponent = () => {
                 <View style={[styles_charge_time.ChargeTime]}></View>
             </View>
             <View style={styles.info_q}>
-                <Text>1/15</Text>
-                <Text>5 Puntos</Text>
+                <Text> {currentQuestion + "/" + questions.length } </Text>
+                <Text> {data.puntos} </Text>
 
             </View>
         </View>
         <View style={styles.question}>
-            <Text style={{fontSize:20,fontWeight:"400"}}>Quien era luffy?</Text>
+            <Text style={{fontSize:20,fontWeight:"400"}}> {data.texto} </Text>
         </View>
 
         <View style={styles.options}>
 
-            <TouchableOpacity onPress={()=>onSelectedOption("Un Pirata")} style={[styles.option, {backgroundColor: stateOptions === "Un Pirata" ? "#00D41D" : "white"}]}>
-                <Text>Un Pirata</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity onPress={()=>onSelectedOption("Un guerrero")} style={[styles.option, {backgroundColor: stateOptions === "Un guerrero" ? "#00D41D" : "white"}]}>
-                <Text>Un guerrero</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity onPress={()=>onSelectedOption("Un vendedor")} style={[styles.option, {backgroundColor: stateOptions === "Un vendedor" ? "#00D41D" : "white"}]}>
-                <Text>Un vendedor</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={[styles.option, {backgroundColor: stateOptions === "Un samurai" ? "#00D41D" : "white"}]} onPress={()=>onSelectedOption("Un samurai")}>
-                <Text>Un samuraia</Text>
-            </TouchableOpacity>
+            {
+                data.opciones && data.opciones.map((opt,index)=> {
+                    return <TouchableOpacity key={index} onPress={()=>onSelectedOption(opt)} style={[styles.option, {backgroundColor: stateOptions === opt.texto ? "#00D41D" : "white"}]}>
+                    <Text> {opt.texto} </Text>
+                </TouchableOpacity>
+                })
+            }
 
         </View>
 

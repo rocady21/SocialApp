@@ -4,7 +4,7 @@ import { StyleSheet, Text, View,TouchableOpacity,Image } from "react-native"
 
 
 const CardQuestions = ({data})=> {
-
+    
     const navigation = useNavigation()
 
     const IniciarEncuesta = ()=> {
