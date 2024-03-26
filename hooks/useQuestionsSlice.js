@@ -1,12 +1,12 @@
 import { useSelector } from "react-redux"
-import { onLoadCateogryes,onStartedQuestion,onCreateQuestUser, onLoadEntitiesFromCat,onResetState,onClearEntitiesFromCateogries,onFinishQuestion,onInsertQuestion,onloadQuestionsFromEntity,onNextQuestion} from "../store/slices/QuestionsSlice"
+import { onLoadCateogryes,onStartedQuestion,onCreateQuestUser, onResetStateQuestionare,onLoadResultsQuestionUser,onLoadEntitiesFromCat,onResetState,onClearEntitiesFromCateogries,onFinishQuestion,onInsertQuestion,onloadQuestionsFromEntity,onNextQuestion} from "../store/slices/QuestionsSlice"
 import { useDispatch } from "react-redux"
 import axios from "axios"
 
 export const useQuestionsSlice = ()=> {
 
     const Dispach = useDispatch()
-    const {category,cuest_user,entitiesfromCateogry,status_question,questionsFromEntity,questionSelected,questions,currentQuestion} = useSelector((state)=> state.questions)
+    const {category,cuest_user,entitiesfromCateogry,status_question,questionsFromEntity,questionSelected,questions,currentQuestion,results_cuest} = useSelector((state)=> state.questions)
 
 
     const ResetState = ()=> {
@@ -19,8 +19,7 @@ export const useQuestionsSlice = ()=> {
 
     const LoadCateogries = async()=> {
         try {
-            console.log("okk");
-            const {data} = await axios.get("https://4187-167-61-209-70.ngrok-free.app/api/category")
+            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/category")
 
             if(data.ok === true) {
                 Dispach(onLoadCateogryes(data.data))
@@ -32,7 +31,7 @@ export const useQuestionsSlice = ()=> {
 
     const handleLoadEntitiesFromCat = async(id)=> {
         try {
-            const {data} = await axios.get("https://4187-167-61-209-70.ngrok-free.app/api/category/" + id)
+            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/category/" + id)
             if(data.ok === true) {
                 Dispach(onLoadEntitiesFromCat(data.data))
             }
@@ -49,7 +48,7 @@ export const useQuestionsSlice = ()=> {
     const handleLoadQuestionsFromEntity = async(id,user_id)=> {
 
         try {
-            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/questions/entity/" + id,{
+            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/entity/" + id,{
                 id_user_session:user_id
             })
             if(data.ok === true) {
@@ -62,7 +61,7 @@ export const useQuestionsSlice = ()=> {
 
     const CargarPreguntasDeCuestionario = async(id_cuest)=> {
         try {
-            const {data} = await axios.get("https://4187-167-61-209-70.ngrok-free.app/api/questions/" + id_cuest)
+            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/" + id_cuest)
             if(data.ok === true) {
 
                 Dispach(onInsertQuestion(data.data.questions))
@@ -77,11 +76,9 @@ export const useQuestionsSlice = ()=> {
 
         const sig = currentQuestion + 1
         if(sig <= questions.length) {
-            console.log(questions[sig]);
             Dispach(onNextQuestion())
 
         } else {
-            console.log("final");
             Dispach(onFinishQuestion())
         }
     }
@@ -93,10 +90,10 @@ export const useQuestionsSlice = ()=> {
             id_cuestionario:id_cuest
         }
         try {
-            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/questions/user",format_send)
+            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user",format_send)
 
             if(data.ok === true ) {
-                Dispach(onCreateQuestUser(data.cuest_user.id))
+                Dispach(onCreateQuestUser(data.cuest_user))
             }
         } catch (error) {
             console.log(error);
@@ -112,7 +109,7 @@ export const useQuestionsSlice = ()=> {
         }
         }
         try {
-            const {data} = await axios.post("https://4187-167-61-209-70.ngrok-free.app/api/questions/user/response",format_send)
+            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user/response",format_send)
             if(data.ok === true) {
                 return true
             }
@@ -120,13 +117,20 @@ export const useQuestionsSlice = ()=> {
             return false
         }
     }
-
-    const FinishendQuestionnare = async()=> {
+    
+    const FinishendQuestionnare = async(id_cuest_user)=> {
         try {
-            const {} = await axios.post("")            
+            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user/finished_quest/" + id_cuest_user) 
+            if(data.ok === true) {
+                Dispach(onLoadResultsQuestionUser(data.result))
+            }    
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const ResetQuestionareState = ()=> {
+        Dispach(onResetStateQuestionare())
     }
     
 
@@ -139,6 +143,7 @@ export const useQuestionsSlice = ()=> {
         questionsFromEntity,
         questions,
         status_question,
+        results_cuest,
         ResetState,
         Create_cuest_user,
         LoadCateogries,
@@ -148,6 +153,7 @@ export const useQuestionsSlice = ()=> {
         CargarPreguntasDeCuestionario,
         NextQuestion,
         InsertResponse,
-        FinishendQuestionnare
+        FinishendQuestionnare,
+        ResetQuestionareState
     }
 }

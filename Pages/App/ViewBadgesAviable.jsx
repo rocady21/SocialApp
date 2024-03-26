@@ -8,15 +8,14 @@ const ViewBadgesAviable = ({route})=> {
 
     const {user} = useUserSlice()
     const {handleLoadQuestionsFromEntity,questionsFromEntity,ResetState} = useQuestionsSlice()
-    const id = route.params
-
-    
+    const id = route.params    
     useEffect(()=> {
         ResetState()
         handleLoadQuestionsFromEntity(id,user.id)
 
     },[])
     
+
     return (
         <View style={styles.padre}>
             <View style={styles.header}>

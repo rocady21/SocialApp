@@ -14,9 +14,6 @@ import { useNavigation } from "@react-navigation/native";
         LoadCateogries()
     },[])
 
-
-    console.log(entitiesfromCateogry);
-
     const loadEntitiesFromCategory = (id)=> {
         if(id !== id_selected_cat) {
             setId_selected_cat(id)

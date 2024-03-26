@@ -8,6 +8,7 @@ const QuestionsSlice = createSlice({
         // started,finished,no_started
         cuest_user: undefined,
         status_question : "no_started",
+        results_cuest:undefined,
         currentQuestion:1,
         category:[],
         entitiesfromCateogry:[],
@@ -16,6 +17,7 @@ const QuestionsSlice = createSlice({
         questions:[]
     },reducers:{
         onResetState:(state)=> {
+            state.questionsFromEntity = []
             state.currentQuestion = 1
         },
         onLoadCateogryes:(state,{payload}) => {
@@ -46,11 +48,21 @@ const QuestionsSlice = createSlice({
         },
         onCreateQuestUser: (state,{payload})=> {
             state.cuest_user = payload
+        },
+        onLoadResultsQuestionUser:(state,{payload})=> {
+            state.results_cuest = payload
+        },
+        onResetStateQuestionare:(state,{payload})=> {
+            state.cuest_user = undefined
+            state.status_question = "no_started"
+            state.results_cuest=undefined
+            state.currentQuestion =1
+            state.questions = []
         }
     }
 
 })
 
 
-export const {onLoadCateogryes,onCreateQuestUser,onResetState,onStartedQuestion,onLoadEntitiesFromCat,onClearEntitiesFromCateogries,onloadQuestionsFromEntity,onInsertQuestion,onNextQuestion,onFinishQuestion} = QuestionsSlice.actions
+export const {onLoadCateogryes,onCreateQuestUser,onResetState,onStartedQuestion,onLoadEntitiesFromCat,onResetStateQuestionare,onLoadResultsQuestionUser,onClearEntitiesFromCateogries,onloadQuestionsFromEntity,onInsertQuestion,onNextQuestion,onFinishQuestion} = QuestionsSlice.actions
 export default QuestionsSlice

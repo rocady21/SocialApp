@@ -33,10 +33,14 @@ const CardQuestions = ({data})=> {
             </View>
 
 
+            {
+                data.status_cuest_user === "not_started" ? <TouchableOpacity style={styles.button} onPress={IniciarEncuesta}>
+                <Text style={{color:"white",fontWeight:"500",fontSize:18}}>Start</Text> 
+            </TouchableOpacity> : data.status_cuest_user === "PENDIENTE" ? <TouchableOpacity style={styles.button} onPress={IniciarEncuesta}>
+                <Text style={{color:"white",fontWeight:"500",fontSize:18}}>Continuar</Text>
+            </TouchableOpacity> : <Text style={styles.textF}>Ya has realizado esta encuesta</Text>
+            }
 
-            <TouchableOpacity style={styles.button} onPress={IniciarEncuesta}>
-                <Text style={{color:"white",fontWeight:"500",fontSize:18}}>Start</Text>
-            </TouchableOpacity>
         </View>
     )
 }
@@ -114,6 +118,10 @@ const styles = StyleSheet.create({
         alignItems:"center",
         justifyContent:"space-around",
         marginVertical:5
+    },
+    textF:{
+        marginVertical:10,
+        color:"gray"
     }
 })
 

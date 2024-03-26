@@ -17,7 +17,7 @@ const QuestionComponent = ({data}) => {
         const interval = setInterval(interval_func, 1000);
 
         const timeout_func = async () => {
-            const resp = await InsertResponse(cuest_user)
+            const resp = await InsertResponse(cuest_user.id)
 
             if(resp === true) {
                 NextQuestion()
@@ -37,7 +37,7 @@ const QuestionComponent = ({data}) => {
 
     const onSelectedOption = async(option)=> {
         setStateOptions(option.texto)
-        const resp = await InsertResponse(cuest_user,option.id)
+        const resp = await InsertResponse(cuest_user.id,option.id)
         if(resp === true) {
             NextQuestion()
         }
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         width:"100%"
     },
     question:{
-        marginTop:100,
+        marginTop:80,
         width:"100%",
         backgroundColor:"white",
         borderRadius:10,

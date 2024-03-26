@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Text, View,StyleSheet,TouchableOpacity } from "react-native"
+import { Text, View,StyleSheet,TouchableOpacity, LogBox } from "react-native"
 import { useQuestionsSlice } from "../../hooks/useQuestionsSlice"
 import QuestionComponent from "../../components/StartQuestions/Question"
 import { useUserSlice } from "../../hooks/useUserSlice"
@@ -11,14 +11,15 @@ const IniciarEncuesta = ({route})=> {
 
     const id_cuest = route.params
     const {user} = useUserSlice()
-    const {questionsFromEntity,CargarPreguntasDeCuestionario,questions,currentQuestion,ResetState,status_question,Create_cuest_user} = useQuestionsSlice()
+    const {questionsFromEntity,CargarPreguntasDeCuestionario,questions,currentQuestion,ResetState,status_question,Create_cuest_user,questionSelected} = useQuestionsSlice()
+
 
     useEffect(()=> {
         Create_cuest_user(user.id,id_cuest)
         CargarPreguntasDeCuestionario(id_cuest)
 
         return ()=> {
-
+            
         }
     },[])
     
