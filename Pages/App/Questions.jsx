@@ -9,10 +9,17 @@ import { useNavigation } from "@react-navigation/native";
  const Questions = ({navigation})=> {
 
     const {LoadCateogries,category,handleLoadEntitiesFromCat,handelClearEntitiesFromCateogries,entitiesfromCateogry} = useQuestionsSlice()
-    const [id_selected_cat,setId_selected_cat] = useState()
+    const [id_selected_cat,setId_selected_cat] = useState(null)
     useEffect(()=> {
         LoadCateogries()
     },[])
+
+
+    useEffect(()=> {
+        if(category [0]) {
+            loadEntitiesFromCategory(category[0].id)
+        }
+    },[category])
 
     const loadEntitiesFromCategory = (id)=> {
         if(id !== id_selected_cat) {

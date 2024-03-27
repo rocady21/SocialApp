@@ -12,6 +12,7 @@ import ToastManager from "toastify-react-native"
 import MaterialcommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import SettingsComponent from "../../components/Profile/Settings"
 import ModalFollowerOrUnFolloers from "../../components/Profile/ModalFollowerOrUnFolloers"
+import BadgesUser from "../../components/Profile/BadgesUser"
 
 
 
@@ -28,8 +29,6 @@ const Profile = () => {
         type:""
     })
 
-
-    
     useEffect(()=> {
         // aqui cargare los posts del usuario 
 
@@ -68,7 +67,7 @@ const Profile = () => {
                         <Image
                             style={styles.image}
                             source={{
-                                uri: "https://lapi.com.mx/web/image/product.template/5449/image_1024?unique=9f103a0"
+                                uri: user.foto
                             }}
                             
                         />
@@ -96,6 +95,9 @@ const Profile = () => {
 
 
                 </View>
+
+
+                <BadgesUser/>
 
                 {
 
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
         
     },
     info: {
+        width:"90%",
         display: "flex",
         flexDirection: "row",
         marginTop: 50,
@@ -242,10 +245,11 @@ const styles = StyleSheet.create({
     },
     button: {
         paddingVertical: 5,
-        paddingHorizontal: 10,
+        paddingHorizontal:2,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        boxSizing:"border-box"
 
     },
     postsTitle: {

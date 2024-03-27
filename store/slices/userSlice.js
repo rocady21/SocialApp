@@ -126,10 +126,17 @@ const userSlice = createSlice({
     onClearState:(state)=>{
       state.followers_or_followings = [],
       state.load_info_followers = true
+    },
+    addBadgeUser:(state,{payload})=> {
+      console.log("se llamo a slice users");
+      state.user = {
+        ...state.user,
+        badges_user: [...state.user.badges_user, payload]
+      }
     }
-  }
+  },
 
 })
 
-export const { setMessage,credentialsError,addNewUser,onLoadFollowersorFollowings,onClearState,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onResetUserState,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
+export const { setMessage,credentialsError,addNewUser,addBadgeUser,onLoadFollowersorFollowings,onClearState,onFollow,onUnFollow,onFriend_Request,onNoFriend_Request,onExistUser,onLoadingSearch,onSearchResults,onResetUserState,onNoResults,onPreviewState,onLoadUser_info,onClearUser_info,onAcceptFriendRequest,onRejectFriendRequest } = userSlice.actions
 export default userSlice

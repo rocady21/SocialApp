@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 
 
+
 const QuestionsSlice = createSlice({
     name:"QuestionSlice",
     initialState:{
@@ -58,7 +59,7 @@ const QuestionsSlice = createSlice({
             state.results_cuest=undefined
             state.currentQuestion =1
             state.questions = []
-        }
+        },
     }
 
 })

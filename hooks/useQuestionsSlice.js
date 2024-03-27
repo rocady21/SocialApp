@@ -2,6 +2,7 @@ import { useSelector } from "react-redux"
 import { onLoadCateogryes,onStartedQuestion,onCreateQuestUser, onResetStateQuestionare,onLoadResultsQuestionUser,onLoadEntitiesFromCat,onResetState,onClearEntitiesFromCateogries,onFinishQuestion,onInsertQuestion,onloadQuestionsFromEntity,onNextQuestion} from "../store/slices/QuestionsSlice"
 import { useDispatch } from "react-redux"
 import axios from "axios"
+import { addBadgeUser } from "../store/slices/userSlice"
 
 export const useQuestionsSlice = ()=> {
 
@@ -19,7 +20,7 @@ export const useQuestionsSlice = ()=> {
 
     const LoadCateogries = async()=> {
         try {
-            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/category")
+            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/category")
 
             if(data.ok === true) {
                 Dispach(onLoadCateogryes(data.data))
@@ -31,7 +32,7 @@ export const useQuestionsSlice = ()=> {
 
     const handleLoadEntitiesFromCat = async(id)=> {
         try {
-            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/category/" + id)
+            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/category/" + id)
             if(data.ok === true) {
                 Dispach(onLoadEntitiesFromCat(data.data))
             }
@@ -48,7 +49,7 @@ export const useQuestionsSlice = ()=> {
     const handleLoadQuestionsFromEntity = async(id,user_id)=> {
 
         try {
-            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/entity/" + id,{
+            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/entity/" + id,{
                 id_user_session:user_id
             })
             if(data.ok === true) {
@@ -61,7 +62,7 @@ export const useQuestionsSlice = ()=> {
 
     const CargarPreguntasDeCuestionario = async(id_cuest)=> {
         try {
-            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/" + id_cuest)
+            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/questions/" + id_cuest)
             if(data.ok === true) {
 
                 Dispach(onInsertQuestion(data.data.questions))
@@ -90,7 +91,7 @@ export const useQuestionsSlice = ()=> {
             id_cuestionario:id_cuest
         }
         try {
-            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user",format_send)
+            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user",format_send)
 
             if(data.ok === true ) {
                 Dispach(onCreateQuestUser(data.cuest_user))
@@ -109,7 +110,7 @@ export const useQuestionsSlice = ()=> {
         }
         }
         try {
-            const {data} = await axios.post("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user/response",format_send)
+            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user/response",format_send)
             if(data.ok === true) {
                 return true
             }
@@ -120,9 +121,13 @@ export const useQuestionsSlice = ()=> {
     
     const FinishendQuestionnare = async(id_cuest_user)=> {
         try {
-            const {data} = await axios.get("https://6674-2800-a4-c0aa-2200-4d17-4eb3-c057-640e.ngrok-free.app/api/questions/user/finished_quest/" + id_cuest_user) 
+            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user/finished_quest/" + id_cuest_user) 
             if(data.ok === true) {
                 Dispach(onLoadResultsQuestionUser(data.result))
+                if(data.result.status === "Aprobada") {
+                    console.log("aprobado");
+                    Dispach(addBadgeUser(data.result.badge))
+                }
             }    
         } catch (error) {
             console.log(error);
