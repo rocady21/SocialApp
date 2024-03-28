@@ -3,16 +3,20 @@ import { View,StyleSheet,Text,SafeAreaView,ScrollView,TouchableOpacity,ActivityI
 
 import { useQuestionsSlice } from "../../hooks/useQuestionsSlice";
 import { useNavigation } from "@react-navigation/native";
+import { useUserSlice } from "../../hooks/useUserSlice";
 
 
 
  const Questions = ({navigation})=> {
-
     const {LoadCateogries,category,handleLoadEntitiesFromCat,handelClearEntitiesFromCateogries,entitiesfromCateogry} = useQuestionsSlice()
     const [id_selected_cat,setId_selected_cat] = useState(null)
+    const {user} = useUserSlice()
     useEffect(()=> {
         LoadCateogries()
     },[])
+
+
+    console.log("user_rol",user.rol);
 
 
     useEffect(()=> {
@@ -35,6 +39,9 @@ import { useNavigation } from "@react-navigation/native";
     
     const ViewBadgesAviables = (id)=>{
         navigation.navigate("ViewBadgesAviable",id)
+    }
+    const CreateQuestionare = ()=>{
+        navigation.navigate("CreateQuestionare")
     }
 
     return (
@@ -73,6 +80,9 @@ import { useNavigation } from "@react-navigation/native";
                             }) : <Text>No hay entidades</Text>
                         }
                 </ScrollView>
+                <TouchableOpacity onPress={CreateQuestionare} style={styles.buttonCreate}>
+                    <Text style={{color:"white", fontWeight:"700",fontSize:18}}>Crear cuestionario</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )
@@ -145,6 +155,15 @@ const styles = StyleSheet.create({
         fontSize:16,
         textAlign:"left",
         marginTop:5
+    },
+    buttonCreate:{
+        borderRadius:5,
+        position:"absolute",
+        bottom:0,
+        right:0,
+        backgroundColor:"black",
+        paddingVertical:8,
+        paddingHorizontal:15
     }
     
 })

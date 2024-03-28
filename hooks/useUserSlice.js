@@ -21,7 +21,7 @@ export const useUserSlice = ()=> {
 
     const LoginUser = async(datos)=> {
         try {
-            const {data} = await axios.post(`https://8a36-167-61-208-102.ngrok-free.app/api/login`,{
+            const {data} = await axios.post(`https://b02e-167-61-211-64.ngrok-free.app/api/login`,{
 
                 correo:datos.email,
                 contraseña:datos.password
@@ -50,7 +50,7 @@ export const useUserSlice = ()=> {
         // esta funcion me devolvera la info del user necesaria si el token es valido 
         try {
 
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/validToken",{
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/validToken",{
 
                 headers: { "Authorization": `Bearer ${tk}` }
             })
@@ -70,7 +70,7 @@ export const useUserSlice = ()=> {
 
     const FollowUser = async(info)=> {
         try {
-            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/send_request_friend",info)
+            const {data} = await axios.post("https://b02e-167-61-211-64.ngrok-free.app/api/send_request_friend",info)
             if(data.ok === true){
                 Dispach(onFollow())
             } 
@@ -80,7 +80,7 @@ export const useUserSlice = ()=> {
     }
     const UnfollowUser = async(info)=> {
         try {
-            const {data} = await axios.delete(`https://8a36-167-61-208-102.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
+            const {data} = await axios.delete(`https://b02e-167-61-211-64.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
             if(data.ok === true ) {
                 Dispach(onUnFollow())
             }
@@ -93,7 +93,7 @@ export const useUserSlice = ()=> {
     const SearchUser = async(value)=> {
         try {
             Dispach(onLoadingSearch())
-            const {data} = await axios.get(`https://8a36-167-61-208-102.ngrok-free.app/api/user/${value}`)    
+            const {data} = await axios.get(`https://b02e-167-61-211-64.ngrok-free.app/api/user/${value}`)    
             if(data.ok == true) {
                 Dispach(onSearchResults(data.result))
             }
@@ -120,7 +120,7 @@ export const useUserSlice = ()=> {
     const loadInfoUserById = async(id)=> {
         
         try {
-            const {data} = await axios.post(`https://8a36-167-61-208-102.ngrok-free.app/api/people/${id}`,{
+            const {data} = await axios.post(`https://b02e-167-61-211-64.ngrok-free.app/api/people/${id}`,{
                 id_user_session:user.id
             })
 
@@ -133,7 +133,7 @@ export const useUserSlice = ()=> {
     }
     const LoadFriendRequest = async()=>{
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/request_friends/" + user.id)
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/request_friends/" + user.id)
             if(data.ok === true) {
                 Dispach(onFriend_Request(data.friend_request))
             }
@@ -146,7 +146,7 @@ export const useUserSlice = ()=> {
 
     const AcceptFriendRequest = async(info)=> {
         try {
-            const {data} = await axios.put("https://8a36-167-61-208-102.ngrok-free.app/api/accept_request_friend",info)
+            const {data} = await axios.put("https://b02e-167-61-211-64.ngrok-free.app/api/accept_request_friend",info)
 
             console.log(data);
             if(data.ok === true) {
@@ -159,7 +159,7 @@ export const useUserSlice = ()=> {
 
     const RejectFriendRequest = async (info)=> {
         try {
-            const {data} = await axios.delete(`https://8a36-167-61-208-102.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
+            const {data} = await axios.delete(`https://b02e-167-61-211-64.ngrok-free.app/api/reject_request_friend?param1=${info.id_user_seguidor}&param2=${info.id_user_seguido}`)
             if(data.ok == true) {
                 Dispach(onRejectFriendRequest(info.id_user_seguidor))
             }
@@ -172,7 +172,7 @@ export const useUserSlice = ()=> {
 
     const LoadFollowers = async()=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/follower/" + user.id)
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/follower/" + user.id)
 
             if(data.ok === true) {
                 Dispach(onLoadFollowersorFollowings(data.amigos))
@@ -185,7 +185,7 @@ export const useUserSlice = ()=> {
 
     const LoadFollowings = async()=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/following/" +  user.id)
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/following/" +  user.id)
             if(data.ok === true) {
                 Dispach(onLoadFollowersorFollowings(data.amigos))
 

@@ -14,6 +14,7 @@ import CardPost from '../components/Profile/CardPost';
 import ViewProfileUser from '../Pages/App/ViewProfileUser';
 import ViewBadgesAviable from '../Pages/App/ViewBadgesAviable';
 import IniciarEncuesta from '../Pages/App/StartQuestions';
+import CreateQuestionare from '../Pages/App/CreateQuestionare';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,8 +38,7 @@ export default function AppRouter() {
             <Stack.Screen name="View_profile_user" component={ViewProfileUser} />
             <Stack.Screen name="ViewBadgesAviable" component={ViewBadgesAviable} />
             <Stack.Screen name="IniciarEncuesta" component={IniciarEncuesta} />
-
-            
+            <Stack.Screen name="CreateQuestionare" component={CreateQuestionare} />
         </Stack.Navigator>
       {
         selectedChat === false && <Footer/>

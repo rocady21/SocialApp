@@ -20,7 +20,7 @@ export const useQuestionsSlice = ()=> {
 
     const LoadCateogries = async()=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/category")
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/category")
 
             if(data.ok === true) {
                 Dispach(onLoadCateogryes(data.data))
@@ -29,10 +29,9 @@ export const useQuestionsSlice = ()=> {
             console.log(error);
         }
     }
-
     const handleLoadEntitiesFromCat = async(id)=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/category/" + id)
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/category/" + id)
             if(data.ok === true) {
                 Dispach(onLoadEntitiesFromCat(data.data))
             }
@@ -49,7 +48,7 @@ export const useQuestionsSlice = ()=> {
     const handleLoadQuestionsFromEntity = async(id,user_id)=> {
 
         try {
-            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/entity/" + id,{
+            const {data} = await axios.post("https://b02e-167-61-211-64.ngrok-free.app/api/questions/entity/" + id,{
                 id_user_session:user_id
             })
             if(data.ok === true) {
@@ -62,7 +61,7 @@ export const useQuestionsSlice = ()=> {
 
     const CargarPreguntasDeCuestionario = async(id_cuest)=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/questions/" + id_cuest)
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/questions/" + id_cuest)
             if(data.ok === true) {
 
                 Dispach(onInsertQuestion(data.data.questions))
@@ -91,7 +90,7 @@ export const useQuestionsSlice = ()=> {
             id_cuestionario:id_cuest
         }
         try {
-            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user",format_send)
+            const {data} = await axios.post("https://b02e-167-61-211-64.ngrok-free.app/api/questions/user",format_send)
 
             if(data.ok === true ) {
                 Dispach(onCreateQuestUser(data.cuest_user))
@@ -110,7 +109,7 @@ export const useQuestionsSlice = ()=> {
         }
         }
         try {
-            const {data} = await axios.post("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user/response",format_send)
+            const {data} = await axios.post("https://b02e-167-61-211-64.ngrok-free.app/api/questions/user/response",format_send)
             if(data.ok === true) {
                 return true
             }
@@ -121,7 +120,7 @@ export const useQuestionsSlice = ()=> {
     
     const FinishendQuestionnare = async(id_cuest_user)=> {
         try {
-            const {data} = await axios.get("https://8a36-167-61-208-102.ngrok-free.app/api/questions/user/finished_quest/" + id_cuest_user) 
+            const {data} = await axios.get("https://b02e-167-61-211-64.ngrok-free.app/api/questions/user/finished_quest/" + id_cuest_user) 
             if(data.ok === true) {
                 Dispach(onLoadResultsQuestionUser(data.result))
                 if(data.result.status === "Aprobada") {
